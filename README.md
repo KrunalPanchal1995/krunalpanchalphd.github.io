@@ -29,5 +29,23 @@ bundle install
 JEKYLL_ENV=production bundle exec jekyll build   # output in _site/
 ```
 
-Deployment is the `Deploy site` GitHub Actions workflow (builds with Jekyll, writes the `gh-pages` branch).
+## Publishing
+
+There is no GitHub Actions deploy in this repository yet (the CLI token used to create it lacked the `workflow` scope, which GitHub requires to
+push workflow files). The site is published from a local production build:
+
+```bash
+JEKYLL_ENV=production bundle exec jekyll build
+bin/publish_gh_pages.sh        # clones gh-pages, copies _site over it, commits, pushes, waits for the Pages build
+```
+
+**Never force-push `gh-pages`.** On 2026-11-07, replacing the branch history with `git push -f` made every following Pages build
+fail instantly ("Page build failed", 0 ms, no detail), even for an identical tree; restoring the old history fixed it, and the same tree
+published fine as an ordinary commit on top. `bin/publish_gh_pages.sh` always builds on the existing history and refuses to force.
+If a build errors, check `gh api repos/KrunalPanchal1995/krunalpanchalphd.github.io/pages/builds/latest`, file sizes (GitHub rejects
+files over 100 MB), and https://www.githubstatus.com.
+
+To get automatic deploys instead: `gh auth refresh -h github.com -s workflow`, then add the standard Jekyll deploy workflow
+(`.github/workflows/deploy.yml`) and set Pages source to GitHub Actions.
+
 Built on the [al-folio](https://github.com/alshedivat/al-folio) theme.
