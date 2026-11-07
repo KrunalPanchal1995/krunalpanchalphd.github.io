@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="static-shim.js"></script>
+<link rel="stylesheet" href="static-shim.css">
+<title>Math Visualization Studio</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="explain.css">
+<script>
+  /* apply the saved theme before first paint (no flash) */
+  try { const t = localStorage.getItem("studio-theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+</head>
+<body>
+<header id="topbar">
+  <div id="brand"><span class="mark">&int;</span><span>Math Studio</span></div>
+  <nav id="ws-tabs" aria-label="workspaces">
+    <button data-ws="subjects">Subjects</button>
+    <button data-ws="gallery">Gallery</button>
+    <button data-ws="atlas">Atlas</button>
+    <button data-ws="reels">Reels</button>
+    <button data-ws="promos">Beyond the projects</button>
+    <span class="sep"></span>
+    <button data-ws="transform">Transform</button>
+    <button data-ws="transform3d">Transform 3D</button>
+    <button data-ws="lab">Integrals Lab</button>
+    <button data-ws="revolve">Revolve</button>
+    <button data-ws="arc">Arc length</button>
+    <button data-ws="double">Double integral</button>
+    <button data-ws="solver">Solver</button>
+    <button data-ws="flow">Flow</button>
+    <button data-ws="mechanism">Mechanisms</button>
+    <button data-ws="deform">Deform &amp; Hair</button>
+    <button data-ws="molecules">Molecules</button>
+    <span class="sep"></span>
+    <button data-ws="grapher">Grapher</button>
+    <button data-ws="desmos2d">Desmos 2D</button>
+    <button data-ws="desmos3d">Desmos 3D</button>
+    <button data-ws="geogebra">GeoGebra</button>
+    <span class="sep"></span>
+  </nav>
+  <div class="top-actions">
+    <button id="btn-link" class="icon-btn" title="copy a link to exactly this view (formulas, sliders, zoom, camera, parameters)">🔗</button>
+    <button id="btn-rec" class="icon-btn rec" title="record a video of this view">⏺</button>
+    <button id="btn-help" class="icon-btn" title="user manual for this workspace">?</button>
+    <button id="btn-theme" class="icon-btn" title="light / dark theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+    <button id="btn-full" class="icon-btn" title="full screen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  </div>
+</header>
+
+<!-- placeholders the ported grapher's core/dom.js + router.js look up; never shown -->
+<div id="layout" hidden></div><div id="domain-ribbon" hidden></div><div id="log-panel" hidden></div><div id="results-status" hidden></div>
+
+<main id="ws-subjects" class="ws" hidden></main>
+<main id="ws-explain" class="ws" hidden></main>
+<main id="ws-gallery" class="ws" hidden></main>
+<main id="ws-reels" class="ws" hidden></main>
+<main id="ws-promos" class="ws" hidden></main>
+<main id="ws-atlas" class="ws" hidden></main>
+<main id="ws-mechanism" class="ws" hidden></main>
+<main id="ws-deform" class="ws" hidden></main>
+<main id="ws-molecules" class="ws" hidden></main>
+<main id="ws-lab" class="ws" hidden></main>
+<main id="ws-revolve" class="ws" hidden></main>
+<main id="ws-transform3d" class="ws" hidden></main>
+<main id="ws-arc" class="ws" hidden></main>
+<main id="ws-double" class="ws" hidden></main>
+<main id="ws-transform" class="ws" hidden></main>
+<main id="ws-solver" class="ws" hidden></main>
+<main id="ws-flow" class="ws" hidden></main>
+<main id="ws-grapher" class="ws" hidden>
+<section id="grapher">
+  <div id="grapher-header">
+    <button id="grapher-close" type="button" title="Close the grapher — back to the canvas" hidden>&larr;</button>
+    <div id="grapher-header-text">
+      <h1 id="grapher-title">Graph</h1>
+      <p class="section-desc">Sketch a function, drag its parameters, see it update live — 2D, 3D, polar, implicit, parametric.</p>
+    </div>
+    <div id="grapher-mode-toggle" role="group" aria-label="what to plot">
+      <button type="button" class="grapher-mode-btn active" data-mode="curve" title="y as a function of x">y = f(x)</button>
+      <button type="button" class="grapher-mode-btn" data-mode="surface" title="a rotatable 3-D surface">z = f(x, y)</button>
+      <button type="button" class="grapher-mode-btn" data-mode="contour" title="filled contour plot of f(x, y)">contour</button>
+      <button type="button" class="grapher-mode-btn" data-mode="implicit" title="the curves where f(x, y) = 0, e.g. x**2 + y**2 = 4">f(x,y) = 0</button>
+      <button type="button" class="grapher-mode-btn" data-mode="parametric" title="a parametric curve: type  x(t), y(t)">x(t), y(t)</button>
+    </div>
+  </div>
+  <div id="grapher-body">
+    <aside id="grapher-sidebar" aria-label="layers">
+      <div class="rail-head"><span class="rail-title">Layers</span><button id="grapher-dock-toggle" type="button" class="rail-toggle" aria-pressed="true" title="show or hide the Fit / Analysis / Export dock">Fit &amp; export</button></div>
+      <div id="grapher-expr-list"></div>
+      <div id="grapher-data-layers"></div>
+      <div class="layer-add" role="group" aria-label="add a layer">
+        <button id="grapher-add-expr" type="button" title="add a function to plot">+ expression</button>
+        <button id="grapher-fit-data" type="button" title="load a table (CSV / TSV / paste) to plot it" hidden>+ data&hellip;</button>
+        <button id="grapher-import-geometry" type="button" title="load a 3-D shape: .stl becomes a point cloud; .xyz / .csv also work">+ points&hellip;</button>
+      </div>
+      <div id="grapher-params"></div>
+      <fieldset id="grapher-domain">
+        <legend>Domain</legend>
+        <div class="gd-row"><label id="gd-lo-label" for="gd-lo">x from</label><input id="gd-lo" type="number" step="any"><label id="gd-hi-label" for="gd-hi">to</label><input id="gd-hi" type="number" step="any"></div>
+        <div class="gd-row" id="gd-yrange" hidden><label for="gd-ylo">y from</label><input id="gd-ylo" type="number" step="any"><label for="gd-yhi">to</label><input id="gd-yhi" type="number" step="any"></div>
+        <div class="gd-row"><label for="gd-n" title="the point budget: with adaptive sampling it is a maximum, spent where the curve bends">samples</label><input id="gd-n" type="number" min="2" step="1"></div>
+        <div class="gd-row" id="gd-sampling"><label title="Adaptive sampling spends the sample budget where the function bends and along the edge of its domain. Untick for an evenly spaced grid."><input type="checkbox" id="gd-adaptive" checked> adaptive sampling</label></div>
+        <div class="gd-row" id="gd-logs"><label><input type="checkbox" id="gd-logx"> log x</label><label><input type="checkbox" id="gd-logy"> log y</label></div>
+      </fieldset>
+      <fieldset id="grapher-colour">
+        <legend>Colour</legend>
+        <div class="gd-row"><label for="gd-colormap" title="The colour map for every surface/field in the app. Diverging maps pin their centre to zero.">colormap</label><select id="gd-colormap"></select></div>
+      </fieldset>
+      <div id="grapher-actions">
+        <button id="grapher-use-objective" type="button" class="primary" hidden>Use as objective &#9656;</button>
+        <button id="grapher-convert-stl" type="button" hidden title="save the imported points as CSV">Points &rarr; CSV&hellip;</button>
+        <input id="grapher-geometry-file" type="file" accept=".stl,.xyz,.csv,.txt,.dat" hidden>
+        <details id="grapher-recover-options" hidden>
+          <summary>Recover equations&hellip;</summary>
+          <label>Shape <select id="gr-shape"><option value="auto">detect automatically</option></select></label>
+          <label>Regions <select id="gr-split"><option value="auto">automatic cells (quadtree)</option></select></label>
+          <label>Split at <input id="gr-at" type="text" value="median" size="8"></label>
+          <label>Tolerance <input id="gr-tol" type="number" value="0.01" min="0.0001" max="0.5" step="0.005"></label>
+          <label class="gr-check"><input id="gr-native" type="checkbox" checked> symbolic regression</label>
+          <label class="gr-check"><input id="gr-pysr" type="checkbox" disabled> PySR (not available in this build)</label>
+          <label class="gr-check"><input id="gr-nn" type="checkbox" disabled> neural-network benchmark (not available)</label>
+          <button id="grapher-recover" type="button" class="primary" disabled>Recover &#9656;</button>
+        </details>
+      </div>
+      <p id="grapher-hint" class="muted"></p>
+    </aside>
+    <main id="grapher-chart-area">
+      <div id="grapher-chart"></div>
+      <section id="grapher-search" hidden aria-label="live formula search">
+        <div id="search-head"><span id="search-title">Formula search</span><span id="search-status" aria-live="polite"></span><button id="search-stop" type="button" hidden>Stop</button></div>
+        <div id="search-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"><div id="search-progress-bar"></div></div>
+        <div id="search-stats" class="graph-kpis" hidden></div>
+        <div id="search-body">
+          <div id="search-charts-col"><div id="search-pareto"></div><div id="search-improvement"></div></div>
+          <div id="search-minis" aria-label="top candidates"></div>
+        </div>
+      </section>
+    </main>
+    <aside id="grapher-dock" aria-label="fit, analysis and export">
+      <div id="dock-tabs" role="tablist">
+        <button type="button" role="tab" class="dock-tab active" data-tab="fit" aria-selected="true">Fit</button>
+        <button type="button" role="tab" class="dock-tab" data-tab="analysis" aria-selected="false">Analysis</button>
+        <button type="button" role="tab" class="dock-tab" data-tab="export" aria-selected="false">Export</button>
+      </div>
+      <div id="dock-fit" class="dock-pane" role="tabpanel"><p class="muted">Formula-fitting to data isn't built in STUDY yet (see PROGRESS.md).</p></div>
+      <div id="dock-analysis" class="dock-pane" role="tabpanel" hidden><p class="muted">Run a formula search: its parity plot and residuals appear here.</p></div>
+      <div id="dock-export" class="dock-pane" role="tabpanel" hidden>
+        <p class="muted">Take this graph out of the app: images (PNG/SVG/PDF) or the sampled data as CSV.</p>
+        <div id="grapher-io">
+          <button id="grapher-export" type="button" class="primary" title="export this graph as images or CSV">Export&hellip;</button>
+          <button id="grapher-export-csv" type="button" title="download what is plotted as a single CSV">CSV</button>
+          <label class="gd-roles" hidden><input type="checkbox" id="gd-roles" checked> roles line</label>
+          <button id="grapher-save-session" type="button" title="save expressions, sliders and domain as a JSON file">Save</button>
+          <button id="grapher-load-session" type="button" title="load a saved graph session">Load</button>
+          <input id="grapher-session-file" type="file" accept=".json,application/json" hidden>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+</main>
+<main id="ws-desmos2d" class="ws" hidden><div class="stage"><div class="example-bar"><label for="desmos2d-example">Example</label><select id="desmos2d-example"></select></div><div id="desmos2d-container" class="fill"></div></div></main>
+<main id="ws-desmos3d" class="ws" hidden><div class="stage"><div class="example-bar"><label for="desmos3d-example">Example</label><select id="desmos3d-example"></select></div><div id="desmos3d-container" class="fill"></div></div></main>
+<main id="ws-geogebra" class="ws" hidden><div class="stage"><div id="geogebra-container" class="fill"></div></div></main>
+
+<link rel="modulepreload" href="js/app-H5F5G7OR.js">
+<link rel="modulepreload" href="js/c/chunk-ATGGXNS4.js">
+<script>/* WP-F2-A: fetch the chunks of the route being opened in parallel with app.js (hints only) */(function(){var M={"promos":["js/c/promos-EPXDUZLO.js","js/c/chunk-6SK26GUP.js","js/c/chunk-ATGGXNS4.js"],"subjects":["js/c/subjects-APOZMQVN.js","js/c/chunk-3OAO57CE.js","js/c/chunk-6SK26GUP.js","js/c/chunk-TWWWLFVT.js","js/c/chunk-S4NWR5U3.js","js/c/chunk-ATGGXNS4.js"],"explain":["js/c/subjects-APOZMQVN.js","js/c/chunk-3OAO57CE.js","js/c/chunk-6SK26GUP.js","js/c/chunk-TWWWLFVT.js","js/c/chunk-S4NWR5U3.js","js/c/chunk-ATGGXNS4.js"],"gallery":["js/c/gallery-DIIDN5B7.js","js/c/chunk-S4NWR5U3.js","js/c/chunk-6SK26GUP.js","js/c/chunk-ATGGXNS4.js"],"lab":["js/c/lab-LVPAUUUQ.js","js/c/chunk-XEYFOPWQ.js","js/c/chunk-6SK26GUP.js","js/c/chunk-5YEEQSZR.js","js/c/chunk-FGQSX426.js","js/c/chunk-SLKMQ4F3.js","js/c/chunk-QTMHDWFW.js","js/c/chunk-ATGGXNS4.js"],"revolve":["js/c/revolve-FG2DPBTT.js","js/c/chunk-XEYFOPWQ.js","js/c/chunk-6SK26GUP.js","js/c/chunk-5YEEQSZR.js","js/c/chunk-FGQSX426.js","js/c/chunk-SLKMQ4F3.js","js/c/chunk-QTMHDWFW.js","js/c/chunk-ATGGXNS4.js"],"arc":["js/c/arc-56BV6Q3J.js","js/c/chunk-FGQSX426.js","js/c/chunk-6SK26GUP.js","js/c/chunk-SLKMQ4F3.js","js/c/chunk-QTMHDWFW.js","js/c/chunk-ATGGXNS4.js"],"double":["js/c/double-IPUW2WQG.js","js/c/chunk-FGQSX426.js","js/c/chunk-6SK26GUP.js","js/c/chunk-SLKMQ4F3.js","js/c/chunk-QTMHDWFW.js","js/c/chunk-ATGGXNS4.js"],"transform":["js/c/transform-D6VHP32L.js","js/c/chunk-X32OFMK4.js","js/c/chunk-SLKMQ4F3.js","js/c/chunk-6SK26GUP.js","js/c/chunk-QTMHDWFW.js","js/c/chunk-FGQSX426.js","js/c/chunk-ATGGXNS4.js"],"transform3d":["js/c/transform3d-SP6L357O.js","js/c/chunk-NLXHNV73.js","js/c/chunk-ATGGXNS4.js","js/c/chunk-TWWWLFVT.js","js/c/chunk-6SK26GUP.js","js/c/chunk-5YEEQSZR.js","js/c/chunk-FGQSX426.js","js/c/chunk-QTMHDWFW.js"],"atlas":["js/c/atlas-HCSXDF7F.js","js/c/chunk-P3PCKAB6.js","js/c/chunk-QTMHDWFW.js","js/c/chunk-6SK26GUP.js","js/c/chunk-7K3LCIHJ.js","js/c/chunk-NLXHNV73.js","js/c/chunk-ATGGXNS4.js","js/c/chunk-DKLDQWU7.js","js/c/chunk-7QNK7ISQ.js","js/c/chunk-IZO5VQ2O.js","js/c/chunk-SLKMQ4F3.js","js/c/chunk-3OAO57CE.js","js/c/chunk-TWWWLFVT.js","js/c/chunk-5YEEQSZR.js","js/c/chunk-FGQSX426.js"],"mechanism":["js/c/mechanism-OJ4F53DW.js","js/c/chunk-P3PCKAB6.js","js/c/chunk-QTMHDWFW.js","js/c/chunk-6SK26GUP.js","js/c/chunk-IZO5VQ2O.js","js/c/chunk-SLKMQ4F3.js","js/c/chunk-3OAO57CE.js","js/c/chunk-5YEEQSZR.js","js/c/chunk-FGQSX426.js","js/c/chunk-ATGGXNS4.js"],"deform":["js/c/deform-KEFUT5M4.js","js/c/chunk-7K3LCIHJ.js","js/c/chunk-NLXHNV73.js","js/c/chunk-ATGGXNS4.js","js/c/chunk-7QNK7ISQ.js","js/c/chunk-IZO5VQ2O.js","js/c/chunk-SLKMQ4F3.js","js/c/chunk-6SK26GUP.js","js/c/chunk-QTMHDWFW.js","js/c/chunk-3OAO57CE.js","js/c/chunk-TWWWLFVT.js","js/c/chunk-5YEEQSZR.js","js/c/chunk-FGQSX426.js"],"molecules":["js/c/molecules-L3HTLUCF.js","js/c/chunk-DKLDQWU7.js","js/c/chunk-7QNK7ISQ.js","js/c/chunk-IZO5VQ2O.js","js/c/chunk-SLKMQ4F3.js","js/c/chunk-6SK26GUP.js","js/c/chunk-QTMHDWFW.js","js/c/chunk-3OAO57CE.js","js/c/chunk-5YEEQSZR.js","js/c/chunk-FGQSX426.js","js/c/chunk-ATGGXNS4.js"],"solver":["js/c/solver-7C277TZL.js","js/c/chunk-X32OFMK4.js","js/c/chunk-SLKMQ4F3.js","js/c/chunk-6SK26GUP.js","js/c/chunk-QTMHDWFW.js","js/c/chunk-ATGGXNS4.js"],"flow":["js/c/flow-RSJ6RLWK.js","js/c/chunk-TWWWLFVT.js","js/c/chunk-6SK26GUP.js","js/c/chunk-ATGGXNS4.js"]},r=(location.hash.slice(1).split('?')[0])||'subjects',L=M[r]||[],h=document.head;function a(rel,u,x){var l=document.createElement('link');l.rel=rel;l.href=u;if(x)l.setAttribute('as',x),l.crossOrigin='anonymous';h.appendChild(l)}L.forEach(function(u){a('modulepreload',u)});if(r==='gallery')a('preload','gallery_items.json','fetch')})();</script>
+<script type="module" src="js/app-H5F5G7OR.js"></script>
+</body>
+</html>

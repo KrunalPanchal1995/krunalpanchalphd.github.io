@@ -1,0 +1,1 @@
+function n(t=1){let a=t>>>0;return()=>{a+=1831565813;let t=a;return t=Math.imul(t^t>>>15,1|t),t^=t+Math.imul(t^t>>>7,61|t),((t^t>>>14)>>>0)/4294967296}}function o(t){let a=Math.max(1e-12,t()),n=t();return Math.sqrt(-2*Math.log(a))*Math.cos(2*Math.PI*n)}export{n as a,o as b};

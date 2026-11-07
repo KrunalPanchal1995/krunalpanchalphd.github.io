@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>value flow demo</title>
+<style>
+  /* Fully self-contained: no dependency on the parent site's theme classes
+     (purgecss only scans _site/**/*.html for the classes it keeps in
+     _site/assets/css/*.css, and _site/assets/**/*.html is explicitly
+     excluded from that scan -- so a standalone file with its own inline
+     styles, never a class it hopes purgecss preserved, is what stays safe
+     across every build).
+
+     Dark mode: this al-folio install DOES have a manual light/dark toggle
+     (#light-toggle, al_folio_core's assets/js/theme.js) that sets
+     data-theme="light"|"dark" on the parent document's <html>. Since this
+     file is served same-origin (embedded via <iframe> from the same site),
+     its script reads that attribute directly off `parent.document` and
+     mirrors it onto this document's own [data-theme] -- see the script
+     below. The @media query here is only the fallback for the (rare) case
+     of loading this file standalone/cross-origin, where `parent` isn't
+     reachable. */
+  :root {
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-secondary: #52514e;
+    --zero: #d8d7d2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --surface: #1a1a19;
+      --ink: #ffffff;
+      --ink-secondary: #c3c2b7;
+      --zero: #383835;
+    }
+  }
+  :root[data-theme="dark"] {
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-secondary: #c3c2b7;
+    --zero: #383835;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--surface);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    overflow: hidden;
+  }
+  .wrap {
+    padding: 10px 12px 6px;
+  }
+  .caption {
+    font-size: 11px;
+    color: var(--ink-secondary);
+    margin: 0 0 6px;
+  }
+  svg text {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .axis-label {
+    font-size: 10px;
+    fill: var(--ink-secondary);
+  }
+  .row-label {
+    font-size: 10px;
+    fill: var(--ink-secondary);
+  }
+  rect.bar {
+    transition: width 900ms ease, x 900ms ease, fill 900ms ease;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="caption">vZero value-flow view &mdash; live magnitude per pipeline stage, per channel (real research finding: unnormalized temperature dominates every species channel by up to 8 orders of magnitude)</p>
+  <svg id="viz" width="620" height="180" role="img" aria-label="animated demo of per-stage, per-channel magnitude in a neural ODE training pipeline"></svg>
+</div>
+<script>
+(function () {
+  // Mirror the parent page's theme (light/dark/system) onto this document's
+  // own <html data-theme>, so the demo doesn't desync from the rest of the
+  // site when a reader clicks al-folio's #light-toggle. Same-origin iframe,
+  // so `parent.document` is reachable directly -- no postMessage needed.
+  // Falls back to the @media (prefers-color-scheme) rule above if `parent`
+  // is inaccessible (e.g. this file loaded standalone, not embedded).
+  function syncThemeFromParent() {
+    try {
+      var t = parent.document.documentElement.getAttribute("data-theme");
+      if (t === "light" || t === "dark") {
+        document.documentElement.setAttribute("data-theme", t);
+      }
+    } catch (e) {
+      // cross-origin or no parent -- @media fallback in <style> handles it
+    }
+  }
+  syncThemeFromParent();
+  try {
+    new MutationObserver(syncThemeFromParent).observe(parent.document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+  } catch (e) {
+    // same cross-origin/no-parent fallback as above
+  }
+
+  var NS = "http://www.w3.org/2000/svg";
+  var svg = document.getElementById("viz");
+
+  var stages = ["batch", "normalize", "ODE solve", "denormalize", "loss"];
+  var channels = ["H2", "O2", "OH", "T"];
+
+  // Two "frames" of the real story this visualizes: raw space has T's
+  // magnitude dwarfing every species; once normalized (mid-pipeline), scales
+  // become comparable; denormalizing/loss restores the raw-space gap. This is
+  // the H2/O2 ablation study's actual headline finding (see vZero's
+  // ABLATION_REPORT.md), not decorative data.
+  var frames = [
+    { batch: [0.03, 0.05, 0.02, 1200], normalize: [0.4, 0.6, 0.3, 0.9], "ODE solve": [0.35, 0.55, 0.28, 0.85], denormalize: [0.03, 0.05, 0.02, 1150], loss: [0.001, 0.002, 0.0008, 40] },
+    { batch: [0.04, 0.06, 0.03, 1250], normalize: [0.5, 0.5, 0.4, 0.95], "ODE solve": [0.45, 0.48, 0.38, 0.9], denormalize: [0.035, 0.055, 0.025, 1180], loss: [0.0008, 0.0015, 0.0006, 32] },
+  ];
+
+  var margin = { top: 18, right: 8, bottom: 4, left: 46 };
+  var W = 620, H = 180;
+  var iw = W - margin.left - margin.right;
+  var ih = H - margin.top - margin.bottom;
+  var colW = iw / stages.length;
+  var rowH = ih / channels.length;
+  var barH = Math.min(14, rowH * 0.6);
+
+  // dataviz-skill sequential blue ramp (light->dark) -- same ramp vZero's
+  // own value-flow view uses, a deliberate visual echo, not required.
+  var ramp = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"];
+
+  function lerpColor(t) {
+    t = Math.max(0, Math.min(1, t));
+    var idx = t * (ramp.length - 1);
+    var i0 = Math.floor(idx), i1 = Math.min(ramp.length - 1, i0 + 1);
+    var f = idx - i0;
+    var c0 = hexToRgb(ramp[i0]), c1 = hexToRgb(ramp[i1]);
+    var r = Math.round(c0[0] + (c1[0] - c0[0]) * f);
+    var g = Math.round(c0[1] + (c1[1] - c0[1]) * f);
+    var b = Math.round(c0[2] + (c1[2] - c0[2]) * f);
+    return "rgb(" + r + "," + g + "," + b + ")";
+  }
+  function hexToRgb(h) {
+    var n = parseInt(h.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+
+  // shared log scale across the whole grid, domain fixed to the frames' own
+  // range (0.0006 .. 1250) -- log-scaled bar length + color is the point:
+  // it's what makes an 8-order-of-magnitude gap actually readable.
+  var LO = 5e-4, HI = 1500;
+  function logT(v) {
+    v = Math.max(LO, Math.min(HI, v));
+    return (Math.log(v) - Math.log(LO)) / (Math.log(HI) - Math.log(LO));
+  }
+
+  function el(tag, attrs) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  var g = el("g", { transform: "translate(" + margin.left + "," + margin.top + ")" });
+  svg.appendChild(g);
+
+  stages.forEach(function (s, i) {
+    var t = el("text", {
+      class: "axis-label", x: i * colW + colW / 2, y: -6, "text-anchor": "middle",
+    });
+    t.textContent = s;
+    g.appendChild(t);
+  });
+  channels.forEach(function (c, j) {
+    var t = el("text", {
+      class: "row-label", x: -6, y: j * rowH + rowH / 2 + 3, "text-anchor": "end",
+    });
+    t.textContent = c;
+    g.appendChild(t);
+  });
+
+  var bars = {};
+  stages.forEach(function (s, i) {
+    channels.forEach(function (c, j) {
+      var r = el("rect", {
+        class: "bar",
+        x: i * colW, y: j * rowH + (rowH - barH) / 2,
+        width: 2, height: barH, rx: 3,
+        fill: "var(--zero)",
+      });
+      g.appendChild(r);
+      bars[s + "|" + c] = r;
+    });
+  });
+
+  function render(frame) {
+    stages.forEach(function (s, i) {
+      channels.forEach(function (c, j) {
+        var v = frame[s][j];
+        var f = logT(v);
+        var r = bars[s + "|" + c];
+        r.setAttribute("width", Math.max(2, f * (colW - 8)));
+        r.setAttribute("fill", lerpColor(f));
+      });
+    });
+  }
+
+  var idx = 0;
+  render(frames[0]);
+  setInterval(function () {
+    idx = (idx + 1) % frames.length;
+    render(frames[idx]);
+  }, 1800);
+})();
+</script>
+</body>
+</html>

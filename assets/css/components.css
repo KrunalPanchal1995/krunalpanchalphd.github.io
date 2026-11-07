@@ -1,0 +1,4 @@
+/* ---- Audit fixes: contrast on teal badges (CV dates), keep text AA in both themes ---- */
+.badge {
+  color: var(--on-accent);
+}

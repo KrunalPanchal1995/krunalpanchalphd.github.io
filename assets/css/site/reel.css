@@ -1,0 +1,627 @@
+/* reel.css: owned by the reel work package. Showreel stage, lower third, segmented progress, clip index. Tokens only. */
+.reel {
+  --reel-pad: 16px;
+  width: 100%;
+  max-width: 1500px;
+  margin-inline: auto;
+}
+.reel [hidden] {
+  display: none !important;
+}
+
+/* the page heading: screen-reader only beside the stage, visible when the stage is replaced by the grid */
+.reel-head {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- stage ---------- */
+.reel-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  height: clamp(440px, calc(100svh - 120px), 920px);
+  background: var(--viewport);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--raised);
+  color: var(--text);
+  outline: none;
+}
+.reel:not(.is-ready) .reel-stage {
+  display: none;
+}
+.reel-stage:fullscreen,
+.reel-stage.is-full {
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+}
+.reel-stage.is-full {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  height: 100dvh;
+}
+html.reel-lock {
+  overflow: hidden;
+}
+.reel-layers {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  cursor: pointer;
+}
+.reel-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  background: var(--viewport);
+}
+.reel-layer.is-on {
+  opacity: 1;
+  z-index: 1;
+}
+.reel-layer.is-cut {
+  transition: none;
+}
+.reel-layer video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: var(--viewport);
+}
+.reel-layer.is-loading::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  animation: reel-spin 0.8s linear infinite;
+}
+@keyframes reel-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* the plate's own readouts duplicate the lower third: keep crop marks + REC only */
+.reel-stage .fx-plate__row--tl,
+.reel-stage .fx-plate__row--bl,
+.reel-stage .fx-plate__row--br,
+.reel-stage .fx-plate__chip--res {
+  display: none;
+}
+.reel-stage .fx-plate__row--tr {
+  top: 14px;
+  right: 20px;
+}
+.reel-h1 {
+  position: absolute;
+  z-index: 4;
+  top: 14px;
+  left: 18px;
+  margin: 0;
+  font: 600 11.5px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text);
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 6px 10px;
+}
+
+/* ---------- overlay ---------- */
+.reel-ui {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: var(--reel-pad);
+  pointer-events: none;
+  background: linear-gradient(to top, color-mix(in srgb, var(--viewport) 78%, transparent), transparent 45%);
+}
+.reel-ui > * {
+  pointer-events: auto;
+}
+.reel-lt {
+  align-self: flex-start;
+  max-width: min(560px, 100%);
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--amber);
+  border-radius: var(--radius-overlay);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+.reel-lt.is-in {
+  animation: reel-lt-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes reel-lt-in {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+.reel-lt__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.reel-chip {
+  display: inline-flex;
+  align-items: center;
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal-text);
+  background: var(--accent-tint);
+  border: 1px solid color-mix(in srgb, var(--teal) 45%, var(--border));
+  border-radius: var(--radius-pill);
+  padding: 5px 9px;
+}
+.reel-lt__n {
+  font: 500 11.5px/1 var(--font-mono);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.reel-lt__title {
+  margin: 0;
+  font: 700 clamp(18px, 2.4vw, 26px) / 1.2 var(--font-ui);
+  color: var(--text);
+}
+.reel-lt__cap {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.reel-lt__cap:empty {
+  display: none;
+}
+.reel-lt__acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.reel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  font: 600 13.5px/1 var(--font-ui);
+  color: var(--text);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-button);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast);
+}
+.reel-btn:hover {
+  color: var(--text);
+  border-color: var(--teal);
+  background: var(--accent-tint);
+  text-decoration: none;
+}
+.reel-btn--pri {
+  color: var(--on-accent2);
+  background: var(--amber);
+  border-color: var(--amber);
+}
+.reel-btn--pri:hover {
+  color: var(--on-accent2);
+  background: var(--amber);
+  filter: brightness(1.06);
+}
+.reel-btn:focus-visible,
+.reel-icon:focus-visible,
+.reel-seg button:focus-visible,
+.reel-start:focus-visible,
+.reel-tile__media:focus-visible,
+.reel-tile__links a:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+/* ---------- progress + controls ---------- */
+.reel-bar {
+  display: grid;
+  gap: 2px;
+  background: color-mix(in srgb, var(--panel) 90%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-overlay);
+  padding: 2px 8px 6px;
+}
+.reel-seg {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 2px;
+}
+.reel-seg li {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.reel-seg button {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.reel-seg button::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 4px;
+  margin-top: -2px;
+  background: var(--border);
+  border-radius: 2px;
+  transition: height 0.15s;
+}
+.reel-seg button:hover::before,
+.reel-seg button[aria-current="true"]::before {
+  height: 8px;
+  margin-top: -4px;
+}
+.reel-seg__fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 4px;
+  margin-top: -2px;
+  background: var(--teal);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: height 0.15s;
+}
+.reel-seg button:hover .reel-seg__fill,
+.reel-seg button[aria-current="true"] .reel-seg__fill {
+  height: 8px;
+  margin-top: -4px;
+}
+.reel-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.reel-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+}
+.reel-icon:hover {
+  border-color: var(--border);
+  background: var(--panel2);
+}
+.reel-icon .i-play,
+.reel-icon .i-on {
+  display: none;
+}
+.reel-icon.is-paused .i-play {
+  display: block;
+}
+.reel-icon.is-paused .i-pause {
+  display: none;
+}
+[data-mute]:not(.is-muted) .i-on {
+  display: block;
+}
+[data-mute]:not(.is-muted) .i-off {
+  display: none;
+}
+.reel-tc {
+  margin-left: auto;
+  font: 500 13px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.reel-count {
+  font: 600 13px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  color: var(--amber-text);
+  font-variant-numeric: tabular-nums;
+  padding-inline: 8px 4px;
+}
+.reel-start {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 0 24px 0 18px;
+  font: 600 15px/1 var(--font-ui);
+  color: var(--on-accent2);
+  background: var(--amber);
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+}
+.reel-start__icon {
+  width: 0;
+  height: 0;
+  border-left: 14px solid currentColor;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  margin-left: 4px;
+}
+
+/* ---------- clip index / grid ---------- */
+.reel-index {
+  margin-top: 32px;
+}
+.reel-index__head {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.reel-index__title {
+  margin: 0;
+  font: 700 22px/1.2 var(--font-ui);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.reel-index__n {
+  font: 600 12px/1 var(--font-mono);
+  color: var(--teal-text);
+  background: var(--accent-tint);
+  border: 1px solid color-mix(in srgb, var(--teal) 40%, var(--border));
+  border-radius: var(--radius-pill);
+  padding: 5px 9px;
+}
+.reel-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+}
+.reel-tile {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--raised);
+}
+.reel-tile__media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--viewport);
+  cursor: pointer;
+  overflow: hidden;
+}
+.reel-tile__media img,
+.reel-tile__media video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--viewport);
+}
+.reel-tile__media video {
+  object-fit: contain;
+  z-index: 2;
+}
+.reel-tile__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  margin: -26px 0 0 -26px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+.reel-tile__play::after {
+  content: "";
+  position: absolute;
+  left: 21px;
+  top: 16px;
+  border-left: 15px solid var(--amber);
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+.reel-tile__media:hover .reel-tile__play {
+  transform: scale(1.08);
+  border-color: var(--amber);
+}
+.reel-tile__media.is-playing .reel-tile__play {
+  display: none;
+}
+.reel-tile__body {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px 14px;
+  flex: 1;
+  align-content: start;
+}
+.reel-tile__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+}
+.reel-tile__n {
+  font: 500 11.5px/1 var(--font-mono);
+  color: var(--muted);
+}
+.reel-tile__title {
+  margin: 0;
+  font: 650 15px/1.3 var(--font-ui);
+}
+.reel-tile__cap {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.reel-tile__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  font: 600 13px/1 var(--font-ui);
+}
+.reel-tile__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--teal-text);
+}
+
+/* ---------- empty state ---------- */
+.reel-empty {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  padding: 40px 28px;
+  margin-top: 8px;
+}
+.reel-empty__hint {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 640px) {
+  .reel-stage {
+    height: calc(100svh - 112px);
+    min-height: 460px;
+    border-radius: var(--radius-overlay);
+  }
+  .reel {
+    --reel-pad: 10px;
+  }
+  .reel-lt {
+    padding: 12px 12px 14px;
+  }
+  .reel-lt__cap {
+    -webkit-line-clamp: 1;
+  }
+  .reel-lt__acts .reel-btn {
+    flex: 1 1 auto;
+  }
+  .reel-tc {
+    display: none;
+  }
+  .reel-count {
+    margin-left: auto;
+  }
+  .reel-h1 {
+    top: 10px;
+    left: 12px;
+  }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+  .reel-stage {
+    height: calc(100svh - 16px);
+    min-height: 300px;
+  }
+  .reel-lt__cap {
+    display: none;
+  }
+}
+
+/* ---------- reduced motion: no stage, no autoplay; the grid is the page ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .reel-stage {
+    display: none;
+  }
+  .reel-head {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0 0 8px;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+    display: grid;
+    gap: 8px;
+  }
+  .reel-head .post-title {
+    margin: 0;
+  }
+  .reel-index {
+    margin-top: 8px;
+  }
+  .reel-lt.is-in,
+  .reel-layer,
+  .reel-tile__play {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* phones: 65 hairline segments cannot be tapped; the counter, prev/next and swipe replace them */
+@media (max-width: 860px) {
+  .reel-seg {
+    display: none;
+  }
+}

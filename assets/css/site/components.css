@@ -1,0 +1,1370 @@
+/* components.css: owned by the components work package (publications cards, footer, callouts, code, tables, search, 404, news, print).
+   Tokens only (see tokens.css). Loaded after main.css, so equal-specificity rules here win. !important is used only where a gem rule
+   or an inline style forces it; each such use is commented. */
+
+/* ==========================================================================
+   0. Shared bits
+   ========================================================================== */
+.pub-empty[hidden],
+.publications[hidden],
+.pub-filters[hidden] {
+  display: none !important;
+} /* !important: display rules below must never reveal [hidden] nodes */
+
+/* thin tokenised scrollbars */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--faint) 70%, transparent) transparent;
+}
+pre,
+figure.highlight,
+.table-responsive,
+.pillnav__list,
+ninja-keys {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--faint) 70%, transparent) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--faint) 55%, transparent);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--faint);
+}
+
+/* ==========================================================================
+   1. Publications
+   ========================================================================== */
+.publications {
+  margin-top: 1.25rem;
+}
+
+/* toolbar: search + filters */
+.pub-toolbar {
+  display: grid;
+  gap: var(--space-3);
+  margin: 1.2rem 0 0.4rem;
+}
+.pub-search p {
+  margin: 0;
+  max-width: none;
+}
+.pub-search .bibsearch-form-input {
+  display: block;
+  width: 100%;
+  max-width: 440px;
+  margin: 0;
+  box-sizing: border-box;
+  font: 500 13.5px/1.2 var(--font-mono);
+  color: var(--text);
+  background: var(--field);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  padding: 11px 14px;
+  box-shadow: none;
+  transition:
+    border-color var(--t-fast),
+    box-shadow var(--t-fast);
+}
+.pub-search .bibsearch-form-input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+.pub-search .bibsearch-form-input:focus-visible {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal) 30%, transparent);
+  outline: none;
+}
+.pub-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  align-items: center;
+}
+.pub-filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.pub-filter-label {
+  margin-right: 4px;
+  color: var(--muted);
+}
+.pub-chip {
+  appearance: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 11.5px/1 var(--font-mono);
+  color: var(--text);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 7px 11px;
+  min-height: 30px;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast);
+}
+.pub-chip:hover {
+  border-color: var(--teal);
+}
+.pub-chip[aria-pressed="true"] {
+  background: var(--accent-tint);
+  border-color: var(--teal);
+  box-shadow: inset 0 0 0 1px var(--teal);
+}
+.pub-count {
+  margin: 0;
+  font: 500 11.5px/1 var(--font-mono);
+  color: var(--muted);
+}
+
+/* tier colours (shared by the card chip and the filter chip) */
+[data-tier="published"] {
+  --tier-c: var(--teal);
+}
+[data-tier="accepted"] {
+  --tier-c: var(--sky);
+}
+[data-tier="under-review"] {
+  --tier-c: var(--amber);
+}
+[data-tier="in-preparation"] {
+  --tier-c: var(--muted);
+}
+.pub-chip[data-tier]::before,
+.pub-tier::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tier-c);
+  flex: none;
+}
+
+/* sticky year labels */
+.publications h2.bibliography {
+  position: sticky;
+  top: 74px;
+  z-index: 5;
+  margin: 1.6rem 0 1rem;
+  padding: 9px 0 8px;
+  text-align: left;
+  font: 600 13px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 0;
+  border-bottom: 1px solid var(--border);
+}
+.publications h2.bibliography::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: var(--teal);
+}
+.publications ol.bibliography {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+.publications ol.bibliography > li {
+  margin: 0;
+}
+.is-filtered {
+  display: none !important;
+} /* !important: must beat .pub-card/li display rules; same intent as the gem's .unloaded */
+
+/* the card */
+.pub-card {
+  display: grid;
+  grid-template-columns: 148px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 1px 0 var(--hi) inset,
+    0 2px 0 var(--edge),
+    0 10px 22px -12px var(--lift);
+  transition: border-color var(--t-base);
+}
+.pub-card:hover {
+  border-color: color-mix(in srgb, var(--teal) 50%, var(--border));
+}
+.pub-card:not(:has(.pub-thumb)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.pub-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+}
+.pub-thumb picture,
+.pub-thumb figure {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+.pub-thumb img,
+.pub-thumb video,
+.pub-thumb .preview {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+}
+.pub-thumb--ph {
+  display: grid;
+  place-items: center;
+  background-color: var(--panel2);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.pub-initials {
+  font: 600 22px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding: 6px 10px;
+  background: color-mix(in srgb, var(--panel2) 85%, transparent);
+  border-radius: 6px;
+}
+.pub-main {
+  min-width: 0;
+}
+
+.pub-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-bottom: 8px;
+}
+.pub-meta:empty {
+  display: none;
+}
+.pub-venue,
+.pub-year,
+.pub-tier,
+.pub-award {
+  font: 500 11.5px/1 var(--font-mono);
+  border-radius: var(--radius-pill);
+  padding: 5px 9px;
+  text-decoration: none;
+}
+.pub-venue {
+  color: var(--text);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+}
+.pub-venue a {
+  color: inherit;
+  text-decoration: none;
+}
+.pub-venue a:hover {
+  text-decoration: underline;
+  color: inherit;
+}
+.pub-year {
+  color: var(--muted);
+  padding-inline: 2px;
+}
+.pub-tier {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--tier-c) 16%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--tier-c) 60%, var(--border));
+}
+.pub-award {
+  color: var(--text);
+  background: color-mix(in srgb, var(--amber) 18%, var(--panel));
+  border: 1px solid var(--amber);
+}
+
+.publications ol.bibliography li .pub-main .title {
+  font: 650 16px/1.32 var(--font-ui);
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 6px;
+  text-wrap: pretty;
+}
+.publications ol.bibliography li .pub-main .author {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.publications ol.bibliography li .pub-main .author > em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 1px solid var(--teal);
+}
+.publications ol.bibliography li .pub-main .author a {
+  color: inherit;
+  border-bottom: 1px dashed var(--faint);
+  text-decoration: none;
+}
+.publications ol.bibliography li .pub-main .author a:hover {
+  color: var(--text);
+  border-bottom-style: solid;
+}
+.publications ol.bibliography li .pub-main .author > span.more-authors {
+  color: var(--muted);
+  border-bottom: 1px dashed var(--muted);
+  cursor: pointer;
+}
+.publications ol.bibliography li .pub-main .author > span.more-authors:hover {
+  color: var(--text);
+  border-bottom-color: var(--text);
+}
+.pub-main .periodical {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.pub-main .periodical em {
+  color: var(--text);
+}
+.pub-main .periodical:empty {
+  display: none;
+}
+
+/* links row */
+.publications .pub-main .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+.publications .pub-main .links:empty {
+  display: none;
+}
+.publications ol.bibliography li .links a.btn {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  font: 500 11.5px/1 var(--font-mono);
+  letter-spacing: 0.02em;
+  color: var(--text);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  padding: 7px 11px;
+  min-height: 30px;
+  text-decoration: none;
+  box-shadow: none;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast);
+}
+.publications ol.bibliography li .links a.btn:hover {
+  color: var(--text);
+  border-color: var(--teal);
+  background: var(--accent-tint);
+}
+.publications ol.bibliography li .links a.btn[aria-expanded="true"] {
+  background: var(--accent-tint);
+  border-color: var(--teal);
+}
+.publications ol.bibliography li .links a.award.btn {
+  border-color: var(--amber);
+}
+
+/* gem toggle panels (abstract / award / bibtex) */
+.publications ol.bibliography li .pub-main .hidden {
+  font-size: 13.5px;
+  line-height: 1.55;
+  text-align: left;
+  color: var(--text);
+  border: 0;
+  border-left: 2px solid transparent;
+}
+.publications ol.bibliography li .pub-main .hidden p {
+  margin: 0;
+  max-width: 70ch;
+}
+.publications ol.bibliography li .pub-main .hidden.open {
+  margin-top: 12px;
+  padding: 4px 0 4px 14px;
+  border-left-color: var(--teal);
+}
+.publications ol.bibliography li .pub-main div.abstract.hidden,
+.publications ol.bibliography li .pub-main div.award.hidden {
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+.publications ol.bibliography li .pub-main .bibtex.hidden pre {
+  margin: 0;
+  font-size: 12px;
+}
+.publications .badges {
+  padding-top: 8px;
+  padding-bottom: 0;
+}
+
+/* compact variant (home "selected papers") */
+.publications--compact {
+  margin-top: 0.5rem;
+}
+.publications--compact ol.bibliography {
+  gap: 10px;
+}
+.publications--compact .pub-card {
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 14px;
+  padding: 12px 14px;
+}
+.publications--compact .pub-thumb {
+  aspect-ratio: 1;
+}
+.publications--compact .pub-initials {
+  font-size: 14px;
+  padding: 4px 6px;
+}
+.publications--compact .pub-meta {
+  margin-bottom: 4px;
+}
+.publications--compact ol.bibliography li .pub-main .title {
+  font-size: 14.5px;
+  margin-bottom: 2px;
+}
+.publications--compact .pub-main .author,
+.publications--compact .pub-main .periodical + .periodical,
+.publications--compact .badges {
+  display: none;
+}
+.publications--compact .pub-main .links {
+  margin-top: 8px;
+}
+
+/* empty / no-match state */
+.pub-empty {
+  max-width: 520px;
+  margin: 2.5rem auto;
+  padding: 32px 28px;
+  text-align: center;
+}
+.pub-empty p {
+  margin-inline: auto;
+}
+.pub-empty .eyebrow {
+  margin-bottom: 10px;
+}
+.pub-empty-title {
+  font: 700 1.5rem/1.2 var(--font-ui);
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+.pub-empty .btn-cta {
+  margin-top: 12px;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .pub-card {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+  }
+  .pub-thumb {
+    aspect-ratio: 1;
+  }
+  .pub-initials {
+    font-size: 15px;
+    padding: 4px 6px;
+  }
+  .publications ol.bibliography li .pub-main .title {
+    font-size: 15px;
+  }
+  .publications h2.bibliography {
+    top: 70px;
+  }
+}
+
+/* ==========================================================================
+   2. Footer
+   ========================================================================== */
+.site-footer {
+  margin-top: 4.5rem;
+  padding: 26px 0 30px;
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+}
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 28px;
+}
+.site-footer__name {
+  font: 700 16px/1 var(--font-ui);
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+}
+.site-footer__name:hover {
+  color: var(--text);
+}
+.site-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-footer__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 0;
+  font: 500 12.5px/1 var(--font-mono);
+  color: var(--muted);
+  text-decoration: none;
+}
+.site-footer__links a:hover {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--teal);
+  text-underline-offset: 0.3em;
+}
+.site-footer__links i {
+  font-size: 14px;
+  width: 1.1em;
+  text-align: center;
+}
+.site-footer__legal {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  max-width: none;
+  font: 400 12px/1.5 var(--font-mono);
+  color: var(--muted);
+}
+.site-footer__legal a {
+  color: var(--text);
+}
+
+/* ==========================================================================
+   3. Callouts, blockquotes
+   ========================================================================== */
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 18px;
+  font-family: var(--font-serif-accent);
+  font-style: italic;
+  font-size: 1.12rem;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 var(--radius-input) var(--radius-input) 0;
+}
+blockquote p {
+  max-width: none;
+  margin-bottom: 0.5em;
+}
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+/* callouts: set the gem's per-callout variables on the element itself, so the gem rules keep working with token colours in both themes */
+blockquote.block-tip,
+blockquote.block-warning,
+blockquote.block-danger {
+  font-family: var(--font-ui);
+  font-style: normal;
+  font-size: 1rem;
+  border-radius: var(--radius-input);
+  border-left-width: 4px;
+}
+blockquote.block-tip {
+  --global-tip-block: var(--teal);
+  --global-tip-block-bg: color-mix(in srgb, var(--teal) 11%, var(--panel));
+  --global-tip-block-text: var(--text);
+  --global-tip-block-title: var(--text);
+}
+blockquote.block-warning {
+  --global-warning-block: var(--amber);
+  --global-warning-block-bg: color-mix(in srgb, var(--amber) 12%, var(--panel));
+  --global-warning-block-text: var(--text);
+  --global-warning-block-title: var(--text);
+}
+blockquote.block-danger {
+  --global-danger-block: var(--rose);
+  --global-danger-block-bg: color-mix(in srgb, var(--rose) 12%, var(--panel));
+  --global-danger-block-text: var(--text);
+  --global-danger-block-title: var(--text);
+}
+blockquote.block-tip h1,
+blockquote.block-tip h2,
+blockquote.block-tip h3,
+blockquote.block-tip h4,
+blockquote.block-tip h5,
+blockquote.block-tip h6,
+blockquote.block-warning h1,
+blockquote.block-warning h2,
+blockquote.block-warning h3,
+blockquote.block-warning h4,
+blockquote.block-warning h5,
+blockquote.block-warning h6,
+blockquote.block-danger h1,
+blockquote.block-danger h2,
+blockquote.block-danger h3,
+blockquote.block-danger h4,
+blockquote.block-danger h5,
+blockquote.block-danger h6 {
+  font: 600 12px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+blockquote.block-tip a,
+blockquote.block-warning a,
+blockquote.block-danger a {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   4. Code (rouge + highlight.js) in both themes
+   ========================================================================== */
+:root,
+:root[data-theme="dark"] {
+  --syn-mix: 100%;
+}
+:root[data-theme="light"] {
+  --syn-mix: 66%;
+} /* light theme: darken the accents toward black for AA on --field */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --syn-mix: 66%;
+  }
+}
+:root {
+  --syn-kw: color-mix(in srgb, var(--rose) var(--syn-mix), #000);
+  --syn-str: color-mix(in srgb, var(--teal) var(--syn-mix), #000);
+  --syn-num: color-mix(in srgb, var(--amber) var(--syn-mix), #000);
+  --syn-fn: color-mix(in srgb, var(--sky) var(--syn-mix), #000);
+  --syn-type: color-mix(in srgb, var(--cat-cfd) var(--syn-mix), #000);
+  --syn-com: var(--muted);
+}
+pre,
+figure.highlight {
+  color: var(--text);
+}
+div.highlight pre,
+figure.highlight pre,
+pre.highlight,
+.highlight pre {
+  background-color: var(--field);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.6;
+}
+figure.highlight {
+  border-radius: 10px;
+}
+figure.highlight pre {
+  margin: 0;
+}
+pre code {
+  color: inherit;
+}
+:not(pre) > code {
+  color: var(--text);
+} /* gem sets teal, which fails AA on --field in the light theme */
+:is(figure, div, pre).highlight .hll {
+  background-color: color-mix(in srgb, var(--amber) 14%, transparent);
+}
+:is(figure, div, pre).highlight :is(.c, .cm, .c1, .cs, .cp, .cd) {
+  color: var(--syn-com);
+  font-style: italic;
+  font-weight: 400;
+}
+:is(figure, div, pre).highlight :is(.k, .kc, .kd, .kn, .kp, .kr, .ow, .nt) {
+  color: var(--syn-kw);
+  font-weight: 600;
+}
+:is(figure, div, pre).highlight :is(.kt, .nc, .nn, .ne) {
+  color: var(--syn-type);
+  font-weight: 600;
+}
+:is(figure, div, pre).highlight :is(.s, .sa, .sb, .sc, .sd, .s1, .s2, .se, .sh, .si, .sx, .sr, .ss) {
+  color: var(--syn-str);
+}
+:is(figure, div, pre).highlight :is(.m, .mb, .mf, .mh, .mi, .mo, .il, .no, .bp, .nb) {
+  color: var(--syn-num);
+}
+:is(figure, div, pre).highlight :is(.nf, .fm, .na, .nd, .nl) {
+  color: var(--syn-fn);
+}
+:is(figure, div, pre).highlight :is(.n, .nv, .vc, .vg, .vi, .o, .p, .l, .g, .w, .x) {
+  color: var(--text);
+  font-weight: 400;
+}
+:is(figure, div, pre).highlight .gd {
+  color: var(--syn-kw);
+  background: color-mix(in srgb, var(--rose) 14%, transparent);
+}
+:is(figure, div, pre).highlight .gi {
+  color: var(--syn-str);
+  background: color-mix(in srgb, var(--teal) 14%, transparent);
+}
+:is(figure, div, pre).highlight .err {
+  color: var(--syn-kw);
+  background: transparent;
+}
+/* highlight.js (used by some embeds) */
+.hljs {
+  background: var(--field);
+  color: var(--text);
+}
+.hljs-comment,
+.hljs-quote {
+  color: var(--syn-com);
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-tag {
+  color: var(--syn-kw);
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-addition {
+  color: var(--syn-str);
+}
+.hljs-number,
+.hljs-built_in,
+.hljs-symbol,
+.hljs-bullet {
+  color: var(--syn-num);
+}
+.hljs-title,
+.hljs-section,
+.hljs-attr,
+.hljs-name {
+  color: var(--syn-fn);
+}
+.hljs-type,
+.hljs-class .hljs-title {
+  color: var(--syn-type);
+}
+.hljs-deletion {
+  color: var(--syn-kw);
+}
+.code-display-wrapper pre {
+  margin: 0;
+}
+
+/* ==========================================================================
+   5. Tables, details, forms, buttons
+   ========================================================================== */
+article table:not(.table-cv-map),
+.post table:not(.table-cv-map) {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  overflow: hidden;
+  margin: 1.2em 0;
+  background: var(--panel);
+}
+article table th,
+.post table th {
+  font: 600 11.5px/1.3 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--panel2);
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+article table td,
+.post table td {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+}
+article table tbody tr:first-child td,
+.post table tbody tr:first-child td {
+  border-top: 0;
+}
+article table tbody tr:hover td {
+  background: color-mix(in srgb, var(--panel2) 55%, transparent);
+}
+@media (max-width: 640px) {
+  article table:not(.table-cv-map) {
+    display: block;
+    overflow-x: auto;
+  }
+}
+.table-responsive {
+  overflow-x: auto;
+}
+
+details {
+  margin: 1em 0;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+}
+details > summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  font: 600 14px/1.3 var(--font-ui);
+  color: var(--text);
+  border-radius: var(--radius-input);
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+details > summary::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-right: 2px solid var(--teal);
+  border-bottom: 2px solid var(--teal);
+  transform: rotate(-45deg);
+  transition: transform var(--t-base);
+}
+details[open] > summary::before {
+  transform: rotate(45deg);
+}
+details[open] > summary {
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius-input) var(--radius-input) 0 0;
+}
+details > :not(summary) {
+  margin-inline: 14px;
+}
+details > :not(summary):last-child {
+  margin-bottom: 14px;
+}
+details > summary + * {
+  margin-top: 12px;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]),
+textarea,
+select,
+.form-control {
+  font: 400 14px/1.4 var(--font-ui);
+  color: var(--text);
+  background: var(--field);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  padding: 9px 12px;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+.form-control:focus-visible {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal) 30%, transparent);
+  outline: none;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--teal);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font: 600 13.5px/1 var(--font-ui);
+  color: var(--text);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-button);
+  padding: 9px 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast);
+}
+.btn:hover {
+  color: var(--text);
+  border-color: var(--teal);
+  background: var(--accent-tint);
+  text-decoration: none;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn-sm {
+  font-size: 12px;
+  padding: 6px 10px;
+}
+.btn-primary,
+.btn.btn-primary {
+  color: var(--on-accent2);
+  background: var(--amber);
+  border-color: var(--amber);
+}
+.btn-primary:hover {
+  color: var(--on-accent2);
+  background: var(--amber);
+  filter: brightness(1.06);
+}
+
+/* ==========================================================================
+   6. Pagination, tags and categories
+   ========================================================================== */
+.af-pagination,
+.pagination {
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.af-page-link,
+.pagination .page-link {
+  margin: 0;
+  font: 500 12.5px/1 var(--font-mono);
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input) !important; /* !important: gem rounds only first/last child */
+  padding: 10px 14px;
+  min-width: 40px;
+  text-align: center;
+}
+.af-page-link:hover,
+.pagination .page-link:hover {
+  color: var(--text);
+  background: var(--accent-tint);
+  border-color: var(--teal);
+}
+.af-page-item.active .af-page-link,
+.pagination .page-item.active .page-link {
+  color: var(--on-accent);
+  background: var(--teal);
+  border-color: var(--teal);
+}
+.af-page-item.disabled .af-page-link,
+.pagination .page-item.disabled .page-link {
+  color: var(--muted);
+  background: var(--panel2);
+  opacity: 0.7;
+}
+
+.tag-category-list ul {
+  padding: 0;
+}
+.tag-category-list li {
+  padding: 8px 4px;
+}
+.post-tags a,
+.tag-category-list a,
+.post-meta a.tag,
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+  font: 500 11.5px/1 var(--font-mono);
+  color: var(--muted);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 5px 10px;
+  margin: 2px 4px 2px 0;
+  text-decoration: none;
+}
+.post-tags a:hover,
+.tag-category-list a:hover,
+.post-meta a.tag:hover {
+  color: var(--text);
+  border-color: var(--teal);
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   7. Overlays: ninja-keys search, medium-zoom, back-to-top
+   ========================================================================== */
+ninja-keys {
+  --ninja-font-family: var(--font-ui);
+  --ninja-width: min(640px, calc(100vw - 24px));
+  --ninja-top: 14vh;
+  --ninja-z-index: 1031;
+  --ninja-accent-color: var(--teal);
+  --ninja-text-color: var(--text);
+  --ninja-selected-text-color: var(--text);
+  --ninja-selected-background: var(--accent-tint);
+  --ninja-modal-background: var(--panel);
+  --ninja-secondary-background-color: var(--panel2);
+  --ninja-secondary-text-color: var(--muted);
+  --ninja-group-text-color: var(--muted);
+  --ninja-footer-background: var(--panel2);
+  --ninja-overflow-background: color-mix(in srgb, var(--bg) 72%, transparent);
+  --ninja-modal-shadow: 0 24px 60px -12px var(--lift), 0 0 0 1px var(--border);
+  --ninja-key-border-radius: 5px;
+  --ninja-icon-size: 0px;
+}
+ninja-keys::part(ninja-input) {
+  color: var(--text);
+  font-family: var(--font-ui);
+}
+ninja-keys::part(ninja-input-wrapper) {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+ninja-keys::part(ninja-selected) {
+  background: var(--accent-tint);
+  box-shadow: inset 3px 0 0 var(--teal);
+}
+
+/* medium-zoom sets its overlay background inline, hence !important */
+.medium-zoom-overlay {
+  background: color-mix(in srgb, var(--bg) 94%, transparent) !important;
+}
+.medium-zoom-image--opened {
+  border-radius: var(--radius-input);
+  box-shadow: 0 24px 60px -12px var(--lift);
+}
+
+/* back-to-top: id selector beats the gem's html[data-theme] #back-to-top block */
+html #back-to-top {
+  color: var(--text);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-button);
+  box-shadow: 0 8px 18px -8px var(--lift);
+  width: 40px;
+  height: 40px;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast);
+}
+html #back-to-top:hover {
+  border-color: var(--teal);
+  background: var(--accent-tint);
+}
+html #back-to-top:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   8. 404 page
+   ========================================================================== */
+.notfound {
+  max-width: 560px;
+  margin: 2rem auto 1rem;
+  padding: 36px 30px;
+  text-align: center;
+}
+.notfound__code {
+  display: block;
+  font: 600 clamp(3.4rem, 14vw, 5.5rem)/1 var(--font-mono);
+  letter-spacing: -0.04em;
+  color: var(--text);
+  margin: 6px 0 14px;
+}
+.notfound__code span {
+  color: var(--teal-text);
+}
+.notfound p {
+  margin-inline: auto;
+  color: var(--muted);
+}
+.notfound .cta-row {
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
+   9. News timeline
+   ========================================================================== */
+.news .table-responsive {
+  overflow: visible;
+  max-height: none !important; /* !important: gem include sets an inline max-height */
+}
+.news table,
+.news tbody {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: none;
+}
+.news table {
+  margin: 1rem 0;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+}
+.news tr {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 4px 16px;
+  position: relative;
+  padding: 11px 0 11px 22px;
+  border-top: 1px solid var(--border);
+}
+.news tr:first-child {
+  border-top: 0;
+}
+.news tr::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 18px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 0 3px var(--bg);
+}
+.news th,
+.news td {
+  display: block;
+  border: 0 !important; /* !important: article table rules above add cell borders */
+  padding: 0;
+  background: none !important;
+  text-align: left;
+}
+.news th {
+  width: auto !important; /* !important: the gem include sets style="width:20%" inline */
+  font: 500 12px/1.7 var(--font-mono);
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  text-transform: none;
+}
+.news td {
+  color: var(--text);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.news td a {
+  color: var(--text);
+  text-decoration-color: var(--teal);
+}
+@media (max-width: 560px) {
+  .news tr {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ==========================================================================
+   10. CV page polish (gem al_folio_cv layout; restyle only)
+   ========================================================================== */
+.cv .card,
+.cv-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--raised);
+}
+.cv .card-header,
+.cv .card-title {
+  color: var(--text);
+}
+.cv h1,
+.cv h2,
+.cv h3,
+.cv h4 {
+  color: var(--text);
+}
+.cv h3.card-title {
+  font: 600 12px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cv .list-group-item {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+.cv .badge {
+  font: 500 11px/1 var(--font-mono);
+  background: var(--accent-tint);
+  color: var(--teal-text);
+  border: 1px solid var(--border);
+}
+.cv a {
+  color: var(--text);
+  text-decoration-color: var(--teal);
+}
+.cv a:hover {
+  color: var(--teal-text);
+}
+
+/* ==========================================================================
+   11. Print: black on white, no chrome
+   ========================================================================== */
+@media print {
+  .pillnav,
+  #progress,
+  #back-to-top,
+  ninja-keys,
+  .site-footer,
+  .pub-toolbar,
+  .pub-filters,
+  .pub-empty[data-pub-nomatch],
+  .cta-row {
+    display: none !important;
+  } /* !important: print must win over any component display rule */
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  } /* !important: beat theme variables set on :root */
+  body.fixed-top-nav {
+    padding-top: 0;
+  }
+  a,
+  a:visited {
+    color: #000;
+    text-decoration: underline;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  li,
+  td,
+  th,
+  .title,
+  .author,
+  .periodical {
+    color: #000 !important;
+  } /* !important: dark theme sets light text colours */
+  .pub-card,
+  .raised,
+  details,
+  blockquote,
+  pre,
+  figure.highlight,
+  article table {
+    background: #fff !important;
+    color: #000 !important;
+    border-color: #999 !important;
+    box-shadow: none !important;
+  } /* !important: tokens resolve dark in dark theme */
+  .pub-card {
+    break-inside: avoid;
+    grid-template-columns: 1fr;
+  }
+  .pub-thumb {
+    display: none;
+  }
+  .pub-tier,
+  .pub-award,
+  .pub-venue {
+    background: #fff;
+    color: #000;
+    border-color: #666;
+  }
+  .publications h2.bibliography {
+    position: static;
+    background: none;
+    color: #000;
+    border-bottom-color: #666;
+  }
+  .publications ol.bibliography li .pub-main .hidden {
+    max-height: none;
+    overflow: visible;
+  }
+  .links a.btn {
+    border: 0;
+    padding: 0;
+    background: none;
+  }
+  pre,
+  code {
+    color: #000 !important;
+    white-space: pre-wrap;
+  } /* !important: beat the syntax token colours */
+}
+
+.publications .links a[role="button"]:not([href]) {
+  cursor: pointer;
+}
+
+/* news: beat the generic article-table card styling above (higher specificity, not !important) */
+.news-page .news table {
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+  overflow: visible;
+  background: none;
+  margin: 1rem 0;
+  width: 100%;
+  font-size: inherit;
+}
+.news-page .news th,
+.news-page .news td {
+  padding: 0;
+}
+.news-page .news th {
+  font: 500 12px/1.7 var(--font-mono);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+.news-page .news tbody tr:hover td {
+  background: none;
+}
+
+/* ---- Audit fixes: accessible teal for the CV contents list ---- */
+.toc-link.is-active-link,
+.is-active-link {
+  color: var(--teal-text);
+}
