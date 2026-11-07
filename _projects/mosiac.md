@@ -48,7 +48,7 @@ MOSIAC (formerly named RMIP, now retired) unifies the full workflow behind one c
 | 5. Calibrate | Evaluate | Multi-stage optimization against experiments with cheap response surfaces, judged against independent solvers and honest error bars | Working |
 | 6. Use | Create | Run the reduced, calibrated mechanism inside CFD, and train Neural-ODE surrogates that mimic it for use in CFD | **Current research** |
 
-Stage 6 is honest work in progress. A CFD solver ([PANSOPHIA](/projects/cfdcore/)) and a Neural-ODE playground ([vZero](/playground/)) exist, but today the surrogates are trained on a standard Cantera H<sub>2</sub>/O<sub>2</sub> mechanism, not yet on a MOSIAC-calibrated one, and are not yet running inside a flow solver.
+Stage 6 is current research. A first end-to-end demonstration now runs in a development branch of the repository: the reduced, calibrated mechanism drives a small one-dimensional reacting simulation, and a Neural-ODE surrogate trained on states from other cases stands in for the chemistry on a held-out case. It follows the ignition qualitatively and its chemistry step is much faster, but it is not yet accurate enough to trust, so I report it as a demonstration, not a result. The full CFD solver ([PANSOPHIA](/projects/cfdcore/)) does not yet import MOSIAC mechanisms, and the [playground](/playground/) shows the surrogate idea on smooth systems.
 
 ## Inside MOSIAC: MUQ-SAC, uncertainty that respects physics
 
@@ -108,4 +108,4 @@ Repository: [github.com/KrunalPanchal1995/MOSIAC](https://github.com/KrunalPanch
 
 ## Where this is going
 
-A researcher can go from a raw CHEMKIN mechanism and a folder of digitized experimental plots to a calibrated, uncertainty-bounded mechanism with a publication-ready report, without hand-writing the glue between each step and without losing track of how sure they should be about the result. The next step is to close the loop into CFD. The same loop (chemistry, reactor model, designed experiments, process window) is how any reacting process is developed, whether a flame or a plasma-etch recipe.
+A researcher can go from a raw CHEMKIN mechanism and a folder of digitized experimental plots to a calibrated, uncertainty-bounded mechanism with a publication-ready report, without hand-writing the glue between each step and without losing track of how sure they should be about the result. A first end-to-end demonstration now runs on hydrogen–air; the next step is a version accurate enough for a production CFD solver. The same loop (chemistry, reactor model, designed experiments, process window) is how any reacting process is developed, whether a flame or a plasma-etch recipe.
