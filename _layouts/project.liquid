@@ -1,0 +1,162 @@
+---
+layout: default
+---
+{%- assign slug = page.slug | default: page.url | split: '/' | last -%}
+{%- assign items = site.data.project_images[slug] -%}
+{%- assign doc_entry = site.data.project_docs[slug] -%}
+{%- assign docs = doc_entry.docs | default: doc_entry -%}
+{%- assign body_text = content | strip_html | strip -%}
+{%- assign has_body = false -%}
+{%- if body_text != '' or content contains '<img' -%}{%- assign has_body = true -%}{%- endif -%}
+{%- assign words = body_text | number_of_words -%}
+{%- assign minutes = words | plus: 219 | divided_by: 220 -%}
+{%- if minutes < 1 -%}{%- assign minutes = 1 -%}{%- endif -%}
+{%- assign route = page.studio -%}
+{%- if route == null or route == '' -%}{%- assign route = site.data.studio_map[slug].route -%}{%- endif -%}
+{%- assign studio_href = '/studio/' | relative_url -%}
+{%- assign studio_label = 'Explore in Studio' -%}
+{%- if route == null or route == '' or route == 'gallery' -%}
+  {%- assign studio_label = 'Open Studio' -%}
+{%- else -%}
+  {%- assign studio_href = studio_href | append: '#' | append: route -%}
+{%- endif -%}
+{%- assign request_item = 'project-' | append: slug -%}
+{%- assign hero = page.img -%}
+{%- if hero == null or hero == '' -%}
+  {%- assign first_item = items | first -%}
+  {%- if first_item -%}{%- assign hero = first_item.src_800 -%}{%- endif -%}
+{%- endif -%}
+{%- assign title_words = page.title | split: ' ' -%}
+{%- assign title_html = page.title | escape -%}
+{%- if title_words.size >= 2 -%}
+  {%- capture title_html -%}
+    {%- for w in title_words -%}
+      {%- if forloop.last -%}<span class="accent-serif">{{ w | escape }}</span>{%- else -%}{{ w | escape }}{{ ' ' }}{%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+{%- endif -%}
+<article class="pj" data-project="{{ slug }}">
+  <p class="pj-back">
+    <a href="{{ '/projects/' | relative_url }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All projects</a>
+  </p>
+  <header class="pj-head">
+    <ul class="pj-cats" aria-label="Categories">
+      {%- for cat in page.category -%}
+        <li class="pj-cat" style="--c: var(--cat-{{ cat }}, var(--teal));">{{ cat | replace: '-', ' ' }}</li>
+      {%- endfor -%}
+    </ul>
+    <h1 class="pj-title">{{ title_html }}</h1>
+    {%- assign d = page.description | strip -%}
+    {%- if d != '' -%}
+      <p class="pj-sub">{{ d }}</p>
+    {%- endif -%}
+    <p class="pj-meta mono">
+      {%- if items -%}
+        {%- assign n_vid = items | where_exp: 'i', 'i.video' | size -%}
+        {%- assign n_img = items.size | minus: n_vid -%}
+        {{ n_img }} image{% if n_img != 1 %}s{% endif -%}
+        {%- if n_vid > 0 %}
+          · {{ n_vid }} video{% if n_vid != 1 %}s{% endif -%}
+        {%- endif %}
+        ·
+      {%- endif %}
+      {{ minutes }} min read
+    </p>
+    <div class="pj-actions">
+      <a class="pj-act pj-act--studio" href="{{ studio_href | escape }}"
+        ><i class="fa-solid fa-cube" aria-hidden="true"></i><span>{{ studio_label }}</span></a
+      >
+      {%- if items and items.size > 0 -%}
+        <a class="pj-act pj-act--ghost" href="#pj-gallery-h"><i class="fa-regular fa-images" aria-hidden="true"></i><span>Jump to gallery</span></a>
+      {%- endif -%}
+    </div>
+  </header>
+
+  <div class="pj-intro{% unless hero %} pj-intro--solo{% endunless %}">
+    {%- if hero -%}
+      <figure class="pj-hero raised">
+        <div class="pj-hero__plate fx-plate" data-slate-project="{{ slug }}" data-slate-take="01" data-slate-file="{{ hero | split: '/' | last }}">
+          <img src="{{ hero | relative_url }}" alt="{{ page.title | escape }}" fetchpriority="high">
+        </div>
+      </figure>
+    {%- endif -%}
+    {% include project-datasheet.liquid slug=slug words=words minutes=minutes route=route %}
+  </div>
+
+  <div class="pj-read" data-read>
+    <aside class="pj-toc pj-toc--side" data-toc-side aria-label="On this page" hidden>
+      <p class="eyebrow">On this page</p>
+      <ol class="pj-toc__list"></ol>
+      <p class="pj-prog mono">
+        <span class="pj-prog__bar" aria-hidden="true"><span data-prog-bar></span></span><span data-prog-n>0%</span> read
+      </p>
+    </aside>
+    <div class="pj-main">
+      <details class="pj-toc pj-toc--sheet" data-toc-sheet hidden>
+        <summary><span>On this page</span><span class="pj-toc__pct mono" data-prog-n>0%</span></summary>
+        <ol class="pj-toc__list"></ol>
+      </details>
+
+      {%- if has_body -%}
+        <section class="pj-prose" data-prose aria-label="About this project">
+          {{ content }}
+        </section>
+      {%- endif -%}
+
+      {% if items and items.size > 0 %}
+        <section class="pj-section" aria-labelledby="pj-gallery-h" data-toc-extra="Gallery">
+          <h2 id="pj-gallery-h" class="pj-h2">Gallery</h2>
+          {% include project-gallery.liquid slug=slug %}
+        </section>
+      {% endif %}
+
+      {% include project-recreate.liquid route=route item=request_item %}
+
+      {%- if docs and docs.size > 0 -%}
+        <section class="pj-section" aria-labelledby="pj-docs-h" data-toc-extra="Documents">
+          <h2 id="pj-docs-h" class="pj-h2">Documents</h2>
+          <ul class="pj-docs">
+            {%- for doc in docs -%}
+              {%- assign fname = doc | split: '/' | last -%}
+              <li>
+                <a class="pj-doc raised" href="{{ doc | relative_url }}" target="_blank" rel="noopener"
+                  ><i class="fa-regular fa-file-pdf" aria-hidden="true"></i><span class="mono">{{ fname }}</span
+                  ><span class="pj-doc__go">Open PDF</span></a
+                >
+              </li>
+            {%- endfor -%}
+          </ul>
+        </section>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- assign all_p = site.projects | sort: 'importance' -%}
+  {%- assign prev_p = null -%}
+  {%- assign next_p = null -%}
+  {%- for p in all_p -%}
+    {%- if p.url == page.url -%}
+      {%- assign i_prev = forloop.index0 | minus: 1 -%}
+      {%- assign i_next = forloop.index0 | plus: 1 -%}
+      {%- unless forloop.first -%}{%- assign prev_p = all_p[i_prev] -%}{%- endunless -%}
+      {%- unless forloop.last -%}{%- assign next_p = all_p[i_next] -%}{%- endunless -%}
+    {%- endif -%}
+  {%- endfor -%}
+  <nav class="pj-pager" aria-label="More projects">
+    {%- if prev_p -%}
+      <a class="pj-pager__a pj-pager__a--prev raised" href="{{ prev_p.url | relative_url }}" rel="prev">
+        <span class="eyebrow"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span>
+        <span class="pj-pager__t">{{ prev_p.title }}</span>
+      </a>
+    {%- else -%}
+      <span></span>
+    {%- endif -%}
+    {%- if next_p -%}
+      <a class="pj-pager__a pj-pager__a--next raised" href="{{ next_p.url | relative_url }}" rel="next">
+        <span class="eyebrow">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+        <span class="pj-pager__t">{{ next_p.title }}</span>
+      </a>
+    {%- endif -%}
+  </nav>
+</article>
+<script defer src="{{ '/assets/js/site/project.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>

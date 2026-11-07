@@ -1,0 +1,121 @@
+{%- comment -%}
+  request-access: the open-science "get the code + PDF" control for ONE catalogue item (WP-J).
+  Params: id (item id in _data/open_catalog.yml), compact (true = one row of a table, no free note), host (true = emit only the shared
+  config + hidden email markup so assets/js/site/request.js can open a request dialog from elsewhere, e.g. the Studio page).
+  Copy: _data/open_access.yml. access: open -> download buttons (when the files exist in the build); request -> email button (the
+  mailto: link is built in JS at click time from the protected address, never present in static HTML), copy-message fallback and,
+  only when form_endpoint is set, a request form. Without JS: a plain text line with the address in the site's protect-email markup.
+{%- endcomment -%}
+{%- assign oa = site.data.open_access -%}
+{%- assign cp = oa.component -%}
+{%- assign form_on = false -%}
+{%- if oa.form_endpoint and oa.form_endpoint != '' -%}{%- assign form_on = true -%}{%- endif -%}
+{%- unless oa_cfg_done -%}
+  {%- assign oa_cfg_done = true -%}
+  <script type="application/json" id="oa-config">
+    {{ oa | jsonify | replace: '</', '<\/' }}
+  </script>
+  <script type="application/json" id="oa-catalog">
+    {{ site.data.open_catalog.items | jsonify | replace: '</', '<\/' }}
+  </script>
+  <script src="{{ '/assets/js/site/request.js' | relative_url }}" defer></script>
+{%- endunless -%}
+{%- if include.host -%}
+  <span class="oa-host" data-oa-host hidden>{% al_email_protect_link site.data.socials.email %}</span>
+{%- else -%}
+  {%- assign item = null -%}
+  {%- for it in site.data.open_catalog.items -%}
+    {%- if it.id == include.id -%}
+      {%- assign item = it -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if item -%}
+    {%- assign code_url = '' -%}
+    {%- assign pdf_url = '' -%}
+    {%- if item.access == 'open' -%}
+      {%- if item.files.code -%}
+        {%- assign p = '/' | append: item.files.code -%}
+        {%- assign hit = site.static_files | where: 'path', p | first -%}
+        {%- if hit -%}{%- assign code_url = p | relative_url -%}{%- endif -%}
+      {%- endif -%}
+      {%- if item.files.pdf -%}
+        {%- assign p = '/' | append: item.files.pdf -%}
+        {%- assign hit = site.static_files | where: 'path', p | first -%}
+        {%- if hit -%}{%- assign pdf_url = p | relative_url -%}{%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+    {%- assign is_open = false -%}
+    {%- if code_url != '' or pdf_url != '' -%}{%- assign is_open = true -%}{%- endif -%}
+    {%- assign req_label = cp.request_button -%}
+    {%- if item.requestable.size == 1 -%}
+      {%- if item.requestable[0] == 'code' -%}
+        {%- assign req_label = cp.request_code -%}
+      {%- else -%}
+        {%- assign req_label = cp.request_pdf -%}
+      {%- endif -%}
+    {%- endif -%}
+    <div
+      class="oa-req{% if include.compact %} oa-req--compact{% endif %}"
+      data-oa-req
+      data-oa-id="{{ item.id | escape }}"
+      data-oa-title="{{ item.title | escape }}"
+    >
+      {%- if is_open -%}
+        <div class="oa-actions">
+          {%- if code_url != '' -%}
+            <a class="oa-btn oa-btn--primary" href="{{ code_url }}" download>
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                <path d="M12 4v11M7 11l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {{- cp.download_code -}}
+              <span class="sr-only"> ({{ item.title | escape }})</span>
+            </a>
+          {%- endif -%}
+          {%- if pdf_url != '' -%}
+            <a class="oa-btn oa-btn--primary" href="{{ pdf_url }}" download>
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                <path d="M12 4v11M7 11l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {{- cp.download_pdf -}}
+              <span class="sr-only"> ({{ item.title | escape }})</span>
+            </a>
+          {%- endif -%}
+        </div>
+        {%- unless include.compact -%}
+          <p class="oa-note">{{ cp.free_note }}</p>
+        {%- endunless -%}
+      {%- else -%}
+        <div class="oa-actions">
+          <a class="oa-btn oa-btn--primary" href="#" role="button" data-oa-mail hidden>
+            {{- req_label -}}
+            <span class="sr-only"> ({{ item.title | escape }})</span>
+          </a>
+          <button class="oa-btn" type="button" data-oa-copy hidden>
+            {{- cp.copy_button -}}
+            <span class="sr-only"> ({{ item.title | escape }})</span>
+          </button>
+        </div>
+        {%- unless include.compact -%}
+          <p class="oa-note">{{ cp.request_note }}</p>
+        {%- endunless -%}
+        <p class="oa-nojs">
+          {{ cp.no_js }}
+          {% al_email_protect_link site.data.socials.email %}
+          {{ cp.no_js_tail }}
+          <code>{{ item.id | escape }}</code>
+        </p>
+        {%- if form_on -%}
+          <details class="oa-formwrap" data-oa-formwrap hidden>
+            <summary>
+              {{ cp.form_title -}}
+              <span class="sr-only"> ({{ item.title | escape }})</span>
+            </summary>
+            <div class="oa-formhost" data-oa-formhost></div>
+          </details>
+        {%- endif -%}
+      {%- endif -%}
+      <p class="oa-status" role="status" aria-live="polite" data-oa-status></p>
+    </div>
+  {%- endif -%}
+{%- endif -%}

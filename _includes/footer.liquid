@@ -1,0 +1,95 @@
+{%- comment -%}
+  LOCAL SHADOW of al_folio_core's footer.liquid: compact footer, name + accent dot, labelled social links from
+  _data/socials.yml (icon classes match jekyll-socials), copyright line. Styles: assets/css/site/components.css (.site-footer).
+{%- endcomment -%}
+{%- assign soc = site.data.socials -%}
+{%- assign display_name = site.title | default: site.first_name -%}
+<footer class="site-footer" role="contentinfo">
+  {% if site.newsletter.enabled %}
+    {% if site.plugins contains 'al_newsletter' %}
+      {% include plugins/al_newsletter_form_center.liquid %}
+    {% else %}
+      {% include newsletter.liquid %}
+    {% endif %}
+  {% endif %}
+  <div class="container site-footer__inner">
+    <div class="site-footer__brand">
+      <a class="site-footer__name" href="{{ '/' | relative_url }}">
+        {{- site.first_name }}
+        {{ site.last_name -}}
+        <span class="accent-dot" aria-hidden="true">.</span></a
+      >
+    </div>
+    <ul class="site-footer__links">
+      {%- if soc.email -%}
+        <li>
+          {%- if site.protect_email -%}
+            {%- comment -%} WP-J: the address is only ever emitted in halves (same markup as al_email_protect_link); the gem's JS rejoins and copies it on click. {%- endcomment -%}
+            {%- assign soc_parts = soc.email | split: '@' -%}
+            <a href="#" class="al-email-protect" data-eu="{{ soc_parts[0] }}" data-ed="{{ soc_parts[1] }}" aria-label="Copy email address"
+              ><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Email</span></a
+            >
+          {%- else -%}
+            <a href="mailto:{{ soc.email }}"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Email</span></a>
+          {%- endif -%}
+        </li>
+      {%- endif -%}
+      {%- if soc.orcid_id -%}
+        <li>
+          <a href="https://orcid.org/{{ soc.orcid_id }}" rel="me noopener" target="_blank"
+            ><i class="ai ai-orcid" aria-hidden="true"></i><span>ORCID</span></a
+          >
+        </li>
+      {%- endif -%}
+      {%- if soc.scholar_userid -%}
+        <li>
+          <a href="https://scholar.google.com/citations?user={{ soc.scholar_userid }}" rel="me noopener" target="_blank"
+            ><i class="ai ai-google-scholar" aria-hidden="true"></i><span>Scholar</span></a
+          >
+        </li>
+      {%- endif -%}
+      {%- if soc.github_username -%}
+        <li>
+          <a href="https://github.com/{{ soc.github_username }}" rel="me noopener" target="_blank"
+            ><i class="fa-brands fa-github" aria-hidden="true"></i><span>GitHub</span></a
+          >
+        </li>
+      {%- endif -%}
+      {%- if soc.linkedin_username -%}
+        <li>
+          <a href="https://www.linkedin.com/in/{{ soc.linkedin_username }}" rel="me noopener" target="_blank"
+            ><i class="fa-brands fa-linkedin" aria-hidden="true"></i><span>LinkedIn</span></a
+          >
+        </li>
+      {%- endif -%}
+      {%- if soc.custom_social and soc.custom_social.url -%}
+        <li>
+          <a href="{{ soc.custom_social.url }}" rel="me noopener" target="_blank"
+            ><i class="ai ai-researchgate" aria-hidden="true"></i><span>{{ soc.custom_social.title | default: 'Link' }}</span></a
+          >
+        </li>
+      {%- endif -%}
+      {%- if site.data.cv or page.cv_pdf or site.cv_pdf -%}
+        <li>
+          <a href="{{ '/cv/' | relative_url }}"><i class="ai ai-cv" aria-hidden="true"></i><span>CV</span></a>
+        </li>
+      {%- endif -%}
+      {%- if soc.rss_icon -%}
+        <li>
+          <a href="{{ '/feed.xml' | relative_url }}"><i class="fa-solid fa-square-rss" aria-hidden="true"></i><span>RSS</span></a>
+        </li>
+      {%- endif -%}
+    </ul>
+    <p class="site-footer__legal">
+      &copy; {{ site.time | date: '%Y' }}
+      {{ site.first_name }}
+      {{ site.last_name }}.
+      {{ site.footer_text }}
+      {% if site.impressum_path -%}
+        <a href="{{ site.url }}{{ site.baseurl }}{{ site.impressum_path }}">Impressum</a>.
+      {%- endif %}
+      <a href="{{ '/privacy/' | relative_url }}">Privacy</a>.
+      {% if site.last_updated %}Last updated {{ 'now' | date: '%B %d, %Y' }}.{% endif %}
+    </p>
+  </div>
+</footer>

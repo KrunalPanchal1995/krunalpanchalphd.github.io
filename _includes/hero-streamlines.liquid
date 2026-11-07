@@ -1,0 +1,49 @@
+{% comment %}
+  Home-page hero 1/3: animated streamlines behind the name + headline.
+  Params (all optional; defaults come from _data/design.yml hero_params.streamlines):
+    name, tagline, accent_word (one word inside the tagline, set in italic serif),
+    cta_label, cta_url, managed (true when rendered by hero-switch, which loads the JS), hidden.
+  Usage: {% include hero-streamlines.liquid %}
+         {% include hero-streamlines.liquid name="Jane Doe" accent_word="flames" %}
+{% endcomment %}
+{% assign cfg = site.data.design.hero_params.streamlines %}
+{% assign h_name = include.name | default: cfg.name | default: site.title %}
+{% assign h_tagline = include.tagline | default: cfg.tagline %}
+{% assign h_accent = include.accent_word | default: cfg.accent_word %}
+{% assign h_cta_label = include.cta_label | default: cfg.cta.label %}
+{% assign h_cta_url = include.cta_url | default: cfg.cta.url %}
+{% assign h_tagline_html = h_tagline | escape %}
+{% if h_accent != blank %}
+  {% capture h_accent_html %}<em class="hero__accent-word">{{ h_accent | escape }}</em>{% endcapture %}
+  {% assign h_tagline_html = h_tagline_html | replace_first: h_accent, h_accent_html %}
+{% endif %}
+{% unless include.managed %}
+  <link rel="stylesheet" href="{{ '/assets/css/hero.css' | relative_url }}">
+{% endunless %}
+<div
+  class="hero hero--streamlines"
+  data-hero="streamlines"
+  {% if include.hidden %}
+    hidden
+  {% endif %}
+>
+  <canvas class="hero__canvas" aria-hidden="true"></canvas>
+  <div class="hero__inner">
+    <h1 class="hero__name">
+      {{ h_name -}}
+      <span class="hero__dot">.</span>
+    </h1>
+    {% if h_tagline != blank %}
+      <p class="hero__tagline">{{ h_tagline_html }}</p>
+    {% endif %}
+    {% if h_cta_label != blank %}
+      <a class="hero__cta" href="{{ h_cta_url | relative_url }}">{{ h_cta_label }}</a>
+    {% endif %}
+  </div>
+</div>
+{% unless include.managed %}
+  <script type="module">
+    import { mount } from "{{ '/assets/js/hero/streamlines.js' | relative_url }}";
+    document.querySelectorAll('[data-hero="streamlines"]').forEach((el) => mount(el));
+  </script>
+{% endunless %}

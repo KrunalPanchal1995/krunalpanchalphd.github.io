@@ -1,0 +1,91 @@
+/*******************************************************************************
+ * LOCAL OVERRIDE of al_folio_core's _sass/_variables.scss (editorial skin,
+ * "Editorial 2.0" pass). Full-file shadow per docs/ARCHITECTURE.md "Local
+ * overrides: your site vs. this repo" -- every original variable name is kept
+ * so nothing downstream breaks; only the swatch VALUES change. The palette is
+ * warm paper / warm ink / refined vermilion (the flame register), with two
+ * secondary accents carrying real meaning: amber (the flame register, used by
+ * research-tag chips) and teal (the instrument register, used by functional
+ * labels like gallery topic groups -- the site's "data instrument" identity).
+ * Tracked in .al-folio-overrides.yml (`bundle exec al-folio upgrade
+ * overrides audit`). See DESIGN_SYSTEM.md for the rationale.
+ ******************************************************************************/
+
+@use "sass:color";
+
+// Colors -- left mostly stock; only the ones that actually anchor the
+// editorial palette are changed below.
+$red-color: #ff3636 !default;
+$red-color-dark: #6f2013 !default; // deep oxblood: --global-highlight-color
+$orange-color: #f29105 !default;
+$blue-color: #0076df !default;
+$blue-color-dark: #00369f !default;
+$cyan-color: #dc7850 !default; // repurposed as the dark-mode accent: warm amber (Editorial 2.5: hue pulled toward vermilion; contrast-checked at 5.68:1 against the dark-mode page background)
+$light-cyan-color: color.adjust($cyan-color, $lightness: 25%);
+$green-color: #00ab37 !default;
+$green-color-lime: #b7d12a !default;
+$green-color-dark: #009f06 !default;
+$green-color-light: #ddffdd !default;
+$green-color-bright: #11d68b !default;
+$purple-color: #9c2f16 !default; // repurposed as the light-mode accent: refined vermilion (Editorial 2.5: deepened from #b4341b)
+$light-purple-color: color.adjust($purple-color, $lightness: 25%);
+$pink-color: #f92080 !default;
+$pink-color-light: #ffdddd !default;
+$yellow-color: #efcc00 !default;
+
+$grey-color: #5f574c !default; // warm mid grey: secondary text
+$grey-color-light: color.adjust($grey-color, $lightness: 40%);
+$grey-color-dark: #1e1914; // warm near-black: light-mode footer band AND dark-mode page bg
+$grey-900: #27211a; // warm charcoal: dark-mode card background
+
+$white-color: #faf7f1 !default; // warm paper, not stark white
+$black-color: #1a1611 !default; // warm ink, not pure black
+
+// Editorial 2.0 secondary accents (site-specific, additive -- no gem consumer
+// reads these):
+// - amber = the flame register (research-tag chips, warm data highlights)
+// - teal  = the instrument register (functional labels, e.g. gallery topic
+//           groups -- the "data instrument" identity of the site)
+$amber-accent: #d97742 !default;
+$amber-accent-soft: rgba($amber-accent, 0.08);
+$amber-accent-border: rgba($amber-accent, 0.4);
+$teal-accent: #0f766e !default;
+$teal-accent-light: color.adjust($teal-accent, $lightness: 30%);
+
+// Editorial 2.5 (2026-09-08): per-theme category hues, additive -- only
+// consumed by _pages/projects.md's own scoped CSS, no gem consumer reads
+// these and no other page is affected. One hue per research theme so the
+// filter bar and card category chips stay legible at 13+ projects. Each
+// pair is contrast-checked (WCAG) as text-on-card in both color schemes;
+// the "-dark" variant is the one used against the dark-mode card surface.
+$cat-combustion: #b23a1f !default; // warm red-orange -- flame register
+$cat-combustion-dark: #e8825a !default;
+$cat-optimization: #6b3fa0 !default; // violet
+$cat-optimization-dark: #b48ee0 !default;
+$cat-uq: #0f766e !default; // teal -- reuses the instrument-register accent
+$cat-uq-dark: #5fc4b8 !default;
+$cat-sciml: #1d5fa8 !default; // blue
+$cat-sciml-dark: #6fa8e0 !default;
+$cat-cfd: #3a5a8c !default; // slate/indigo
+$cat-cfd-dark: #8aa8d8 !default;
+$cat-experimental: #8a6817 !default; // amber-gold
+$cat-experimental-dark: #d9ac4a !default;
+
+// Theme colors
+
+$code-bg-color-light: rgba($purple-color, 0.05);
+$code-bg-color-dark: #241f18 !default;
+
+// Font awesome location
+$fa-font-path: "../webfonts";
+
+// Back To Top button config
+$back-to-top-z-index: 10;
+$back-to-top-bottom: 30px;
+$back-to-top-right: 30px;
+$back-to-top-diameter: 40px;
+$back-to-top-height: $back-to-top-diameter;
+$back-to-top-width: $back-to-top-diameter;
+
+// Max width default -- slightly wider than stock for editorial figure bleed
+$max-content-width: 980px !default;

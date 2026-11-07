@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>FX demo (static test harness)</title>
+    <!-- Static harness for the VFX layer. Serve the site root (python3 -m http.server 8853) and open
+         /assets/html/fx_demo.html  (?fx=on|lite|off, ?intro=1 or ?home=1 fakes the home-page title sequence, ?theme=light).
+         The inline state script and the intro markup mirror _includes/fx-intro.liquid with demo data
+         (fx_tests/fx.test.py checks they stay in sync). -->
+    <link rel="stylesheet" href="/assets/css/site/tokens.css" />
+    <link rel="stylesheet" href="/assets/css/site/base.css" />
+    <link rel="stylesheet" href="/assets/css/site/nav.css" />
+    <link rel="stylesheet" href="/assets/css/site/fx.css" />
+    <style>
+      body { margin: 0; padding: 88px 0 80px; background: var(--bg); color: var(--text); }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+      section { padding: 28px 0; border-top: 1px solid var(--border); }
+      .lab { font: 500 11px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); margin: 0 0 14px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+      .card { padding: 22px; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--panel); min-height: 120px; }
+      .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+      .btn { display: inline-block; padding: 12px 22px; border-radius: 999px; background: var(--teal); color: var(--on-accent); text-decoration: none; border: 0; cursor: pointer; font: 600 14px var(--font-ui); }
+      .btn:hover { color: var(--on-accent); }
+      .box { overflow: hidden; height: 220px; border-radius: var(--radius-card); border: 1px solid var(--border); background: var(--panel2); }
+      .box img { width: 100%; height: 320px; object-fit: cover; display: block; }
+      .plate-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+      .plate-grid img, .plate-grid video { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; border-radius: var(--radius-card); background: #000; }
+      .chip { display: inline-block; padding: 6px 12px; border: 1px solid var(--border); border-radius: 999px; font: 500 12px var(--font-mono); white-space: nowrap; }
+      .halftone { height: 160px; border: 1px solid var(--border); border-radius: var(--radius-card); display: flex; align-items: center; justify-content: center; font: 600 1.4rem var(--font-ui); }
+      .spacer { height: 70vh; }
+      .term { background: var(--viewport); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 18px; }
+      .nav-fake { display: flex; margin-left: auto; }
+    </style>
+    <script>
+  (function () {
+    var d = document.documentElement,
+      q = new URLSearchParams(location.search),
+      n = navigator,
+      c = n.connection;
+    function g(s, k) {
+      try {
+        return window[s].getItem(k);
+      } catch (e) {
+        return null;
+      }
+    }
+    function p(s, k, v) {
+      try {
+        window[s].setItem(k, v);
+      } catch (e) {}
+    }
+    var o = q.get("fx");
+    if (o === "on" || o === "off" || o === "lite") p("sessionStorage", "fx-override", o);
+    else o = g("sessionStorage", "fx-override");
+    if (o !== "on" && o !== "off" && o !== "lite") o = null;
+    var u = g("localStorage", "fx"),
+      rm = matchMedia("(prefers-reduced-motion: reduce)").matches,
+      auto = rm
+        ? "off"
+        : (c && c.saveData) ||
+            (n.hardwareConcurrency && n.hardwareConcurrency <= 4) ||
+            (n.deviceMemory && n.deviceMemory <= 4) ||
+            matchMedia("(pointer: coarse)").matches
+          ? "lite"
+          : "on",
+      s = o || (u === "on" || u === "off" ? u : auto);
+    d.setAttribute("data-fx", s);
+    d.setAttribute("data-fx-auto", auto);
+    var I = q.get("intro"),
+      HOME = I === "1" || q.get("home") === "1";
+    if (HOME && s === "on" && !rm && I !== "0" && (I === "1" || !g("sessionStorage", "fx-intro"))) {
+      p("sessionStorage", "fx-intro", "1");
+      d.classList.add("fx-intro-pending", "fx-intro-on");
+      window.__fxIt0 = Date.now();
+      window.__fxIt = [
+        setTimeout(function () { d.classList.remove("fx-intro-pending"); }, 2450),
+        setTimeout(function () { d.classList.remove("fx-intro-on"); }, 3050),
+        setTimeout(function () { d.classList.remove("fx-intro-pending", "fx-intro-on"); }, 3500),
+      ];
+    }
+  })();
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav id="navbar" class="pillnav" aria-label="Main">
+        <a class="pillnav__brand" href="/assets/html/fx_demo.html">Krunal<span class="accent-dot">.</span></a>
+        <div class="nav-fake">
+          <div class="pillnav__tools">
+            <button id="fx-toggle" type="button" title="Visual effects" aria-label="Visual effects" aria-pressed="true" hidden>
+              <span class="fx-toggle__dot" aria-hidden="true"></span><span class="fx-toggle__label">FX</span>
+            </button>
+            <button id="demo-input-btn" type="button" aria-label="Demo">Demo</button>
+          </div>
+        </div>
+      </nav>
+    </header>
+<div class="fx-intro" aria-hidden="true" data-fx-intro>
+  <div class="fx-intro__grid"></div>
+  <div class="fx-intro__grid fx-intro__grid--hot"></div>
+  <div class="fx-intro__scan"></div>
+  <i class="fx-intro__mark fx-intro__mark--tl"></i><i class="fx-intro__mark fx-intro__mark--tr"></i>
+  <i class="fx-intro__mark fx-intro__mark--bl"></i><i class="fx-intro__mark fx-intro__mark--br"></i>
+  <div class="fx-intro__stage">
+    <svg class="fx-intro__k" viewBox="0 0 64 64" width="112" height="112" focusable="false">
+      <path class="fx-intro__k-path" pathLength="1" d="M18 14h7v15.5L38.5 14h9.2L33.3 30.5 48.5 50h-9L28.2 35 25 38.6V50h-7z" />
+      <circle class="fx-intro__k-dot" cx="47" cy="47" r="5" />
+    </svg>
+    <p class="fx-intro__name">
+      <span class="fx-intro__title">Dr.</span> 
+      <span class="fx-intro__nm">Krunal R. Panchal</span>
+    </p>
+        <p class="fx-intro__creds">PhD, Mechanical Engineering · IIT Madras · 2026</p>
+        <p class="fx-intro__sub">Demo subtitle line (harness data only)</p>
+  </div>
+  <button type="button" class="fx-intro__skip" tabindex="-1" data-fx-skip>Skip</button>
+</div>
+<div class="fx-intro__edge" aria-hidden="true"></div>
+<noscript><style>.fx-intro,.fx-intro__edge{display:none!important}html.fx-intro-pending body>*{opacity:1!important}</style></noscript>
+
+    <main class="wrap">
+      <section id="s-split">
+        <p class="lab">data-fx="split"</p>
+        <h1 id="h-split" data-fx="split">Computational methods for <em>complex</em> physical systems</h1>
+        <h2 id="h-chars" data-fx="split" data-split="chars">Character split</h2>
+        <p id="p-split" data-fx="split">Words reveal with blur and translate, staggered by index.</p>
+      </section>
+
+      <section id="s-scramble">
+        <p class="lab">data-fx="scramble"</p>
+        <p>
+          <span id="sc1" class="chip" data-fx="scramble">Combustion kinetics</span>
+          <a id="sc2" class="chip" href="#s-scramble" data-fx="scramble">Uncertainty quantification</a>
+          <span id="sc3" class="chip" data-fx="scramble">Scientific ML</span>
+        </p>
+      </section>
+
+      <section id="s-reveal">
+        <p class="lab">data-fx="reveal" (+ data-fx-stagger on the parent)</p>
+        <div class="grid" data-fx-stagger="110">
+          <div class="card fx-spot" data-fx="reveal"><h3>Card one</h3><p>Hover me: spotlight follows the pointer.</p></div>
+          <div class="card fx-spot" data-fx="reveal"><h3>Card two</h3><p>Staggered 110 ms.</p></div>
+          <div class="card fx-spot" data-fx="reveal" data-fx-delay="100"><h3>Card three</h3><p>Reveal with an extra 100 ms delay.</p></div>
+          <div class="card" data-fx="spot"><h3>Card four</h3><p>data-fx="spot" attribute form.</p></div>
+        </div>
+        <p style="margin-top:14px"><img id="img-mask" data-fx="reveal" src="/assets/img/prof_pic.jpg" alt="Portrait used as a test image" width="220" height="220" style="border-radius:12px;object-fit:cover" /></p>
+      </section>
+
+      <section id="s-motion">
+        <p class="lab">data-fx="magnetic" / data-fx="glitch" / .fx-glitch</p>
+        <p>
+          <a id="mag" class="btn" data-fx="magnetic" href="#s-motion">Magnetic button</a>
+          &nbsp;
+          <a id="gl1" class="fx-glitch" href="#s-motion" style="font:700 2rem var(--font-ui);text-decoration:none">GLITCH TEXT</a>
+          &nbsp;
+          <span id="gl2" data-fx="glitch" tabindex="0" style="font:700 1.4rem var(--font-mono)">focus me</span>
+        </p>
+        <label>Text input (native cursor must stay): <input id="txt" type="text" placeholder="type here" /></label>
+      </section>
+
+      <section id="s-parallax">
+        <p class="lab">data-fx="parallax" data-speed="0.4" inside an overflow:hidden box</p>
+        <div class="box"><img id="para" data-fx="parallax" data-speed="0.4" src="/assets/img/prof_pic.jpg" alt="Parallax test image" width="320" height="320" /></div>
+      </section>
+
+      <section id="s-plates">
+        <p class="lab">.fx-plate: image, video, letterbox</p>
+        <div class="plate-grid">
+          <div class="fx-plate" id="plate-img" data-slate-project="Dokimazo" data-slate-take="03" data-slate-file="prof_pic.jpg">
+            <img src="/assets/img/prof_pic.jpg" alt="Plate image test" />
+          </div>
+          <div class="fx-plate fx-glitch" id="plate-vid" data-slate-project="Flame lab" data-slate-take="12" data-slate-file="clip.mp4">
+            <video id="vid" muted loop playsinline controls preload="auto">
+              <source src="/assets/video/dokimazo/05_race_2d.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="fx-plate fx-plate--letterbox" id="plate-lb" data-slate-project="Letterbox" data-slate-take="01">
+            <img src="/assets/img/prof_pic.jpg" alt="Letterbox plate test" />
+          </div>
+        </div>
+      </section>
+
+      <section id="s-extras">
+        <p class="lab">.fx-marquee / .fx-halftone / .fx-typing</p>
+        <div class="fx-marquee" id="marq">
+          <span class="chip">Combustion</span><span class="chip">Optimization</span><span class="chip">Uncertainty quantification</span>
+          <span class="chip">Scientific ML</span><span class="chip">CFD</span><span class="chip">Gasification</span>
+        </div>
+        <div class="halftone fx-halftone" style="margin-top:16px">Halftone background</div>
+        <div class="term fx-typing" id="typ" style="margin-top:16px">
+          <ul style="list-style:none;margin:0;padding:0">
+            <li>python run_case.py --mechanism reduced</li>
+            <li>&gt; 38 species, 124 reactions</li>
+            <li>python uq.py --samples 4096</li>
+          </ul>
+        </div>
+      </section>
+      <div class="spacer"></div>
+    </main>
+    <script defer src="/assets/js/site/fx.js"></script>
+  </body>
+</html>

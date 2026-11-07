@@ -1,0 +1,83 @@
+---
+layout: default
+---
+{%- comment -%}
+  Full-window app page. Front matter: app: <slug in _data/apps.yml> (optional), embed: <site-relative url of an iframe page> (optional), title, accent_word.
+  Renders: header (title + the owner's body_md), the live embed as a raised plate, a recording/screenshot gallery from intake media, and an empty state with the intake path.
+{%- endcomment -%}
+{% assign entry = site.data.apps | where: 'slug', page.app | first %}
+{% assign src = page.embed %}
+{% if src == null and entry.entry %}{% assign src = entry.entry %}{% endif %}
+<div class="app-page">
+  <header class="app-head">
+    <p class="eyebrow">{{ page.eyebrow | default: 'Interactive' }}</p>
+    <h1 class="post-title">
+      {%- if page.accent_word and page.accent_word != page.title -%}
+        {{ page.title | replace: page.accent_word, '' -}}
+        <span class="accent-serif">{{ page.accent_word }}</span>
+      {%- else -%}
+        {{ page.title }}
+      {%- endif -%}
+    </h1>
+    {% if entry.subtitle %}
+      <p class="post-description">{{ entry.subtitle }}</p>
+    {% endif %}
+  </header>
+
+  {% if src %}
+    <div class="app-stage raised" data-app-stage>
+      <div class="app-bar">
+        <span class="chip chip--teal">live</span>
+        <span class="app-bar__title">{{ page.title }}</span>
+        <span class="app-bar__spacer"></span>
+        <button type="button" class="chip" data-app-full aria-label="Toggle full screen">Full screen</button>
+        <a class="chip" href="{{ src | relative_url }}" target="_blank" rel="noopener">Open in new tab</a>
+      </div>
+      <iframe
+        class="app-frame"
+        src="{{ src | relative_url }}"
+        title="{{ page.title }}"
+        loading="lazy"
+        allow="gamepad; fullscreen"
+        data-app-frame
+      ></iframe>
+    </div>
+  {% else %}
+    <div class="app-empty raised">
+      <p class="eyebrow">Not published yet</p>
+      <p>
+        Put the built app in <code>PORTFOLIO_INTAKE/30_APPS/{{ page.app | default: 'your-app' }}/app/</code> (with an <code>index.html</code>) and set
+        <code>status: live</code> in its <code>page.md</code>.
+      </p>
+    </div>
+  {% endif %}
+
+  {% if entry.body_md and entry.body_md != '' %}
+    <div class="app-body prose">{{ entry.body_md | markdownify }}</div>
+  {% endif %}
+
+  {% if entry.media and entry.media.size > 0 %}
+    <div class="app-media">
+      {% for m in entry.media %}
+        <figure class="raised">
+          {% if m.video %}
+            <video src="{{ m.video | relative_url }}" poster="{{ m.src_800 | relative_url }}" controls muted loop playsinline preload="none"></video>
+          {% else %}
+            <img
+              src="{{ m.src_800 | relative_url }}"
+              {% if m.src_1600 %}
+                srcset="{{ m.src_800 | relative_url }} 800w, {{ m.src_1600 | relative_url }} 1600w" sizes="(min-width: 900px) 540px, 100vw"
+              {% endif %}
+              alt="{{ m.caption }}"
+              loading="lazy"
+            >
+          {% endif %}
+          {% if m.caption and m.caption != '' %}
+            <figcaption>{{ m.caption }}</figcaption>
+          {% endif %}
+        </figure>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+<script defer src="{{ '/assets/js/site/apps.js' | relative_url }}"></script>

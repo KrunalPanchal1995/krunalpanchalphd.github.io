@@ -1,0 +1,793 @@
+# Open-science catalogue (WP-J). Read by /open/, the request-access component and the Studio (open_ids.json).
+# access: open  -> code + PDF are downloadable now (files: must exist under assets/open/<id>/)
+# access: request -> shared by email after the owner approves (requestable: [code, pdf])
+# OWNER: change `access`, `requestable`, `files`, `title`, `notes` freely. scripts/build_open_catalog.py --apply never overwrites them.
+# The script refreshes only: kind, project, studio, explainers. Comments in this file are not kept: use `notes:`.
+# promo-* items (WP-M) are the Math Studio clips on #promos (Beyond the projects): code + PDF on request, free of cost.
+# explainers may hold a glob such as concept.flow.*: the Studio shows code for those explainers when the item is open.
+items:
+- id: home-fluid
+  title: Home page fluid simulation (stable-fluids solver)
+  kind: page
+  access: open
+  project: ''
+  studio: flow
+  explainers:
+  - concept.flow.*
+  files:
+    code: assets/open/home-fluid/home-fluid-code.zip
+    pdf: assets/open/home-fluid/home-fluid-notes.pdf
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-bangalore-2026-conference
+  title: Enhanced Multi-Stage Optimization Technique for Fuel Combustion Kinetic Mechanisms
+  kind: page
+  access: request
+  project: bangalore-2026-conference
+  studio: atlas?ch=S13&ex=4
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-cfd-multiphysics
+  title: PANSOPHIA multiphysics test cases
+  kind: plot
+  access: request
+  project: cfd-multiphysics
+  studio: atlas?ch=S34&ex=1
+  explainers:
+  - figure.cfd-multiphysics.coupled-multiphysics-results
+  - figure.cfd-multiphysics.hot-spot-ignition-transient
+  - figure.cfd-multiphysics.sde-schemes-and-fokker-planck
+  - figure.cfd-multiphysics.stochastic-mixing-and-closure-models
+  - figure.cfd-multiphysics.structured-mesh-and-smoke-tests
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-cfd-numerics-teaching
+  title: PANSOPHIA numerics teaching figures
+  kind: plot
+  access: request
+  project: cfd-numerics-teaching
+  studio: atlas?ch=S34&ex=1
+  explainers:
+  - figure.cfd-numerics-teaching.comparison
+  - figure.cfd-numerics-teaching.history
+  - figure.cfd-numerics-teaching.neumann
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-cfdcore
+  title: PANSOPHIA — In-House CFD & Multiphysics Solver
+  kind: plot
+  access: request
+  project: cfdcore
+  studio: atlas?ch=S34&ex=1
+  explainers:
+  - figure.cfdcore.geometry-kernel-shapes
+  - figure.cfdcore.hot-spot-ignition-transient
+  - figure.cfdcore.microfluidic-design-study-maps
+  - figure.cfdcore.microfluidic-flow-validation
+  - figure.cfdcore.mms-convergence
+  - figure.cfdcore.multiphysics-case-results
+  - figure.cfdcore.penalization-and-gradient-checks
+  - figure.cfdcore.scheme-stability-and-diffusion
+  - figure.cfdcore.stochastic-sampling-figures
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-decarbonisation-tuyeres
+  title: H₂/CH₄ Co-injection in Blast-Furnace Tuyeres
+  kind: plot
+  access: request
+  project: decarbonisation-tuyeres
+  studio: molecules?preset=8
+  explainers:
+  - figure.decarbonisation-tuyeres.co2-and-temperature-limit
+  - figure.decarbonisation-tuyeres.mesh-and-grid-checks
+  - figure.decarbonisation-tuyeres.pci-geometry
+  - figure.decarbonisation-tuyeres.pci-rig-cad
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-dokimazo
+  title: dokimazo — A PIDO Optimization Workbench
+  kind: plot
+  access: request
+  project: dokimazo
+  studio: mechanism?preset=19
+  explainers:
+  - figure.dokimazo.external-solver-design-loops
+  - figure.dokimazo.landscape-search-traces
+  - figure.dokimazo.rl-conformer-search
+  - figure.dokimazo.samplers-pareto-uq
+  - figure.dokimazo.solver-races
+  - figure.dokimazo.topopt-gradient-vs-heuristics
+  - figure.dokimazo.vine-mark
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-flamelab
+  title: flamelab
+  kind: plot
+  access: request
+  project: flamelab
+  studio: atlas?ch=S25&ex=0
+  explainers:
+  - figure.flamelab.8036-qc
+  - figure.flamelab.MVI8036-flickering-onset-transition
+  - figure.flamelab.MVI8036-method-figure
+  - figure.flamelab.MVI8036-pod-dmd
+  - figure.flamelab.MVI8036-timeseries-height-width-regimes
+  - figure.flamelab.MVI8036-zonal-four-regimes-quadrant
+  - figure.flamelab.ensemble-aligned-height
+  - figure.flamelab.evap-tau-forest
+  - figure.flamelab.methods-onset
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-future-work-cnf-mso
+  title: Reaction-Classification-Aware Multi-Stage Optimization
+  kind: page
+  access: request
+  project: future-work-cnf-mso
+  studio: atlas?ch=S13&ex=4
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-gasification
+  title: Steam-Catalytic Downdraft Gasification
+  kind: plot
+  access: request
+  project: gasification
+  studio: molecules?preset=12
+  explainers:
+  - figure.gasification.h2-vs-steam-ratio
+  - figure.gasification.mass-balance-and-operating-envelope
+  - figure.gasification.rig-and-lab-photographs
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-geometry-kernel
+  title: PANSOPHIA geometry kernel
+  kind: plot
+  access: request
+  project: geometry-kernel
+  studio: intersect?preset=0
+  explainers:
+  - figure.geometry-kernel.feature-checks
+  - figure.geometry-kernel.geostudio-booleans
+  - figure.geometry-kernel.geostudio-features
+  - figure.geometry-kernel.geostudio-primitives
+  - figure.geometry-kernel.geostudio-profiles-and-patterns
+  - figure.geometry-kernel.geostudio-transforms
+  - figure.geometry-kernel.sdf-revolved-nozzle
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-japan-2026-paper
+  title: 'Power-mean objective: Japan 2026 symposium paper'
+  kind: plot
+  access: request
+  project: japan-2026-paper
+  studio: atlas?ch=S13&ex=4
+  explainers:
+  - figure.japan-2026-paper.dominance
+  - figure.japan-2026-paper.hyperparameter-heatmaps
+  - figure.japan-2026-paper.ignition-delay-profiles
+  - figure.japan-2026-paper.toy-landscapes
+  - figure.japan-2026-paper.toy-optimizer-grid
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-math-studio-course
+  title: Math Visual Studio
+  kind: plot
+  access: request
+  project: math-studio-course
+  studio: gallery
+  explainers:
+  - figure.math-studio-course.approximating-by-pieces-cells-wedges-boxes-bands-chords
+  - figure.math-studio-course.hair-skinning-and-mechanisms
+  - figure.math-studio-course.matrices-morphs-gimbal-lock-and-svd
+  - figure.math-studio-course.solids-of-revolution-washers-shells-and-cross-sections
+  - figure.math-studio-course.solver-regression-heat-stability-and-phase-plane
+  - figure.quantum-chemistry.potential-energy-surface-barrier-and-rate
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-microfluidics
+  title: PANSOPHIA microfluidics solver
+  kind: plot
+  access: request
+  project: microfluidics
+  studio: atlas?ch=S61&ex=0
+  explainers:
+  - figure.microfluidics.benchmark-and-3d-mms
+  - figure.microfluidics.dean-flow-and-inertial-focusing
+  - figure.microfluidics.exact-solution-and-brinkman-checks
+  - figure.microfluidics.power-identity-and-gradient-checks
+  - figure.microfluidics.stokes-and-slip-flow-demos
+  - figure.microfluidics.transport-multiphysics-demos
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-mosiac
+  title: MOSIAC
+  kind: plot
+  access: request
+  project: mosiac
+  studio: molecules?preset=11
+  explainers:
+  - figure.mosiac.condition-maps
+  - figure.mosiac.flame-speed-and-extinction
+  - figure.mosiac.gui-walkthrough
+  - figure.mosiac.idt-grid-and-jsr
+  - figure.mosiac.optimization-run
+  - figure.mosiac.rop-and-species
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-mso-objectives
+  title: MSO Objective Functions & Multi-Stage Optimization
+  kind: plot
+  access: request
+  project: mso-objectives
+  studio: atlas?ch=S13&ex=4
+  explainers:
+  - figure.mso-objectives.dominance-and-objective-comparison
+  - figure.mso-objectives.ellipsoid-containment
+  - figure.mso-objectives.hyperparameter-heatmaps
+  - figure.mso-objectives.ignition-delay-profiles
+  - figure.mso-objectives.response-surface-parity
+  - figure.mso-objectives.stage-and-solver-comparison
+  - figure.mso-objectives.toy-landscape-and-solver-grid
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-muq-sac
+  title: MUQ-SAC — Joint Arrhenius Uncertainty Quantification
+  kind: plot
+  access: request
+  project: muq-sac
+  studio: atlas?ch=S27&ex=2
+  explainers:
+  - figure.muq-sac.correlation-heatmaps
+  - figure.muq-sac.ellipsoid-containment
+  - figure.muq-sac.four-class-cost
+  - figure.muq-sac.gp-parity
+  - figure.muq-sac.kappa-class-samples
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-muqsac-plus-plus
+  title: MUQSAC++
+  kind: page
+  access: request
+  project: muqsac-plus-plus
+  studio: ''
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-neural-ode-course
+  title: Neural ODEs and Transformations — A Self-Built Course
+  kind: plot
+  access: request
+  project: neural-ode-course
+  studio: deform?preset=2
+  explainers:
+  - figure.neural-ode-course.augmented-neural-odes-and-the-reversal-obstruction
+  - figure.neural-ode-course.data-driven-and-learned-transforms
+  - figure.neural-ode-course.depth-gain-optimizers-and-residual-blocks
+  - figure.neural-ode-course.explicit-methods-order-and-stability
+  - figure.neural-ode-course.forward-pass-adjoint-and-the-two-routes-to-a-gradient
+  - figure.neural-ode-course.implicit-methods-and-stability-regions
+  - figure.neural-ode-course.linear-spectral-and-basis-maps
+  - figure.neural-ode-course.log-charts-dead-zones-and-eigenvalue-compression
+  - figure.neural-ode-course.maps-flows-and-invariants
+  - figure.neural-ode-course.normalization-conditioning-and-optimizer-speed
+  - figure.neural-ode-course.ode-fields-picard-and-phase-portraits
+  - figure.neural-ode-course.scalar-and-coordinate-transforms
+  - figure.neural-ode-course.stiffness-rober-and-conservation
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-neural-ode-playground
+  title: vZero — A Neural ODE Research Playground
+  kind: plot
+  access: request
+  project: neural-ode-playground
+  studio: solver?tab=ode&preset=4
+  explainers:
+  - figure.neural-ode-playground.ablation-and-comparison-bars
+  - figure.neural-ode-playground.dataset-split-geometry
+  - figure.neural-ode-playground.gradients-and-representations
+  - figure.neural-ode-playground.rl-arena-diagnostics
+  - figure.neural-ode-playground.training-curves-and-optimizers
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-phd-thesis
+  title: 'PhD thesis: a fast, robust, kinetics-based optimization framework'
+  kind: plot
+  access: request
+  project: phd-thesis
+  studio: atlas?ch=S13&ex=4
+  explainers:
+  - figure.phd-thesis.active-parameter-counts
+  - figure.phd-thesis.arrhenius-perturbation-and-uncertainty-classes
+  - figure.phd-thesis.bootstrap-ignition-delay-band
+  - figure.phd-thesis.first-order-sensitivity-bars
+  - figure.phd-thesis.ignition-delay-nominal-vs-optimized
+  - figure.phd-thesis.prior-uncertainty-vs-temperature
+  - figure.phd-thesis.prs-parity-plots
+  - figure.phd-thesis.prs-relative-error-by-case
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-plasma-sludge-pyrolysis
+  title: Plasma sludge pyrolysis
+  kind: page
+  access: request
+  project: plasma-sludge-pyrolysis
+  studio: ''
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-pysr-rate-rules
+  title: Symbolic Regression for Universal Rate Rules
+  kind: plot
+  access: request
+  project: pysr-rate-rules
+  studio: solver?tab=sr&preset=0
+  explainers:
+  - figure.pysr-rate-rules.collinearity
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-quantum-chemistry
+  title: Quantum chemistry
+  kind: plot
+  access: request
+  project: quantum-chemistry
+  studio: ''
+  explainers:
+  - figure.quantum-chemistry.h2-curve-orbital-shapes-and-two-electron-integrals
+  - figure.quantum-chemistry.overlap-matrix-and-molecular-geometry
+  - figure.quantum-chemistry.potential-energy-surface-barrier-and-rate
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-sciml
+  title: Scientific ML for Stiff Kinetics
+  kind: plot
+  access: request
+  project: sciml
+  studio: atlas?ch=S32&ex=0
+  explainers:
+  - figure.sciml.latent-manifold-and-layer-saturation
+  - figure.sciml.learned-stiffness-and-ignition-timing
+  - figure.sciml.noise-floor-and-error-scaling
+  - figure.sciml.trajectory-grids-training-curves-and-drift
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-turbulence-closures
+  title: Turbulence Closures — From Mixing Length to Data-Driven RANS
+  kind: plot
+  access: request
+  project: turbulence-closures
+  studio: atlas?ch=S82&ex=3
+  explainers:
+  - figure.turbulence-closures.energy-spectrum
+  - figure.turbulence-closures.fig01-vorticity-okubo-weiss
+  - figure.turbulence-closures.fig02-re100-force-timeseries
+  - figure.turbulence-closures.fig04-karman-vortex-street
+  - figure.turbulence-closures.rsm-vs-dns
+  - figure.turbulence-closures.tke-budget-order-of-magnitude
+  - figure.turbulence-closures.vorticity-snapshots
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-vaporizer-rigs
+  title: Vaporizer & Combustion Rig Design
+  kind: plot
+  access: request
+  project: vaporizer-rigs
+  studio: atlas?ch=S53&ex=2
+  explainers:
+  - figure.vaporizer-rigs.sizing-sweeps
+  - figure.vaporizer-rigs.tube-sizing-profiles
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: project-vzero-explainer
+  title: vZero explainer
+  kind: plot
+  access: request
+  project: vzero-explainer
+  studio: solver?tab=ode&preset=4
+  explainers:
+  - figure.vzero-explainer.clocks-solvers-and-coordinates
+  - figure.vzero-explainer.learning-loop-rollout-and-gradient-check
+  - figure.vzero-explainer.linear-lifts-snapshots-and-latent-models
+  - figure.vzero-explainer.loss-scaling-gradients-and-landscapes
+  - figure.vzero-explainer.rounding-export-and-fair-comparison
+  - figure.vzero-explainer.state-rate-and-learned-vector-field
+  - figure.vzero-explainer.structure-constraints-and-observation
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-atlas-p01_foundations
+  title: 'Math Studio clip: Mathematical foundations'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=atlas-p01_foundations
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-atlas-p08_mechanics-physics
+  title: 'Math Studio clip: Classical mechanics and oscillations'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=atlas-p08_mechanics-physics
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-atlas-p08_mechanics-engineering-mechanics
+  title: 'Math Studio clip: Statics and dynamics'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=atlas-p08_mechanics-engineering-mechanics
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-atlas-p11_thermo_fluids_solids-engineering-mechanics
+  title: 'Math Studio clip: Fluids and strength of materials'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=atlas-p11_thermo_fluids_solids-engineering-mechanics
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-atlas-p14_em_optics_modern
+  title: 'Math Studio clip: Electromagnetism, optics and quantum'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=atlas-p14_em_optics_modern
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-atlas-p18_advanced-advanced-mechanics
+  title: 'Math Studio clip: Lagrange and Hamilton'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=atlas-p18_advanced-advanced-mechanics
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-atlas-p18_advanced-computation
+  title: 'Math Studio clip: Finite elements, control and workflow'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=atlas-p18_advanced-computation
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-atlas-p18_advanced-visualization
+  title: 'Math Studio clip: Visual libraries'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=atlas-p18_advanced-visualization
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-atlas-p18_advanced-learning
+  title: 'Math Studio clip: Exercises'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=atlas-p18_advanced-learning
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-atlas-p26_projects
+  title: 'Math Studio clip: Cross-disciplinary projects'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=atlas-p26_projects
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-molecules
+  title: 'Math Studio clip: Molecular dynamics'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=molecules
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-deform
+  title: 'Math Studio clip: Deformation and hair'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=deform
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-mechanism-joints
+  title: 'Math Studio clip: Joints and degrees of freedom'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=mechanism-joints
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-mechanism-linkages
+  title: 'Math Studio clip: Linkages and mobility'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=mechanism-linkages
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-mechanism-supports
+  title: 'Math Studio clip: Supports and determinacy'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=mechanism-supports
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-lab-riemann2
+  title: 'Math Studio clip: Riemann prisms'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=lab-riemann2
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-lab-polar
+  title: 'Math Studio clip: Polar coordinates'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=lab-polar
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-lab-triple
+  title: 'Math Studio clip: Triple integral: boxes & mass'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=lab-triple
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-lab-cyl
+  title: 'Math Studio clip: Cylindrical coordinates'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=lab-cyl
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-lab-sph
+  title: 'Math Studio clip: Spherical coordinates'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=lab-sph
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-lab-jacobian
+  title: 'Math Studio clip: Change of variables (Jacobian)'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=lab-jacobian
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-lab-slicing
+  title: 'Math Studio clip: Volumes by slicing: any cross-section'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=lab-slicing
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-lab-det3
+  title: 'Math Studio clip: 3D determinant: the unit cube under A'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=lab-det3
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-revolve
+  title: 'Math Studio clip: Solids of revolution'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=revolve
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-transform
+  title: 'Math Studio clip: Linear maps in the plane'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=transform
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-transform3d
+  title: 'Math Studio clip: Matrices in space'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=transform3d
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-arc
+  title: 'Math Studio clip: Arc length'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=arc
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-surface
+  title: 'Math Studio clip: Surface area'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=surface
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-double
+  title: 'Math Studio clip: Double integrals'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=double
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-polar
+  title: 'Math Studio clip: Polar integration'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=polar
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''
+- id: promo-solver-ode
+  title: 'Math Studio clip: Phase planes'
+  kind: promo
+  access: request
+  project: ''
+  studio: promos?item=solver-ode
+  explainers: []
+  requestable:
+  - code
+  - pdf
+  notes: ''

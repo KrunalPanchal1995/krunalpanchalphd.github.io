@@ -1,0 +1,90 @@
+{%- comment -%}
+  Terminal-style data sheet for a project. Usage:
+    {% include project-datasheet.liquid slug=slug words=words minutes=minutes route=route %}
+  Everything is derived from _data/project_images.yml, _data/project_docs.yml and the page front matter.
+{%- endcomment -%}
+{%- assign ds_items = site.data.project_images[include.slug] -%}
+{%- assign ds_entry = site.data.project_docs[include.slug] -%}
+{%- assign ds_docs = ds_entry.docs | default: ds_entry -%}
+{%- assign ds_vids = ds_items | where_exp: 'i', 'i.video' -%}
+{%- assign ds_ni = ds_items.size | minus: ds_vids.size -%}
+{%- assign ds_topics = '' | split: '' -%}
+{%- assign ds_fmts = '' | split: '' -%}
+{%- for it in ds_items -%}
+  {%- assign t = it.topic | default: 'other' -%}
+  {%- unless ds_topics contains t -%}{%- assign ds_topics = ds_topics | push: t -%}{%- endunless -%}
+  {%- if it.src_800 -%}
+    {%- assign f1 = it.src_800 | split: '.' | last | downcase | replace: 'jpeg', 'jpg' -%}
+    {%- unless ds_fmts contains f1 -%}{%- assign ds_fmts = ds_fmts | push: f1 -%}{%- endunless -%}
+  {%- endif -%}
+  {%- if it.video -%}
+    {%- assign f2 = it.video | split: '.' | last | downcase -%}
+    {%- unless ds_fmts contains f2 -%}{%- assign ds_fmts = ds_fmts | push: f2 -%}{%- endunless -%}
+  {%- endif -%}
+  {%- if it.original_pdf -%}
+    {%- unless ds_fmts contains 'pdf' -%}{%- assign ds_fmts = ds_fmts | push: 'pdf' -%}{%- endunless -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if ds_docs and ds_docs.size > 0 -%}
+  {%- unless ds_fmts contains 'pdf' -%}{%- assign ds_fmts = ds_fmts | push: 'pdf' -%}{%- endunless -%}
+{%- endif -%}
+<section class="ds" aria-labelledby="ds-h">
+  <header class="ds__bar mono">
+    <span class="ds__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <h2 id="ds-h" class="ds__t">
+      datasheet <span class="ds__sl">// {{ include.slug }}</span>
+    </h2>
+  </header>
+  <dl class="ds__list mono">
+    <div class="ds__row">
+      <dt>images</dt>
+      <dd>{{ ds_ni }}</dd>
+    </div>
+    <div class="ds__row">
+      <dt>videos</dt>
+      <dd>{{ ds_vids.size | default: 0 }}</dd>
+    </div>
+    <div class="ds__row">
+      <dt>formats</dt>
+      <dd>
+        {% if ds_fmts.size > 0 %}{{ ds_fmts | join: ', ' }}{% else %}none (text only){% endif %}
+      </dd>
+    </div>
+    <div class="ds__row">
+      <dt>text</dt>
+      <dd>{{ include.words | default: 0 }} words · {{ include.minutes | default: 1 }} min read</dd>
+    </div>
+    <div class="ds__row">
+      <dt>studio</dt>
+      <dd>
+        {%- if include.route and include.route != '' and include.route != 'gallery' -%}
+          <a href="{{ '/studio/' | relative_url }}#{{ include.route | escape }}">/{{ include.route | escape }}</a>
+        {%- else -%}
+          <a href="{{ '/studio/' | relative_url }}">/studio (gallery)</a>
+        {%- endif -%}
+      </dd>
+    </div>
+    {%- if page.restored_from -%}
+      <div class="ds__row">
+        <dt>source</dt>
+        <dd>previous site</dd>
+      </div>
+    {%- endif -%}
+    {%- if ds_topics.size > 0 -%}
+      <div class="ds__row ds__row--topics">
+        <dt>topics</dt>
+        <dd>
+          <ul class="ds__topics">
+            {%- for t in ds_topics -%}
+              {%- assign tc = ds_items | where: 'topic', t | size -%}
+              <li>
+                {{ t | replace: '-', ' ' }}
+                <span class="ds__n">×{{ tc }}</span>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </dd>
+      </div>
+    {%- endif -%}
+  </dl>
+</section>

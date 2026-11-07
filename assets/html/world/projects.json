@@ -1,0 +1,25 @@
+---
+---
+{%- comment -%} Generated from the projects collection (sorted by importance). One station per project. {%- endcomment -%}
+{%- assign plist = site.projects | sort: 'importance' -%}
+[
+{%- for p in plist -%}
+  {%- assign slug = p.slug -%}
+  {%- assign cats = p.category | join: ',' | split: ',' -%}
+  {%- assign route = p.studio | default: site.data.studio_map[slug].route -%}
+  {%- assign img = p.img -%}
+  {%- if img == nil or img == '' -%}
+    {%- assign imgs = site.data.project_images[slug] -%}
+    {%- if imgs -%}{%- assign img = imgs[0].src_800 -%}{%- endif -%}
+  {%- endif -%}
+  {
+    "slug": {{ slug | jsonify }},
+    "title": {{ p.title | jsonify }},
+    "category": {{ cats[0] | default: 'software' | jsonify }},
+    "img": {{ img | default: '' | jsonify }},
+    "url": {{ p.url | relative_url | jsonify }},
+    "app": {% if p.app %}{{ p.app | relative_url | jsonify }}{% else %}""{% endif %},
+    "studio": {% if route %}{{ '/studio/' | relative_url | append: '#' | append: route | jsonify }}{% else %}""{% endif %}
+  }{% unless forloop.last %},{% endunless %}
+{%- endfor %}
+]

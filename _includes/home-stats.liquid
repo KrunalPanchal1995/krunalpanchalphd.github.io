@@ -1,0 +1,25 @@
+{%- comment -%} Mono counters from the owner's extra.stats only ([{value,label,suffix}]). Final numbers are in the HTML; home.js counts up when scrolled into view (skipped under reduced motion). {%- endcomment -%}
+{%- assign stats = site.data.intake_pages.home.extra.stats -%}
+{%- if stats and stats.size > 0 -%}
+  <section class="home-sec home-stats" aria-label="Numbers" data-home-stats>
+    <ul class="home-stats__grid">
+      {%- for s in stats -%}
+        {%- assign v = s.value | append: '' -%}
+        {%- assign dec = 0 -%}
+        {%- if v contains '.' -%}
+          {%- assign parts = v | split: '.' -%}
+          {%- assign dec = parts[1] | size -%}
+        {%- endif -%}
+        <li class="home-stat raised">
+          <p class="home-stat__v mono">
+            <span data-count="{{ v | escape }}" data-dec="{{ dec }}">{{ v | escape }}</span>
+            {%- if s.suffix -%}
+              <span class="home-stat__suf">{{ s.suffix | escape }}</span>
+            {%- endif -%}
+          </p>
+          <p class="home-stat__l">{{ s.label | escape }}</p>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </section>
+{%- endif -%}

@@ -1,0 +1,101 @@
+---
+layout: default
+---
+{%- comment -%}
+  Home page of the doctoral portfolio (krunalpanchalphd.github.io). A short, focused alternative to the
+  Studio-centred `home` layout: intro and research philosophy, the end-to-end loop, project tiles, selected publications.
+  Text comes from the same data files as the rest of the site (intake_pages.about, socials, projects).
+{%- endcomment -%}
+{%- assign ab = site.data.intake_pages.about -%}
+{%- assign soc = site.data.socials -%}
+{%- assign phil = ab.body_md | split: '## Research philosophy' | last | split: '## Background' | first | strip -%}
+{%- assign projs = site.projects | sort: 'importance' -%}
+<div class="home phd-home">
+  <section class="home-intro" id="about" aria-label="Introduction">
+    <p class="eyebrow">Doctoral research portfolio</p>
+    <h1 class="phd-home__name">Dr. Krunal R. Panchal</h1>
+    <p class="home-cred mono">
+      <span>PhD, Mechanical Engineering, IIT Madras ({{ ab.extra.degree_year }})</span>
+      <span>Process engineering for reacting systems: chemistry, uncertainty, CFD, and machine-learning surrogates</span>
+    </p>
+    <div class="home-pull">{{ phil | markdownify }}</div>
+    <div class="home-dock">
+      <ul class="home-cta" aria-label="Main sections">
+        <li><a class="btn-cta btn-cta-primary" href="{{ '/projects/mosiac/' | relative_url }}">The MOSIAC loop</a></li>
+        <li><a class="btn-cta" href="{{ '/projects/' | relative_url }}">Projects</a></li>
+        <li><a class="btn-cta" href="{{ '/playground/' | relative_url }}">Neural-ODE playground</a></li>
+        <li><a class="btn-cta" href="{{ '/publications/' | relative_url }}">Publications</a></li>
+        <li><a class="btn-cta" href="{{ '/about/' | relative_url }}">About</a></li>
+        <li><a class="btn-cta" href="{{ '/cv/' | relative_url }}">CV</a></li>
+      </ul>
+      <ul class="home-links" aria-label="Profiles">
+        {%- if soc.github_username -%}<li><a href="https://github.com/{{ soc.github_username }}" rel="me noopener"><i class="fa-brands fa-github" aria-hidden="true"></i>GitHub</a></li>{%- endif -%}
+        {%- if soc.orcid_id -%}<li><a href="https://orcid.org/{{ soc.orcid_id }}" rel="me noopener"><i class="ai ai-orcid" aria-hidden="true"></i>ORCID</a></li>{%- endif -%}
+        {%- if soc.linkedin_username -%}<li><a href="https://linkedin.com/in/{{ soc.linkedin_username }}" rel="me noopener"><i class="fa-brands fa-linkedin" aria-hidden="true"></i>LinkedIn</a></li>{%- endif -%}
+      </ul>
+    </div>
+  </section>
+
+  <section class="home-sec" aria-labelledby="phd-loop">
+    <header class="home-sec__head">
+      <p class="eyebrow">How the work fits together</p>
+      <h2 id="phd-loop">One loop, from building a model to using it</h2>
+    </header>
+    <p>
+      The same six steps run through everything here, in the order of Bloom's revised taxonomy: remember the chemistry, understand what
+      controls it, apply it in simulation, analyse the uncertainty, evaluate it against experiments, and create something new from it.
+      <a href="{{ '/projects/mosiac/' | relative_url }}">MOSIAC</a> is that loop for combustion chemistry; the last step, running the
+      calibrated model inside CFD and teaching a neural network to stand in for it, is current research.
+    </p>
+    <ol class="phd-loop">
+      <li><b>Construct</b> <span>build or import the reaction mechanism</span></li>
+      <li><b>Explain</b> <span>which reactions control which measurements</span></li>
+      <li><b>Simulate</b> <span>reactors, flames, cross-checked solvers</span></li>
+      <li><b>Quantify and reduce</b> <span>how sure are we; keep only what matters</span></li>
+      <li><b>Calibrate</b> <span>tune against experiments with honest error bars</span></li>
+      <li><b>Use</b> <span>CFD and Neural-ODE surrogates (current research)</span></li>
+    </ol>
+  </section>
+
+  <section class="home-sec" aria-labelledby="phd-projects">
+    <header class="home-sec__head">
+      <p class="eyebrow">Work</p>
+      <h2 id="phd-projects"><a href="{{ '/projects/' | relative_url }}" class="about-h2-link">Projects</a></h2>
+    </header>
+    <div class="phd-tiles">
+      {%- for p in projs -%}
+        <a class="phd-tile raised" href="{{ p.url | relative_url }}">
+          {%- if p.img -%}<img src="{{ p.img | relative_url }}" alt="" loading="lazy">{%- endif -%}
+          <span class="phd-tile__t">{{ p.title | escape }}</span>
+          <span class="phd-tile__d">{{ p.description | truncate: 150 | escape }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </section>
+
+  {%- if page.selected_papers -%}
+    {%- capture sel_count -%}{% bibliography_count --query @*[selected=true]* %}{%- endcapture -%}
+    {%- assign sel_n = sel_count | strip | plus: 0 -%}
+    {%- if sel_n > 0 -%}
+      <section class="home-sec" aria-labelledby="home-pubs">
+        <header class="home-sec__head">
+          <p class="eyebrow">Papers</p>
+          <h2 id="home-pubs"><a href="{{ '/publications/' | relative_url }}" class="about-h2-link">Selected publications</a></h2>
+        </header>
+        {% include selected_papers.liquid %}
+      </section>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+<style>
+  .phd-home__name { font-size: clamp(2rem, 5vw, 3.2rem); margin: 0.2em 0 0.3em; }
+  .phd-loop { display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); list-style: none; padding: 0; counter-reset: s; margin-top: 1rem; }
+  .phd-loop li { counter-increment: s; padding: 0.7rem 0.9rem; border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.35)); border-radius: 10px; }
+  .phd-loop li::before { content: counter(s); display: inline-block; width: 1.5em; font-weight: 700; opacity: 0.55; }
+  .phd-loop span { display: block; font-size: 0.9em; opacity: 0.8; }
+  .phd-tiles { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .phd-tile { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.8rem; text-decoration: none; color: inherit; border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.35)); border-radius: 12px; }
+  .phd-tile img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; }
+  .phd-tile__t { font-weight: 700; }
+  .phd-tile__d { font-size: 0.9em; opacity: 0.8; }
+</style>

@@ -1,0 +1,122 @@
+[
+ {
+  "slug": "silicon-photonics-waveguides",
+  "stem": "01_ring_resonator_transmission",
+  "caption": "Through-port dip of an all-pass ring: the depth depends on how the coupling r compares with the round-trip loss a; resonances repeat every FSR.",
+  "topic": "rings"
+ },
+ {
+  "slug": "silicon-photonics-waveguides",
+  "stem": "02_slab_waveguide_modes",
+  "caption": "TE modes of a symmetric slab: mode m exists only above its cutoff V = m pi, so V < pi gives a single-mode guide.",
+  "topic": "waveguides"
+ },
+ {
+  "slug": "lasers-photodetectors",
+  "stem": "01_photodiode_responsivity",
+  "caption": "Responsivity rises with wavelength (more photons per watt) until the band gap sets a hard long-wavelength cutoff; illustrative eta = 0.8.",
+  "topic": "detectors"
+ },
+ {
+  "slug": "lasers-photodetectors",
+  "stem": "02_laser_li_curve",
+  "caption": "Below threshold the diode is a weak LED; above I_th stimulated emission dominates and power rises linearly with current.",
+  "topic": "lasers"
+ },
+ {
+  "slug": "electromagnetics-maxwell",
+  "stem": "01_fresnel_reflectance",
+  "caption": "Fresnel equations from Maxwell's boundary conditions: p-polarised light is not reflected at the Brewster angle.",
+  "topic": "waves"
+ },
+ {
+  "slug": "electromagnetics-maxwell",
+  "stem": "02_skin_depth",
+  "caption": "At high frequency the field decays inside a conductor over the skin depth, so only a thin surface layer carries current.",
+  "topic": "conductors"
+ },
+ {
+  "slug": "ic-fabrication-flow",
+  "stem": "01_oxide_growth_deal_grove",
+  "caption": "Deal-Grove: growth is linear at first (reaction-limited) and slows to parabolic (diffusion-limited) as the oxide thickens.",
+  "topic": "oxidation"
+ },
+ {
+  "slug": "ic-fabrication-flow",
+  "stem": "02_yield_vs_die_area",
+  "caption": "Why big dies are expensive: with random defects, yield falls exponentially with die area, so smaller chiplets help.",
+  "topic": "yield"
+ },
+ {
+  "slug": "lithography-euv-limits",
+  "stem": "01_rayleigh_resolution",
+  "caption": "Resolution improves with shorter wavelength and larger NA; the dots mark typical tool settings (idealised, single exposure).",
+  "topic": "resolution"
+ },
+ {
+  "slug": "lithography-euv-limits",
+  "stem": "02_photon_shot_noise",
+  "caption": "EUV photons carry ~14x more energy, so the same dose delivers far fewer photons per pixel, which makes edges noisier (stochastics).",
+  "topic": "stochastics"
+ },
+ {
+  "slug": "mosfet-cmos-scaling",
+  "stem": "01_mosfet_output_characteristics",
+  "caption": "Square-law model: a resistor-like triode region below V_GS - V_T, then a flat saturation current.",
+  "topic": "device"
+ },
+ {
+  "slug": "mosfet-cmos-scaling",
+  "stem": "02_subthreshold_swing",
+  "caption": "Below threshold the current is exponential in V_GS; the thermal voltage kT/q fixes a ~60 mV/decade floor at room temperature.",
+  "topic": "leakage"
+ },
+ {
+  "slug": "vlsi-circuit-design",
+  "stem": "01_cmos_inverter_vtc",
+  "caption": "A CMOS inverter flips sharply near V_DD/2, restoring logic levels, and draws current only while switching.",
+  "topic": "digital"
+ },
+ {
+  "slug": "vlsi-circuit-design",
+  "stem": "02_energy_delay_tradeoff",
+  "caption": "Lowering the supply voltage cuts energy quadratically but slows the gates, which is the core dynamic-voltage-scaling trade-off.",
+  "topic": "power"
+ },
+ {
+  "slug": "power-electronics-converters",
+  "stem": "01_buck_inductor_current",
+  "caption": "The inductor ramps up while the switch is on and down while it is off; the ripple is set by L and the switching frequency.",
+  "topic": "buck"
+ },
+ {
+  "slug": "power-electronics-converters",
+  "stem": "02_conversion_ratio",
+  "caption": "Duty cycle sets the output: a buck steps down, a boost steps up (with the gain blowing up as D tends to 1), a buck-boost inverts.",
+  "topic": "topologies"
+ },
+ {
+  "slug": "rf-antennas-microwaves",
+  "stem": "01_free_space_path_loss",
+  "caption": "Friis free-space loss grows 20 dB per decade of distance and with frequency, which is why mmWave needs high-gain antennas.",
+  "topic": "links"
+ },
+ {
+  "slug": "rf-antennas-microwaves",
+  "stem": "02_reflection_vswr",
+  "caption": "Reflection coefficient, return loss and VSWR for a resistive load on a 50 ohm line: only Z_L = Z_0 absorbs everything.",
+  "topic": "matching"
+ },
+ {
+  "slug": "sensors-mems-control",
+  "stem": "01_mems_resonator_response",
+  "caption": "A mass-spring-damper is the model for most MEMS: a high Q gives a tall, narrow resonance, ideal for sensing small shifts.",
+  "topic": "mems"
+ },
+ {
+  "slug": "sensors-mems-control",
+  "stem": "02_pid_step_response",
+  "caption": "Proportional control leaves an offset, integral action removes it at the cost of overshoot, and derivative action damps it.",
+  "topic": "control"
+ }
+]

@@ -1,0 +1,223 @@
+# The Math Studio subject taxonomy (WP-C). Read by scripts/build_studio_static.py (build_explainers) and by the Liquid
+# includes (the subject chip on every project figure). Edit here, then re-run `python3 scripts/build_studio_static.py --apply`.
+#
+# subjects[]: id, title, blurb (UI-level, neutral: what the subject covers), glyph (a short math symbol), color
+#   (a design token: teal | amber | rose | sky | violet | lime; the Studio maps them to --teal/--amber/--rose/--sky and
+#   the site's --cat-cfd / --cat-experimental), atlas (Atlas chapter ids; "S08-S15" is a range), scenes (extra live
+#   routes: {route, label}), plot_families / plot_classes (plot-taxonomy families, and single classes, that belong here), featured (true = its card
+#   is shown as its own section).
+# topic_map: <project slug>: { default: <subject id>, <topic>: <subject id> }. A figure belongs to exactly one subject
+#   (its primary home); the build warns about topics that have no entry.
+subjects:
+  - id: optimization
+    title: Optimization
+    blurb: "Objective functions, gradients, solvers and surrogates, from the least-squares error surface to optimizer races on test landscapes."
+    glyph: "∇f"
+    color: teal
+    atlas: [S13, S29]
+    scenes: []
+    plot_families: [F7]
+  - id: uq
+    title: Uncertainty quantification
+    blurb: "Probability, sampling and correlation: how input uncertainty propagates to outputs, and how to read the ensembles that result."
+    glyph: "σ²"
+    color: sky
+    atlas: [S24, S25, S26, S27]
+    scenes: []
+    plot_families: [F8]
+  - id: kinetics
+    title: Reaction kinetics
+    blurb: "Arrhenius rate laws, collision theory and ignition delay: how temperature sets the speed of a reaction."
+    glyph: "Ea"
+    color: amber
+    atlas: [S112, S55]
+    scenes:
+      - { route: "molecules?preset=8", label: "Collision theory: A + B to C with an activation energy" }
+      - { route: "molecules?preset=11", label: "The Arrhenius plot: ln k against 1/T" }
+      - { route: "molecules?preset=12", label: "A catalyst lowers the barrier" }
+    plot_families: [F9]
+  - id: stiff-sciml
+    title: Stiff systems and scientific ML
+    blurb: "Stiffness, stability regions and implicit integrators, and the neural-network models trained on stiff dynamics."
+    glyph: "λ"
+    color: rose
+    atlas: [S16, S32, S22, S91]
+    scenes:
+      - { route: "solver?tab=ode&preset=5", label: "Van der Pol: a relaxation oscillator in the phase plane" }
+    plot_families: [F4, F6]
+  - id: calc-transform
+    title: Calculus and transformations
+    blurb: "Functions, integrals, matrices as maps of space and Fourier ideas: the mathematics under most other subjects."
+    glyph: "∫"
+    color: sky
+    atlas: [S03, "S08-S15", S19, S20, S17]
+    scenes:
+      - { route: "transform?preset=0", label: "Transform: a matrix is where it sends the basis vectors" }
+      - { route: "transform3d?preset=0", label: "Transform 3D: matrices, orientation, SVD" }
+      - { route: "revolve?preset=0", label: "Revolve: solids of revolution" }
+      - { route: "double?preset=0", label: "Double integral: a table summed by columns or rows" }
+    plot_families: [F1, F3]
+  - id: cfd-numerics
+    title: CFD and numerical methods
+    blurb: "Discretization, stability and verification: how a PDE solver is built and how you check that it solves the right equations."
+    glyph: "Δx"
+    color: violet
+    atlas: [S34, S33, S28, S30, "S85-S87"]
+    scenes:
+      - { route: "flow?preset=0", label: "Flow: the home-page fluid with its pressure matrix, residual and quiz" }
+    plot_families: [F5]
+    plot_classes: [F10.1, F10.7, F10.8, F10.9, F10.10]
+  - id: turbulence
+    title: Turbulence
+    blurb: "Eddy-viscosity closures, spectra, vortex identification and the statistics used to describe turbulent flow."
+    glyph: "u′"
+    color: violet
+    atlas: [S82, S19, S58, S62]
+    scenes: []
+    plot_families: [F10]
+  - id: geometry
+    title: Geometry and kernels
+    blurb: "Shapes as data: CAD and meshing kernels, deformation, mechanisms and kinematic pairs."
+    glyph: "△"
+    color: lime
+    atlas: [S05, "S107-S110"]
+    scenes:
+      - { route: "revolve?preset=0", label: "Revolve: a profile swept around an axis" }
+      - { route: "deform?preset=0", label: "Deform and Hair: transformations of lines and surfaces" }
+      - { route: "mechanism?preset=0", label: "Mechanisms: degrees of freedom and joints" }
+    plot_families: [F2]
+    plot_classes: [F4.1, F4.2]
+  - id: microfluidics
+    title: Microfluidics
+    blurb: "Low-Reynolds-number channel flow, particle migration and separation at the scale of a chip."
+    glyph: "µ"
+    color: sky
+    atlas: [S61, S103, S56]
+    scenes: []
+    plot_families: []
+    plot_classes: [F10.1, F10.2]
+  - id: experimental
+    title: Experiments and measurement
+    blurb: "Turning images and sensor data into numbers: distributions, spectra, standard plots and the checks that make a measurement trustworthy."
+    glyph: "◎"
+    color: lime
+    atlas: [S25, S26, S19, S96, "S113-S121"]
+    scenes: []
+    plot_families: [F11]
+  - id: thermal-process
+    title: Thermal and process engineering
+    blurb: "Energy balances, heat transfer and flow in process equipment: gasifiers, burners, tubes and furnaces."
+    glyph: "Q̇"
+    color: amber
+    atlas: ["S51-S55", S61]
+    scenes: []
+    plot_families: []
+    plot_classes: [F4.5, F11.5, F12.4]
+  - id: qchem
+    title: Quantum chemistry
+    blurb: "Quantum states and operators, the particle in a box, molecular dynamics and potential-energy surfaces."
+    glyph: "ψ"
+    color: rose
+    atlas: ["S77-S79", S106, S111, S112]
+    scenes:
+      - { route: "molecules?preset=13", label: "H + H2 on a potential-energy surface" }
+      - { route: "molecules?preset=14", label: "H + H2: too little energy, the atom bounces back" }
+    plot_families: []
+  - id: playground
+    title: Playground
+    blurb: "The Neural-ODE playground as a subject of its own: models, optimizers and their diagnostics, learned in the playground itself."
+    glyph: "▶"
+    color: coral
+    featured: true
+    atlas: []
+    scenes:
+      - { route: "deform?preset=2", label: "Deform: maps and their Jacobian ellipses" }
+      - { route: "solver?tab=ode&preset=4", label: "Phase plane of an ODE: Lotka-Volterra" }
+      - { route: "atlas?ch=S32&ex=0", label: "Stiffness and the stability region" }
+    plot_families: [F12, F13]
+
+topic_map:
+  cfdcore:
+    default: cfd-numerics
+    geometry-kernel: geometry
+    microfluidics: microfluidics
+    mfV-validation: microfluidics
+    stochastic-uq: uq
+    combustion-propulsion: kinetics
+  decarbonisation-tuyeres:
+    default: thermal-process
+    geometry: geometry
+    mesh: cfd-numerics
+    experimental-rig: experimental
+  dokimazo:
+    default: optimization
+    uncertainty-propagation: uq
+  flamelab:
+    default: experimental
+  gasification:
+    default: thermal-process
+    experiment: experimental
+  math-studio-course:
+    default: calc-transform
+    deform-hair: geometry
+    mechanisms: geometry
+    molecules: qchem
+  mosiac:
+    default: kinetics
+    wt-7-design-space: optimization
+    wt-8-opt-running: optimization
+    wt-9-opt-error: optimization
+  mso-objectives:
+    default: optimization
+    theory: uq
+  muq-sac:
+    default: uq
+  neural-ode-course:
+    default: stiff-sciml
+    p0-maps: calc-transform
+    p1-transforms: calc-transform
+    p4-p6-neural-odes: stiff-sciml
+  neural-ode-playground:
+    default: playground
+  pysr-rate-rules:
+    default: kinetics
+  quantum-chemistry:
+    default: qchem
+  sciml:
+    default: stiff-sciml
+  turbulence-closures:
+    default: turbulence
+  vaporizer-rigs:
+    default: thermal-process
+  geometry-kernel:
+    default: geometry
+  microfluidics:
+    default: microfluidics
+  cfd-multiphysics:
+    default: cfd-numerics
+  cfd-numerics-teaching:
+    default: cfd-numerics
+  japan-2026-paper:
+    default: optimization
+    toy-landscape: optimization
+  phd-thesis:
+    default: optimization
+    chapter-3: optimization
+    chapter-4: optimization
+  bangalore-2026-conference:
+    default: optimization
+  future-work-cnf-mso:
+    default: optimization
+  vzero-explainer:
+    default: playground
+    charts: playground
+    diagrams: playground
+
+# Live twin routes for plot-class pages (the plot class and the Studio scene that draws the same picture). Only classes with
+# a real twin are listed; more are added as the plot explainers are completed.
+plot_live:
+  F5.1: [{ route: "atlas?ch=S30&ex=1", label: "Forward difference: first order" }]
+  F5.2: [{ route: "atlas?ch=S32&ex=0", label: "Explicit Euler on a stiff decay" }, { route: "atlas?ch=S32&ex=1", label: "Implicit Euler is unconditionally stable" }]
+  F1.6: [{ route: "atlas?ch=S96&ex=4", label: "Standard plots: log views" }]
+  F4.7: [{ route: "solver?tab=ode&preset=1", label: "Pendulum: centres and saddles" }]
+  F9.1: [{ route: "molecules?preset=11", label: "The Arrhenius plot: ln k against 1/T" }]

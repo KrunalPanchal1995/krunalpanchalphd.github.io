@@ -1,0 +1,74 @@
+{% comment %}
+  Home-page hero 2/3: headline + a raised card with a live three.js coordinate-transformation
+  scene. Falls back to the placeholder image when WebGL is unavailable.
+  Params (defaults from _data/design.yml hero_params.card3d):
+    name, tagline, accent_word, caption, cta_label, cta_url, fallback_image, managed.
+  Usage: {% include hero-card3d.liquid %}
+  Note: standalone use adds an import map for three.js; place it before any other module
+  script that imports "three" (hero-switch does the same, so use one or the other).
+{% endcomment %}
+{% assign cfg = site.data.design.hero_params.card3d %}
+{% assign h_name = include.name | default: cfg.name | default: site.title %}
+{% assign h_tagline = include.tagline | default: cfg.tagline %}
+{% assign h_accent = include.accent_word | default: cfg.accent_word %}
+{% assign h_caption = include.caption | default: cfg.caption | default: 'Coordinate transformation, live' %}
+{% assign h_cta_label = include.cta_label | default: cfg.cta.label %}
+{% assign h_cta_url = include.cta_url | default: cfg.cta.url %}
+{% assign h_fallback = include.fallback_image | default: cfg.fallback_image | default: '/assets/img/hero/placeholder_flow.jpg' %}
+{% assign h_tagline_html = h_tagline | escape %}
+{% if h_accent != blank %}
+  {% capture h_accent_html %}<em class="hero__accent-word">{{ h_accent | escape }}</em>{% endcapture %}
+  {% assign h_tagline_html = h_tagline_html | replace_first: h_accent, h_accent_html %}
+{% endif %}
+{% unless include.managed %}
+  <link rel="stylesheet" href="{{ '/assets/css/hero.css' | relative_url }}">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "{{ '/assets/vendor/three/three.module.min.js' | relative_url }}",
+        "three/addons/controls/OrbitControls.js": "{{ '/assets/vendor/three/OrbitControls.js' | relative_url }}"
+      }
+    }
+  </script>
+{% endunless %}
+<div
+  class="hero hero--card3d"
+  data-hero="card3d"
+  {% if include.hidden %}
+    hidden
+  {% endif %}
+>
+  <div class="hero__inner">
+    <div class="hero__copy">
+      <h1 class="hero__name">
+        {{ h_name -}}
+        <span class="hero__dot">.</span>
+      </h1>
+      {% if h_tagline != blank %}
+        <p class="hero__tagline">{{ h_tagline_html }}</p>
+      {% endif %}
+      {% if h_cta_label != blank %}
+        <a class="hero__cta" href="{{ h_cta_url | relative_url }}">{{ h_cta_label }}</a>
+      {% endif %}
+    </div>
+    <div class="hero-card">
+      <div class="hero-card__stage"></div>
+      <img
+        class="hero-card__fallback"
+        src="{{ h_fallback | relative_url }}"
+        alt="Placeholder visualisation of a vortex street"
+        width="1920"
+        height="1080"
+        loading="lazy"
+        hidden
+      >
+      <span class="hero-card__chip">{{ h_caption }}</span>
+    </div>
+  </div>
+</div>
+{% unless include.managed %}
+  <script type="module">
+    import { mount } from "{{ '/assets/js/hero/card3d.js' | relative_url }}";
+    document.querySelectorAll('[data-hero="card3d"]').forEach((el) => mount(el));
+  </script>
+{% endunless %}

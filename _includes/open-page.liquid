@@ -1,0 +1,119 @@
+{%- comment -%}
+  open-page: the /open/ page body (WP-J). ALL copy lives in _data/open_access.yml (page:), the rows in _data/open_catalog.yml.
+  Structure only here: header, three cards (free / open now / on approval), what is and is not shared, Studio + recreate steps, the catalogue table
+  (collapses to a stacked list under 720 px) with one request-access component per row.
+{%- endcomment -%}
+{%- assign oa = site.data.open_access -%}
+{%- assign pg = oa.page -%}
+<div class="oa-page">
+  <header class="oa-head">
+    <p class="eyebrow">{{ pg.eyebrow }}</p>
+    <h1>{{ pg.title }}</h1>
+    <p class="oa-head__intro">{{ pg.intro }}</p>
+  </header>
+
+  <div class="oa-grid">
+    <section class="oa-card oa-card--free" aria-labelledby="oa-free">
+      <h2 id="oa-free">{{ pg.free_title }}</h2>
+      <p>{{ pg.free_text }}</p>
+    </section>
+    <section class="oa-card" aria-labelledby="oa-open">
+      <h2 id="oa-open">{{ pg.open_title }}</h2>
+      <p>{{ pg.open_text }}</p>
+    </section>
+    <section class="oa-card" aria-labelledby="oa-req">
+      <h2 id="oa-req">{{ pg.request_title }}</h2>
+      <p>{{ pg.request_text }}</p>
+      {%- if pg.reply_time and pg.reply_time != '' -%}
+        <p>
+          <strong>{{ pg.reply_time_title }}:</strong> {{ pg.reply_time }}
+        </p>
+      {%- endif -%}
+    </section>
+  </div>
+
+  <div class="oa-grid">
+    <section class="oa-card" aria-labelledby="oa-shared">
+      <h2 id="oa-shared">{{ pg.shared_title }}</h2>
+      <ul>
+        {%- for t in pg.shared -%}
+          <li>{{ t }}</li>
+        {%- endfor -%}
+      </ul>
+      {%- unless oa.license_owner_to_confirm -%}
+        <p class="oa-licence">Code: {{ oa.license_code }}. PDF notes: {{ oa.license_docs }}.</p>
+      {%- endunless -%}
+    </section>
+    <section class="oa-card" aria-labelledby="oa-never">
+      <h2 id="oa-never">{{ pg.never_title }}</h2>
+      <ul>
+        {%- for t in pg.never -%}
+          <li>{{ t }}</li>
+        {%- endfor -%}
+      </ul>
+    </section>
+    <section class="oa-card" aria-labelledby="oa-recreate">
+      <h2 id="oa-recreate">{{ pg.recreate_title }}</h2>
+      <ol>
+        {%- for t in pg.recreate_steps -%}
+          <li>{{ t }}</li>
+        {%- endfor -%}
+      </ol>
+    </section>
+  </div>
+
+  <section class="oa-section" aria-labelledby="oa-studio">
+    <h2 id="oa-studio">{{ pg.studio_title }}</h2>
+    <p>
+      {{ pg.studio_text }}
+      <a href="{{ '/studio/' | relative_url }}">Math Studio</a>
+    </p>
+  </section>
+
+  <section class="oa-section" aria-labelledby="oa-table">
+    <h2 id="oa-table">{{ pg.table_title }}</h2>
+    <table class="oa-table">
+      <caption>
+        {{ pg.table_caption }}
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Item</th>
+          <th scope="col">Access</th>
+          <th scope="col">Studio</th>
+          <th scope="col">Get it</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for it in site.data.open_catalog.items -%}
+          <tr class="oa-row" id="oa-{{ it.id | escape }}">
+            <th scope="row">
+              {{ it.title | escape }}
+              {%- if it.project and it.project != '' %}
+                <br>
+                <a class="oa-studio-link" href="{{ '/projects/' | append: it.project | append: '/' | relative_url }}">Project page</a>
+              {%- endif -%}
+            </th>
+            <td data-label="Access">
+              {%- if it.access == 'open' -%}
+                <span class="oa-tag oa-tag--open">Open</span>
+              {%- else -%}
+                <span class="oa-tag oa-tag--request">On request</span>
+              {%- endif -%}
+            </td>
+            <td data-label="Studio">
+              {%- if it.studio and it.studio != '' -%}
+                <a class="oa-studio-link" href="{{ '/studio/' | relative_url }}#{{ it.studio }}"
+                  >Watch the clip<span class="sr-only"> for {{ it.title | escape }}</span></a
+                >
+              {%- else -%}
+                <span aria-label="none">-</span>
+              {%- endif -%}
+            </td>
+            <td data-label="">{% include request-access.liquid id=it.id compact=true %}</td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </section>
+</div>

@@ -1,0 +1,18 @@
+{% comment %}
+  B2 (GOAL_SCORECARD.md, session 4): GoatCounter page-view tracking --
+  the official embed snippet (https://www.goatcounter.com/help/countscript),
+  a single async <script> pointed at the user's own GoatCounter site, no
+  local JS to write or maintain. Gated on site.goatcounter_code being set
+  (_config.yml) so this emits NOTHING on a fresh checkout until that's
+  filled in -- never ships a script tag pointed at a placeholder/nonexistent
+  subdomain. See analytics/goatcounter_notify.py for B3 (the scheduled
+  visit-notification poll, which reads GoatCounter's stats API, not this
+  page-view script).
+{% endcomment %}
+{% if site.goatcounter_code %}
+  <script
+    data-goatcounter="https://{{ site.goatcounter_code }}.goatcounter.com/count"
+    async
+    src="//gc.zgo.at/count.js"
+  ></script>
+{% endif %}

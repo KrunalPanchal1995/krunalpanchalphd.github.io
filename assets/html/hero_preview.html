@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hero preview (static test harness)</title>
+    <!-- Replicates the markup rendered by _includes/hero-switch.liquid with the defaults in
+         _data/design.yml. Serve the repo root (python3 -m http.server) and open
+         /assets/html/hero_preview.html?heropick=1&theme=light  -->
+    <link rel="stylesheet" href="/assets/css/hero.css" />
+    <script>
+      (function () {
+        var t = new URLSearchParams(location.search).get("theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      })();
+    </script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/assets/vendor/three/three.module.min.js",
+          "three/addons/controls/OrbitControls.js": "/assets/vendor/three/OrbitControls.js"
+        }
+      }
+    </script>
+    <style>
+      html[data-theme="dark"] body {
+        background: #0e1116;
+        color: #e4eaf0;
+      }
+      html[data-theme="light"] body {
+        background: #f4f6f8;
+        color: #17202b;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hero-switch" data-hero-switch data-default="fluid" data-allowed="fluid,streamlines,card3d,photo" data-module-base="/assets/js/hero/">
+      <div class="hero hero--fluid" data-hero="fluid">
+        <canvas class="hero__canvas" aria-hidden="true"></canvas>
+        <div class="hero__inner">
+          <h1 class="hero__name">Krunal Panchal<span class="hero__dot">.</span></h1>
+          <p class="hero__tagline">Scientific machine learning for <em class="hero__accent-word">combustion</em> and CFD</p>
+          <a class="hero__cta" href="/projects/">See the research</a>
+        </div>
+      </div>
+      <div class="hero hero--streamlines" data-hero="streamlines" hidden>
+        <canvas class="hero__canvas" aria-hidden="true"></canvas>
+        <div class="hero__inner">
+          <h1 class="hero__name">Krunal Panchal<span class="hero__dot">.</span></h1>
+          <p class="hero__tagline">Scientific machine learning for <em class="hero__accent-word">combustion</em> and CFD</p>
+          <a class="hero__cta" href="/projects/">See the research</a>
+        </div>
+      </div>
+      <div class="hero hero--card3d" data-hero="card3d" hidden>
+        <div class="hero__inner">
+          <div class="hero__copy">
+            <h1 class="hero__name">Krunal Panchal<span class="hero__dot">.</span></h1>
+            <p class="hero__tagline">Learning the coordinate systems in which stiff flames become <em class="hero__accent-word">simple</em></p>
+            <a class="hero__cta" href="/projects/">See the research</a>
+          </div>
+          <div class="hero-card">
+            <div class="hero-card__stage"></div>
+            <img
+              class="hero-card__fallback"
+              src="/assets/img/hero/placeholder_flow.jpg"
+              alt="Placeholder visualisation of a vortex street"
+              width="1920"
+              height="1080"
+              loading="lazy"
+              hidden
+            />
+            <span class="hero-card__chip">Coordinate transformation, live</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero hero--photo" data-hero="photo" data-fallback-src="/assets/img/hero/placeholder_flow.jpg" hidden>
+        <img class="hero__img" src="/assets/img/hero/placeholder_flow.jpg" alt="" width="1920" height="1080" decoding="async" />
+        <div class="hero__overlay"></div>
+        <div class="hero__inner">
+          <h1 class="hero__title">Krunal Panchal</h1>
+          <p class="hero__subtitle">Combustion, scientific ML and CFD</p>
+          <nav aria-label="Sections">
+            <ul class="hero__menu">
+              <li><a href="/#about">About</a></li>
+              <li><a href="/projects/">Research</a></li>
+              <li><a href="/news/">Activities</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div style="height:30px"></div>
+    <section class="home-live" data-home-live aria-labelledby="home-live-title">
+      <h2 class="home-live__title" id="home-live-title">Try the research live</h2>
+      <div class="home-live__grid">
+        <figure class="home-live__plate" data-live-plate>
+          <div class="home-live__stage home-live__stage--scaled" data-w="644" data-h="284">
+            <iframe
+              title="Live demo: flow field of the Van der Pol system"
+              data-src="/assets/html/flow_field_demo.html"
+              width="644"
+              height="284"
+              loading="lazy"
+              scrolling="no"
+              tabindex="-1"
+            ></iframe>
+          </div>
+          <figcaption class="home-live__cap">flow_field_demo.html</figcaption>
+        </figure>
+        <figure class="home-live__plate" data-live-plate>
+          <div class="home-live__stage home-live__stage--scaled" data-w="644" data-h="284">
+            <iframe
+              title="Live demo: value flow of the ablation study"
+              data-src="/assets/html/value_flow_demo.html"
+              width="644"
+              height="284"
+              loading="lazy"
+              scrolling="no"
+              tabindex="-1"
+            ></iframe>
+          </div>
+          <figcaption class="home-live__cap">value_flow_demo.html</figcaption>
+        </figure>
+        <figure class="home-live__plate home-live__plate--wide" data-live-plate>
+          <div class="home-live__stage home-live__stage--auto">
+            <iframe
+              id="home-live-playground"
+              title="Live demo: the playground, running entirely in the browser"
+              data-src="/assets/playground/index.html?nostory=1"
+              width="100%"
+              height="520"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <figcaption class="home-live__cap">
+            <span>playground/index.html?nostory=1</span>
+            <a href="/playground/">/playground/</a>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+    <script>
+      (function () {
+        var root = document.querySelector("[data-home-live]");
+        if (!root || root.__live) return;
+        root.__live = true;
+        var plates = root.querySelectorAll("[data-live-plate]");
+        function load(p) {
+          var f = p.querySelector("iframe");
+          if (f && !f.getAttribute("src")) f.setAttribute("src", f.getAttribute("data-src"));
+        }
+        if ("IntersectionObserver" in window) {
+          var io = new IntersectionObserver(
+            function (es) {
+              es.forEach(function (e) {
+                if (e.isIntersecting) {
+                  load(e.target);
+                  io.unobserve(e.target);
+                }
+              });
+            },
+            { rootMargin: "200px 0px" }
+          );
+          plates.forEach(function (p) {
+            io.observe(p);
+          });
+        } else plates.forEach(load);
+        // fixed-aspect plates: scale the fixed-size demo page to the plate width
+        var scaled = root.querySelectorAll(".home-live__stage--scaled");
+        function fit() {
+          scaled.forEach(function (s) {
+            var w = +s.dataset.w,
+              h = +s.dataset.h;
+            var k = Math.min(1, s.clientWidth / w);
+            s.style.setProperty("--live-k", k);
+            s.style.height = Math.round(h * k) + "px";
+          });
+        }
+        fit();
+        if ("ResizeObserver" in window) new ResizeObserver(fit).observe(root);
+        else window.addEventListener("resize", fit);
+        // playground auto-height contract
+        var pf = document.getElementById("home-live-playground");
+        window.addEventListener("message", function (event) {
+          if (!pf || event.source !== pf.contentWindow) return;
+          var d = event.data;
+          if (!d || d.source !== "vzero-playground" || d.type !== "resize") return;
+          var h = Number(d.height);
+          if (!isFinite(h) || h <= 0) return;
+          pf.style.height = Math.max(400, Math.min(h, 6000)) + "px";
+        });
+      })();
+    </script>
+    <main><p>Page content below the hero.</p><div style="height:900px"></div></main>
+    <script type="module" src="/assets/js/hero/switch.js"></script>
+  </body>
+</html>

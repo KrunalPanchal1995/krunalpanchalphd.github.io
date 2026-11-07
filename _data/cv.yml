@@ -1,0 +1,277 @@
+cv:
+  name: Dr. Krunal R. Panchal
+  label: PhD, Mechanical Engineering — Computational Methods for Complex Physical Systems
+  email: krunalpanchal1995@gmail.com
+  location: Chennai, India
+  image: ""
+  summary: >
+    I develop fair multi-objective optimization, uncertainty-quantification and
+    reduced-order/scientific-ML methods for expensive, stiff physical simulations,
+    using combustion chemical kinetics and mechanism reduction as a primary
+    proving ground. My PhD produced MOSIAC, an open-source workbench for
+    uncertainty-aware combustion mechanism optimization, alongside hands-on
+    experimental and numerical combustion work: pool-flame characterization
+    (with computer-vision-driven video post-processing), downdraft gasification,
+    and CFD.
+
+  social_networks:
+    - network: GitHub
+      username: KrunalPanchal1995
+    - network: LinkedIn
+      username: Krunal-panchal-phd
+    - network: ORCID
+      username: 0000-0003-2595-8824
+
+  address:
+    street: Dept. of Mechanical Engineering, IIT Madras
+    city: Chennai
+    region: Tamil Nadu
+    postalCode: "600036"
+    countryCode: IN
+
+  sections:
+    Education:
+      - institution: Indian Institute of Technology Madras
+        location: Chennai, India
+        url: https://www.iitm.ac.in/
+        area: Mechanical Engineering
+        studyType: PhD
+        start_date: 2018-08
+        end_date: 2026-07
+        score: "8.39 / 10 CGPA"
+        courses: "Thesis: Development of a Fast, Robust, and Kinetics-Based Optimization Framework for Combustion Kinetic Models"
+        highlights:
+          - "Advisor: Prof. Krithika Narayanaswamy"
+          - "Thesis submitted Oct 2025 · viva 12 May 2026 · degree conferred 16 Jul 2026"
+
+      - institution: Nirma University, Institute of Technology
+        location: Ahmedabad, India
+        area: Mechanical Engineering (Thermal Engineering)
+        studyType: M.Tech
+        start_date: 2016
+        end_date: 2018
+        score: "9.01 / 10 CGPA"
+        courses: "Thesis: Effect of Steam and Catalyst with Lignite Feedstock on the Performance of Downdraft Gasifier"
+        highlights:
+          - "Awarded the ISTE National Award for Best M.Tech Thesis 2018 (First Prize)"
+
+      - institution: Government Engineering College, Modasa
+        location: Gujarat, India
+        area: Mechanical Engineering
+        studyType: B.E.
+        start_date: 2012
+        end_date: 2016
+        score: "8.36 / 10 CGPA"
+
+    Experience:
+      - company: Indian Institute of Technology Madras
+        position: Project Associate, Department of Mechanical Engineering
+        location: Chennai, India
+        start_date: 2026-06
+        end_date: 2026-11
+        summary: "Shell-funded combustion project (PIs: Prof. V. Raghavan and Prof. Krithika Narayanaswamy), through 30 November 2026."
+
+      - company: Indian Institute of Technology Madras
+        position: Project Associate — AI/ML for chess game analysis
+        location: Chennai, India
+        start_date: 2025-07
+        end_date: 2026-04
+
+      - company: Indian Institute of Technology Madras
+        position: Project Assistant
+        location: Chennai, India
+        start_date: 2024-08
+        end_date: 2025-06
+
+      - company: Indian Institute of Technology Madras
+        position: Research Scholar (PhD)
+        location: Chennai, India
+        start_date: 2018-08
+        end_date: 2026-07
+        summary: >
+          Developed MOSIAC (formerly RMIP), an open-source multi-objective
+          optimization workbench for combustion kinetic-mechanism development,
+          integrating uncertainty-quantified rate-constant calibration,
+          stratified sampling and response-surface surrogates, alongside
+          multi-stage kinetics-informed optimization and a Hölder/power-mean
+          objective function for multi-dataset calibration.
+        highlights:
+          - "Led design of the MUQ-SAC joint-Arrhenius uncertainty-quantification methodology (Combustion Theory and Modelling, 2024)"
+          - "Joint pool-flame characterization work with Gagan Verma (rig: design → outsourced fabrication → commissioning → operation)"
+          - "Decarbonisation Technology course project (Aug–Dec 2022, team of six): ANSYS Fluent study of H2/CH4 co-injection with pulverised coal in blast-furnace tuyeres — CO2 intensity fell from 0.121 to 0.067 g/kJ at 80% H2 substitution"
+          - "Built flamelab, a computer-vision instrument measuring flame length, width and flicker from pool-flame video in physical units with propagated uncertainty — eight-run ensemble campaign, Hopf-sequence regime classification, thirteen analysis methods (~300 tests passing)"
+
+      - company: Nirma University
+        position: Graduate Research Assistant (M.Tech)
+        location: Ahmedabad, India
+        start_date: 2016
+        end_date: 2018
+
+    Teaching:
+      - company: Indian Institute of Technology Madras
+        position: Lab Demonstrator, Combustion Technology Lab (ME6510)
+        location: Chennai, India
+        start_date: 2022-07
+        end_date: 2022-11
+
+      - company: Indian Institute of Technology Madras
+        position: Teaching Assistant, Engineering Drawing (ME1100)
+        location: Chennai, India
+        start_date: 2021-06
+        end_date: 2021-11
+
+      - company: Indian Institute of Technology Madras
+        position: Teaching Assistant, Mechanical Lab I (ME2020)
+        location: Chennai, India
+        start_date: 2020-01
+        end_date: 2020-03
+
+    Awards:
+      - title: ISTE National Award for Best M.Tech Thesis 2018 — First Prize
+        authors:
+          - "Indian Society for Technical Education"
+        date: 2018
+        awarder: Indian Society for Technical Education
+        summary: "Awarded for the M.Tech thesis on steam and catalytic downdraft gasification of lignite."
+
+      - title: MHRD (Government of India) PhD Scholarship
+        authors:
+          - "Ministry of Human Resource Development, Government of India"
+        date: 2018
+        awarder: Government of India
+        summary: "PhD fellowship, IIT Madras."
+
+    Publications:
+      - title: "A fast uncertainty quantification methodology and sampling technique for joint probability distribution of the Arrhenius rate expression: a case study applied to H2/CO kinetic mechanism"
+        authors:
+          - Krunal Panchal
+          - Vaisakh Vasudavan
+          - Sivaram Ambikasaran
+          - Krithika Narayanaswamy
+        publisher: "Combustion Theory and Modelling, 28(4):411–440"
+        releaseDate: 2024-01-01
+        url: https://doi.org/10.1080/13647830.2024.2326413
+        summary: "Journal article. Author position 1 of 4."
+
+      - title: "Air-Steam gasification of lignite in a fixed bed gasifier: Influence of steam to lignite ratio on performance of downdraft gasifier"
+        authors:
+          - D. S. Upadhyay
+          - Krunal R. Panchal
+          - A. K. V. Sakhiya
+          - R. N. Patel
+        publisher: "Energy, 211:118187"
+        releaseDate: 2020-01-01
+        url: https://doi.org/10.1016/j.energy.2020.118187
+        summary: "Journal article. Author position 2 of 4."
+
+      - title: "Effect of equivalence ratio on the performance of the downdraft gasifier — An experimental and modelling approach"
+        authors:
+          - D. S. Upadhyay
+          - A. K. Sakhiya
+          - Krunal Panchal
+          - A. H. Patel
+          - R. N. Patel
+        publisher: "Energy, 168:833–846"
+        releaseDate: 2019-01-01
+        url: https://doi.org/10.1016/j.energy.2018.11.133
+        summary: "Journal article. Author position 3 of 5."
+
+      - title: "Elemental and heat loss analysis of different feedstock in downdraft gasifier"
+        authors:
+          - A. K. Sakhiya
+          - A. Chaturvedi
+          - V. Barasara
+          - Krunal Panchal
+          - D. S. Upadhyay
+          - R. N. Patel
+        publisher: "Journal of Energy and Environmental Sustainability, 7:10–16"
+        releaseDate: 2019-01-01
+        url: https://doi.org/10.47469/jees.2019.v07.100070
+        summary: "Journal article. Author position 4 of 6."
+
+      - title: "Thermodynamic analysis of lignite gasification in the downdraft gasifier"
+        authors:
+          - D. S. Upadhyay
+          - A. K. V. Sakhiya
+          - Krunal R. Panchal
+          - R. N. Patel
+        publisher: "Journal of Energy and Environmental Sustainability, 5:58–64"
+        releaseDate: 2018-01-01
+        url: https://doi.org/10.47469/jees.2018.v05.100058
+        summary: "Journal article. Author position 3 of 4."
+
+      - title: "A multi-stage kinetic reaction optimization strategy applied to n-heptane combustion mechanism"
+        authors:
+          - Krunal Panchal
+          - Vaisakh Vasudavan
+          - Krithika Narayanaswamy
+        publisher: "14th Asia-Pacific Conference on Combustion (ASPACC), 2023"
+        releaseDate: 2023-01-01
+        summary: "Conference paper. Author position 1 of 3."
+
+    Skills:
+      - name: Fair Multi-Objective Optimization
+        level: ""
+        icon: fa-solid fa-arrows-to-dot
+        keywords: "Genetic algorithms, CMA-ES, gradient/NLLS (Levenberg-Marquardt, trust-region), Bayesian & GP optimization, surrogate/response-surface optimization"
+
+      - name: Uncertainty Quantification & Sensitivity Analysis
+        level: ""
+        icon: fa-solid fa-chart-area
+        keywords: "Correlated-parameter UQ, local & Sobol global sensitivity analysis, Latin hypercube / Sobol / Monte Carlo sampling"
+
+      - name: Reduced-Order Modelling & Scientific ML
+        level: ""
+        icon: fa-solid fa-diagram-project
+        keywords: "Physics-informed neural networks, neural ODEs, ANN/response-surface surrogate and reduced-order models, PyTorch, scikit-learn"
+
+      - name: Simulation, Chemical Kinetics & Mechanism Reduction
+        level: ""
+        icon: fa-solid fa-fire
+        keywords: "Cantera, ANSYS CHEMKIN-PRO, FlameMaster, OpenFOAM, ANSYS Fluent/Workbench, kinetic mechanism reduction"
+
+      - name: Programming
+        level: ""
+        icon: fa-solid fa-code
+        keywords: "Python (NumPy, SciPy, Matplotlib), MATLAB, C++, LaTeX/Beamer, Git"
+
+      - name: Quantum Chemistry (developing)
+        level: ""
+        icon: fa-solid fa-atom
+        keywords: "Avogadro, Gaussian — geometry optimization, frequencies, partition functions, rate constants"
+
+    Interests:
+      - name: Combustion Kinetics & Mechanism Reduction
+        icon: fa-solid fa-fire
+        keywords: "Chemical kinetic mechanism development, mechanism reduction, ignition-delay and flame-speed validation"
+
+      - name: Fair Multi-Objective Optimization & Uncertainty
+        icon: fa-solid fa-arrows-to-dot
+        keywords: "Multi-objective and multi-stage optimization, Bayesian uncertainty quantification"
+
+      - name: Reduced-Order Modelling & Scientific ML
+        icon: fa-solid fa-diagram-project
+        keywords: "Neural and response-surface surrogates for stiff dynamical systems"
+
+      - name: Experimental & Numerical Combustion
+        icon: fa-solid fa-fire-flame-curved
+        keywords: "Pool-flame characterization, computer-vision flame measurement (flamelab), CFD and chemical-kinetics simulation of the same systems"
+
+      - name: Gasification
+        icon: fa-solid fa-industry
+        keywords: "Steam/catalyst-assisted downdraft fixed-bed gasification, rig commissioning, syngas analysis"
+
+      - name: CFD
+        icon: fa-solid fa-wind
+        keywords: "In-house CFD/multiphysics solver, reacting-flow and rig-design studies"
+
+    Projects:
+      - name: MOSIAC
+        summary: >
+          Open-source, uncertainty-quantified workbench for combustion kinetic
+          mechanism optimization (developed during the PhD; formerly named RMIP).
+          Software paper in preparation for JOSS.
+        highlights:
+          - "github.com/KrunalPanchal1995 — MOSIAC, MUQ-SAC, mechanism-optimization-suite"
+        start_date: 2018
+        end_date: present

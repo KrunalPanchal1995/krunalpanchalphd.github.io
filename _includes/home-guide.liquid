@@ -1,0 +1,201 @@
+{%- comment -%}
+  HOME GUIDE (WP-I): an auto-playing, looping, collapsible 4-step guide inside the Studio section, above the stage.
+  Steps (UI labels only, no prose): 1 Pick a project, 2 Open it in the Studio, 3 Read the explanation, 4 Change a parameter.
+  Footage is REAL: assets/img/home/guide/step{2,3,4}-*.webm|webp are Playwright captures of the static Math Studio
+  (cfdcore: Numerical PDEs, #atlas?ch=S34). Step 1 is composed from the site's own project icons plus an animated SVG cursor.
+  Behaviour: assets/js/site/home.js (guide block). Styles: assets/css/site/home.css (.hg*).
+  No JS, reduced motion, data-fx=lite|off: a static storyboard of the four stills (stacked on phones). Every step links to the real thing.
+  Usage: {% include home-guide.liquid %}
+{%- endcomment -%}
+{%- assign g_proj = site.projects | where: 'slug', 'cfdcore' | first -%}
+{%- if g_proj -%}
+  {%- assign g_dir = '/assets/img/home/guide/' -%}
+  {%- assign g_route2 = site.data.studio_map.cfdcore.route | default: 'atlas?ch=S34&ex=1' -%}
+  {%- assign g_route3 = 'explain?id=figure.cfdcore.mms-convergence' -%}
+  {%- assign g_route4 = 'atlas?ch=S34&ex=0' -%}
+  {%- assign g_wall = site.projects | sort: 'importance' -%}
+  <section class="hg raised" data-guide aria-labelledby="hg-t">
+    <header class="hg__head">
+      <h3 class="hg__t mono" id="hg-t">Guide</h3>
+      <span class="hg__count mono" data-g-count aria-hidden="true">1 / 4</span>
+      <span class="hg__sp"></span>
+      <button type="button" class="hg__toggle mono" data-g-toggle aria-expanded="true" aria-controls="hg-body" hidden>Hide guide</button>
+    </header>
+    <div class="hg__body" id="hg-body" data-g-body>
+      <div class="hg__side" data-g-side>
+        <ol class="hg__steps" data-g-steps>
+          <li>
+            <button type="button" class="hg__step" data-g-step aria-current="step">
+              <span class="hg__num mono" aria-hidden="true">1</span><span class="hg__lbl">Pick a project</span>
+              <span class="hg__bar" aria-hidden="true"><i></i></span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="hg__step" data-g-step>
+              <span class="hg__num mono" aria-hidden="true">2</span><span class="hg__lbl">Open it in the Studio</span>
+              <span class="hg__bar" aria-hidden="true"><i></i></span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="hg__step" data-g-step>
+              <span class="hg__num mono" aria-hidden="true">3</span><span class="hg__lbl">Read the explanation</span>
+              <span class="hg__bar" aria-hidden="true"><i></i></span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="hg__step" data-g-step>
+              <span class="hg__num mono" aria-hidden="true">4</span><span class="hg__lbl">Change a parameter</span>
+              <span class="hg__bar" aria-hidden="true"><i></i></span>
+            </button>
+          </li>
+        </ol>
+        <div class="hg__ctl" role="group" aria-label="Guide controls">
+          <button type="button" class="hg__btn" data-g-prev aria-label="Previous step">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M15 5l-7 7 7 7"/>
+            </svg>
+          </button>
+          <button type="button" class="hg__btn hg__play" data-g-play aria-pressed="false" aria-label="Pause">
+            <svg class="i-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/>
+            </svg>
+            <svg class="i-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5l11 7-11 7z"/>
+            </svg>
+          </button>
+          <button type="button" class="hg__btn" data-g-next aria-label="Next step">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="hg__scenes" data-g-scenes>
+        <figure class="hg__scene is-cur" data-g-scene>
+          <div class="hg__media hg__wall fx-plate">
+            {%- assign g_n = 0 -%}
+            <div class="hg__tiles" aria-hidden="true">
+              {%- for p in g_wall -%}
+                {%- if p.slug == 'cfdcore' or p.icon and g_n < 7 -%}
+                  {%- assign short = p.title | split: ' — ' | first -%}
+                  {%- assign cat1 = p.category | first | default: 'sciml' -%}
+                  {%- if p.slug == 'cfdcore' -%}
+                    {%- assign g_ord = 9 -%}
+                  {%- else -%}
+                    {%- assign g_ord = g_n | times: 2 -%}
+                    {%- assign g_n = g_n | plus: 1 -%}
+                  {%- endif -%}
+                  <span
+                    class="hg__tile{% if p.slug == 'cfdcore' %} is-pick{% endif %}"
+                    style="--c: var(--cat-{{ cat1 }}, var(--teal)); order: {{ g_ord }};"
+                  >
+                    <img src="{{ p.icon | relative_url }}" alt="" width="1600" height="900" loading="lazy" decoding="async">
+                    <span class="hg__tt">{{ short | escape }}</span>
+                  </span>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            <svg class="hg__cur" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 2.5l15 9.2-6.6 1.5 3.6 6.8-3 1.6-3.6-6.9L4.6 19.2z" fill="#ffffff" stroke="#0b0e12" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+            <span class="hg__ring" aria-hidden="true"></span>
+          </div>
+          <figcaption class="hg__cap">
+            <span class="hg__n mono" aria-hidden="true">1</span>
+            <a class="hg__go" href="#studio-wall">Pick a project <span aria-hidden="true">&rarr;</span></a>
+          </figcaption>
+        </figure>
+        <figure class="hg__scene" data-g-scene>
+          <div class="hg__media fx-plate" data-fps="12">
+            <img src="{{ g_dir | append: 'step2-open.webp' | relative_url }}" alt="" width="960" height="540" loading="lazy" decoding="async">
+            <video
+              class="hg__vid"
+              data-g-video
+              data-src="{{ g_dir | append: 'step2-open.webm' | relative_url }}"
+              muted
+              loop
+              playsinline
+              preload="none"
+              disablepictureinpicture
+              aria-hidden="true"
+              tabindex="-1"
+            ></video>
+          </div>
+          <figcaption class="hg__cap">
+            <span class="hg__n mono" aria-hidden="true">2</span>
+            <a class="hg__go" href="{{ '/studio/' | relative_url }}#{{ g_route2 | escape }}"
+              >Open it in the Studio <span aria-hidden="true">&rarr;</span></a
+            >
+          </figcaption>
+        </figure>
+        <figure class="hg__scene" data-g-scene>
+          <div class="hg__media fx-plate" data-fps="12">
+            <img src="{{ g_dir | append: 'step3-explain.webp' | relative_url }}" alt="" width="960" height="540" loading="lazy" decoding="async">
+            <video
+              class="hg__vid"
+              data-g-video
+              data-src="{{ g_dir | append: 'step3-explain.webm' | relative_url }}"
+              muted
+              loop
+              playsinline
+              preload="none"
+              disablepictureinpicture
+              aria-hidden="true"
+              tabindex="-1"
+            ></video>
+          </div>
+          <figcaption class="hg__cap">
+            <span class="hg__n mono" aria-hidden="true">3</span>
+            <a class="hg__go" href="{{ '/studio/' | relative_url }}#{{ g_route3 | escape }}"
+              >Read the explanation <span aria-hidden="true">&rarr;</span></a
+            >
+          </figcaption>
+        </figure>
+        <figure class="hg__scene" data-g-scene>
+          <div class="hg__media fx-plate" data-fps="12">
+            <img src="{{ g_dir | append: 'step4-param.webp' | relative_url }}" alt="" width="960" height="540" loading="lazy" decoding="async">
+            <video
+              class="hg__vid"
+              data-g-video
+              data-src="{{ g_dir | append: 'step4-param.webm' | relative_url }}"
+              muted
+              loop
+              playsinline
+              preload="none"
+              disablepictureinpicture
+              aria-hidden="true"
+              tabindex="-1"
+            ></video>
+          </div>
+          <figcaption class="hg__cap">
+            <span class="hg__n mono" aria-hidden="true">4</span>
+            <a class="hg__go" href="{{ '/studio/' | relative_url }}#{{ g_route4 | escape }}"
+              >Change a parameter <span aria-hidden="true">&rarr;</span></a
+            >
+          </figcaption>
+        </figure>
+      </div>
+      <p class="sr-only" data-g-live aria-live="off"></p>
+    </div>
+  </section>
+{%- endif -%}

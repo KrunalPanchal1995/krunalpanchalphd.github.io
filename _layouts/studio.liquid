@@ -1,0 +1,27 @@
+---
+layout: default
+---
+{%- comment -%}
+  studio: a FULL-WINDOW page for the Math Visual Studio static build (assets/apps/math-studio/, built by scripts/build_studio_static.py).
+  The iframe fills the viewport under the floating nav. assets/js/site/studio.js sets its src (portfolio mode, current theme,
+  #route pass-through), relays theme changes and route messages (protocol: assets/apps/math-studio/README-portfolio.md).
+  Styles: assets/css/site/studio.css. The same markup works for any [data-studio-page] block (other pages can reuse studio.js).
+{%- endcomment -%}
+{%- assign app_url = '/assets/apps/math-studio/index.html' | relative_url -%}
+<div class="studio-page" data-studio-page data-app="{{ app_url }}" data-default-route="subjects">
+  <div class="studio-bar">
+    <span class="chip chip--teal">live</span>
+    <span class="studio-bar__title">Math Studio</span>
+    <span class="studio-bar__hint">Pick a subject to see its explained figures, concepts and live scenes, or open any tool from the top bar.</span>
+    <span class="studio-bar__spacer"></span>
+    <a class="chip" data-studio-newtab href="{{ app_url }}?portfolio=1" target="_blank" rel="noopener">Open in new tab</a>
+    <button type="button" class="chip" data-studio-full aria-label="Toggle full screen">Full screen</button>
+  </div>
+  <iframe class="studio-frame" title="Math Visual Studio" allow="fullscreen; gamepad" data-studio-frame></iframe>
+  <noscript>
+    <p class="studio-noscript">The Studio needs JavaScript. <a href="{{ app_url }}?portfolio=1">Open it directly</a>.</p>
+  </noscript>
+</div>
+{%- comment -%} WP-J: config + hidden protected email so the Studio's locked code cards can open the request dialog (request.js). {%- endcomment -%}
+{% include request-access.liquid host=true %}
+<script src="{{ '/assets/js/site/studio.js' | relative_url }}"></script>

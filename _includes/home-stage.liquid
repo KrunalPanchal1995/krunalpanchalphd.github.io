@@ -1,0 +1,72 @@
+{%- comment -%}
+  STUDIO STAGE: the static Math Visual Studio (assets/apps/math-studio/) in an iframe beside the project icon wall, plus the drawer.
+  Protocol (assets/apps/math-studio/README-portfolio.md): parent -> {type:'go',route} {type:'theme',theme}; iframe -> studio-ready, studio-route, studio-project.
+  The iframe is created lazily by home.js on viewports wider than 860px; phones get the launch card and the tiles link to /studio/#route.
+  Usage: {% include home-stage.liquid %}
+{%- endcomment -%}
+{%- assign app_url = '/assets/apps/math-studio/index.html' | relative_url -%}
+<section class="home-stage" id="studio" aria-labelledby="home-stage-t">
+  <header class="home-sec__head">
+    <p class="eyebrow">Math Visual Studio</p>
+    <h2 id="home-stage-t" data-fx="split">Explore the research in the Studio</h2>
+  </header>
+  {% include home-guide.liquid %}
+  <div
+    class="hs raised"
+    data-stage
+    data-app="{{ app_url }}"
+    data-studio="{{ '/studio/' | relative_url }}"
+    data-project-base="{{ '/projects/' | relative_url }}"
+  >
+    <aside class="hs__rail" id="studio-wall" aria-label="Projects">
+      <p class="hs__cap">Pick a project to explore it in the Studio</p>
+      {% include home-icons.liquid %}
+    </aside>
+    <div class="hs__launch">
+      <p class="eyebrow">Math Visual Studio</p>
+      <h3 class="hs__launch-t">Launch Math Visual Studio</h3>
+      <a class="btn-cta btn-cta-primary" href="{{ '/studio/' | relative_url }}">Launch Math Visual Studio <span aria-hidden="true">&rarr;</span></a>
+    </div>
+    <div class="hs__main">
+      <div class="hs__bar mono">
+        <span class="hs__live" data-stage-status>Studio: loading</span>
+        <span class="hs__route" data-stage-route>#gallery</span>
+        <span class="hs__sp"></span>
+        <button type="button" class="hs__chip" data-stage-gallery>Gallery</button>
+        <button type="button" class="hs__chip" data-stage-go="subjects">Subjects</button>
+        <button type="button" class="hs__chip hs__chip--play" data-stage-go="subjects?s=playground">Playground</button>
+        <a class="hs__chip" data-stage-full href="{{ '/studio/' | relative_url }}">Open in Studio full window</a>
+      </div>
+      <div class="hs__view">
+        <iframe class="hs__frame" title="Math Visual Studio" data-stage-frame allow="fullscreen; gamepad"></iframe>
+        <noscript>
+          <p class="hs__noscript">The Studio needs JavaScript. <a href="{{ '/studio/' | relative_url }}">Open it in the full window</a>.</p>
+        </noscript>
+        <aside class="hd" data-drawer hidden aria-labelledby="hd-title" role="dialog" aria-modal="false">
+          <button type="button" class="hd__close" data-drawer-close aria-label="Close project panel">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <path d="M6 6l12 12M18 6L6 18"/>
+            </svg>
+          </button>
+          <p class="eyebrow hd__eyebrow">Project</p>
+          <h3 class="hd__title" id="hd-title" data-drawer-title tabindex="-1"></h3>
+          <ul class="hd__chips" data-drawer-chips role="list"></ul>
+          <p class="hd__desc" data-drawer-desc></p>
+          <div class="hd__actions">
+            <a class="btn-cta btn-cta-primary" data-drawer-full href="{{ '/studio/' | relative_url }}">Open in Studio full window</a>
+            <a class="btn-cta" data-drawer-read href="{{ '/projects/' | relative_url }}">Read the project</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>

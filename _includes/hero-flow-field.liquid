@@ -1,0 +1,26 @@
+{% comment %}
+  Home-page hero, second vignette (session 10, Slice 9): the flow-field
+  visualization -- vZero's own new visualization task this session, an
+  animated phase portrait of a Neural ODE's learned right-hand side. Same
+  self-contained-file-via-iframe pattern as hero-value-flow.liquid (this
+  directory) -- see that include's own comment for the full purgecss
+  reasoning, not repeated here.
+
+  This one shows the REAL Van der Pol equations (mu=1), the same fixed
+  system vZero/data.py's synthetic/vdp_default preset and vZero/flowfield.py
+  both use -- real dynamics, not decorative motion.
+
+  Usage: {% include hero-flow-field.liquid %}
+{% endcomment %}
+<div class="hero-flow-field" style="margin: 1.5rem 0; max-width: 640px;">
+  <iframe
+    src="{{ '/assets/html/flow_field_demo.html' | relative_url }}"
+    title="Live demo: flow-field view from the vZero Neural ODE research playground"
+    width="100%"
+    height="220"
+    style="border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; display: block;"
+    loading="lazy"
+    scrolling="no"
+  >
+  </iframe>
+</div>

@@ -1,0 +1,513 @@
+{
+ "projects": [
+  {
+   "slug": "mosiac",
+   "title": "MOSIAC",
+   "description": "An open-source, uncertainty-quantified workbench for combustion kinetic mechanism optimization",
+   "img": "assets/apps/math-studio/thumbs/projects/mosiac.webp",
+   "category": [
+    "combustion",
+    "optimization",
+    "uq"
+   ],
+   "importance": 1,
+   "route": "molecules?preset=11",
+   "fallback": "",
+   "url": "/projects/mosiac/",
+   "video": "assets/apps/math-studio/thumbs/projects/mosiac.webm"
+  },
+  {
+   "slug": "mso-objectives",
+   "title": "MSO Objective Functions & Multi-Stage Optimization",
+   "description": "Multi-stage optimization and a power-mean objective for multi-dataset combustion mechanism calibration",
+   "img": "assets/apps/math-studio/thumbs/projects/mso-objectives.webp",
+   "category": [
+    "optimization",
+    "combustion"
+   ],
+   "importance": 2,
+   "route": "atlas?ch=S13&ex=4",
+   "fallback": "",
+   "url": "/projects/mso-objectives/",
+   "video": "assets/apps/math-studio/thumbs/projects/mso-objectives.webm"
+  },
+  {
+   "slug": "muq-sac",
+   "title": "MUQ-SAC — Joint Arrhenius Uncertainty Quantification",
+   "description": "A fast uncertainty-quantification methodology and sampling technique for the joint probability distribution of the Arrhenius rate expression",
+   "img": "assets/apps/math-studio/thumbs/projects/muq-sac.webp",
+   "category": [
+    "uq",
+    "combustion"
+   ],
+   "importance": 3,
+   "route": "atlas?ch=S27&ex=2",
+   "fallback": "",
+   "url": "/projects/muq-sac/",
+   "video": "assets/apps/math-studio/thumbs/projects/muq-sac.webm"
+  },
+  {
+   "slug": "neural-ode-course",
+   "title": "Neural ODEs and Transformations — A Self-Built Course",
+   "description": "A multi-month, derivation-first course on Neural ODEs, coordinate transformations and stiff chemical kinetics, with a verified animation for every session",
+   "img": "assets/apps/math-studio/thumbs/projects/neural-ode-course.webp",
+   "category": [
+    "sciml"
+   ],
+   "importance": 4,
+   "route": "deform?preset=2",
+   "fallback": "",
+   "url": "/projects/neural-ode-course/",
+   "video": "assets/apps/math-studio/thumbs/projects/neural-ode-course.webm"
+  },
+  {
+   "slug": "sciml",
+   "title": "Scientific ML for Stiff Kinetics",
+   "description": "A documented research journey toward neural surrogates for stiff H2/O2 autoignition — including a statistical audit of my own results",
+   "img": "assets/apps/math-studio/thumbs/projects/sciml.webp",
+   "category": [
+    "sciml"
+   ],
+   "importance": 4,
+   "route": "atlas?ch=S32&ex=0",
+   "fallback": "",
+   "url": "/projects/sciml/",
+   "video": "assets/apps/math-studio/thumbs/projects/sciml.webm"
+  },
+  {
+   "slug": "turbulence-closures",
+   "title": "Turbulence Closures — From Mixing Length to Data-Driven RANS",
+   "description": "A from-scratch, chronologically-built turbulence-closure curriculum in Python — classical RANS through LES, hybrid RANS-LES, and a first data-driven correction, every claim backed by a mechanically-enforced disclosure registry",
+   "img": "assets/apps/math-studio/thumbs/projects/turbulence-closures.webp",
+   "category": [
+    "cfd"
+   ],
+   "importance": 4,
+   "route": "atlas?ch=S82&ex=3",
+   "fallback": "",
+   "url": "/projects/turbulence-closures/",
+   "video": "assets/apps/math-studio/thumbs/projects/turbulence-closures.webm"
+  },
+  {
+   "slug": "cfdcore",
+   "title": "PANSOPHIA — In-House CFD & Multiphysics Solver",
+   "description": "A from-scratch Julia CFD/multiphysics library, with a Python frontend and a cross-engine geometry kernel, aimed at closing the gap between commercial CFD and machine learning",
+   "img": "assets/apps/math-studio/thumbs/projects/cfdcore.webp",
+   "category": [
+    "cfd"
+   ],
+   "importance": 5,
+   "route": "atlas?ch=S34&ex=1",
+   "fallback": "",
+   "url": "/projects/cfdcore/",
+   "video": "assets/apps/math-studio/thumbs/projects/cfdcore.webm"
+  },
+  {
+   "slug": "neural-ode-playground",
+   "title": "vZero — A Neural ODE Research Playground",
+   "description": "An interactive Neural ODE research environment unifying 44 hand-cloned training-script versions, with a live FastAPI+React GUI, a widened optimizer zoo, RL-as-a-trainer, symbolic regression, PINN benchmarks, and an executed d2l-style curriculum",
+   "img": "assets/apps/math-studio/thumbs/projects/neural-ode-playground.webp",
+   "category": [
+    "sciml",
+    "optimization"
+   ],
+   "importance": 5,
+   "route": "solver?tab=ode&preset=4",
+   "fallback": "",
+   "url": "/projects/neural-ode-playground/",
+   "video": "assets/apps/math-studio/thumbs/projects/neural-ode-playground.webm"
+  },
+  {
+   "slug": "gasification",
+   "title": "Steam-Catalytic Downdraft Gasification",
+   "description": "M.Tech thesis — steam and catalyst effects on lignite gasification in a pilot-scale downdraft gasifier",
+   "img": "assets/apps/math-studio/thumbs/projects/gasification.webp",
+   "category": [
+    "experimental",
+    "combustion"
+   ],
+   "importance": 6,
+   "route": "molecules?preset=12",
+   "fallback": "",
+   "url": "/projects/gasification/",
+   "video": "assets/apps/math-studio/thumbs/projects/gasification.webm"
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "description": "A computer-vision instrument that measures flame length, width and flicker from pool-fire video in physical units with propagated uncertainty — regime classification, cross-run ensemble statistics, and thirteen analysis methods",
+   "img": "assets/apps/math-studio/thumbs/projects/flamelab.webp",
+   "category": [
+    "experimental"
+   ],
+   "importance": 7,
+   "route": "atlas?ch=S113&ex=0",
+   "fallback": "",
+   "url": "/projects/flamelab/",
+   "video": "assets/apps/math-studio/thumbs/projects/flamelab.webm"
+  },
+  {
+   "slug": "vaporizer-rigs",
+   "title": "Vaporizer & Combustion Rig Design",
+   "description": "An induction-heated tube vaporizer for MtG/ethanol surrogate fuel, sized against boiling glide, critical heat flux and flow instability, plus a fabrication-grade combustion-rig drawing package",
+   "img": "assets/apps/math-studio/thumbs/projects/vaporizer-rigs.webp",
+   "category": [
+    "experimental",
+    "cfd"
+   ],
+   "importance": 8,
+   "route": "atlas?ch=S53&ex=2",
+   "fallback": "",
+   "url": "/projects/vaporizer-rigs/",
+   "video": "assets/apps/math-studio/thumbs/projects/vaporizer-rigs.webm"
+  },
+  {
+   "slug": "pysr-rate-rules",
+   "title": "Symbolic Regression for Universal Rate Rules",
+   "description": "Using symbolic regression to discover interpretable rate rules for unimolecular decomposition reactions",
+   "img": "assets/apps/math-studio/thumbs/projects/pysr-rate-rules.webp",
+   "category": [
+    "sciml",
+    "combustion"
+   ],
+   "importance": 9,
+   "route": "solver?tab=sr&preset=0",
+   "fallback": "molecules?preset=11",
+   "url": "/projects/pysr-rate-rules/",
+   "video": "assets/apps/math-studio/thumbs/projects/pysr-rate-rules.webm"
+  },
+  {
+   "slug": "decarbonisation-tuyeres",
+   "title": "H₂/CH₄ Co-injection in Blast-Furnace Tuyeres",
+   "description": "A reacting-flow CFD and design-of-experiments study of hydrogen and methane co-injection with pulverised coal — how far tuyere CO₂ intensity can fall before the material limit stops you",
+   "img": "assets/apps/math-studio/thumbs/projects/decarbonisation-tuyeres.webp",
+   "category": [
+    "cfd",
+    "combustion"
+   ],
+   "importance": 10,
+   "route": "molecules?preset=8",
+   "fallback": "",
+   "url": "/projects/decarbonisation-tuyeres/",
+   "video": "assets/apps/math-studio/thumbs/projects/decarbonisation-tuyeres.webm"
+  },
+  {
+   "slug": "dokimazo",
+   "title": "dokimazo — A PIDO Optimization Workbench",
+   "description": "A dependency-light process-integration-and-design-optimization workbench with a plug-and-play graph IR, closed by a reinforcement-learning conformer search that tunes a long alkane chain's rotors one at a time",
+   "img": "assets/apps/math-studio/thumbs/projects/dokimazo.webp",
+   "category": [
+    "optimization",
+    "sciml"
+   ],
+   "importance": 11,
+   "route": "mechanism?preset=19",
+   "fallback": "",
+   "url": "/projects/dokimazo/",
+   "video": "assets/apps/math-studio/thumbs/projects/dokimazo.webm"
+  },
+  {
+   "slug": "math-studio-course",
+   "title": "Math Visual Studio",
+   "description": "A local web app for visualising multivariable calculus, transformations, ODEs and PDEs, mechanisms, deformation and molecules",
+   "img": "assets/apps/math-studio/thumbs/projects/math-studio-course.webp",
+   "category": [
+    "visualization",
+    "education"
+   ],
+   "importance": 12,
+   "route": "gallery",
+   "fallback": "",
+   "url": "/projects/math-studio-course/",
+   "video": "assets/apps/math-studio/thumbs/projects/math-studio-course.webm"
+  },
+  {
+   "slug": "quantum-chemistry",
+   "title": "Quantum chemistry",
+   "description": "A differentiable electronic-structure engine in early development, and a self-study course in quantum chemistry",
+   "img": "assets/apps/math-studio/thumbs/projects/quantum-chemistry.webp",
+   "category": [
+    "quantum-chemistry"
+   ],
+   "importance": 13,
+   "route": "",
+   "fallback": "",
+   "url": "/projects/quantum-chemistry/",
+   "video": "assets/apps/math-studio/thumbs/projects/quantum-chemistry.webm"
+  },
+  {
+   "slug": "muqsac-plus-plus",
+   "title": "MUQSAC++",
+   "description": "Software engineering: fourteen copies of a kinetics pipeline merged into one tested code base",
+   "img": "assets/apps/math-studio/thumbs/projects/muqsac-plus-plus.webp",
+   "category": [
+    "uq",
+    "combustion",
+    "software"
+   ],
+   "importance": 14,
+   "route": "",
+   "fallback": "",
+   "url": "/projects/muqsac-plus-plus/",
+   "video": "assets/apps/math-studio/thumbs/projects/muqsac-plus-plus.webm"
+  },
+  {
+   "slug": "plasma-sludge-pyrolysis",
+   "title": "Plasma sludge pyrolysis",
+   "description": "A zero-dimensional thermal-plasma sludge model: direction only",
+   "img": "assets/apps/math-studio/thumbs/projects/plasma-sludge-pyrolysis.webp",
+   "category": [
+    "combustion"
+   ],
+   "importance": 15,
+   "route": "",
+   "fallback": "",
+   "url": "/projects/plasma-sludge-pyrolysis/",
+   "video": "assets/apps/math-studio/thumbs/projects/plasma-sludge-pyrolysis.webm"
+  },
+  {
+   "slug": "cfd-numerics-teaching",
+   "title": "PANSOPHIA numerics teaching figures",
+   "description": "Fifteen teaching figures on schemes, stability and accuracy, generated from the PANSOPHIA numerics stack",
+   "img": "assets/apps/math-studio/thumbs/projects/cfd-numerics-teaching.webp",
+   "category": [
+    "cfd"
+   ],
+   "importance": 20,
+   "route": "atlas?ch=S34&ex=1",
+   "fallback": "",
+   "url": "/projects/cfd-numerics-teaching/",
+   "video": "assets/apps/math-studio/thumbs/projects/cfd-numerics-teaching.webm"
+  },
+  {
+   "slug": "geometry-kernel",
+   "title": "PANSOPHIA geometry kernel",
+   "description": "A from-scratch signed-distance-field geometry kernel cross-checked against Gmsh and a PicoGK-compatible engine, with the GeoStudio GUI",
+   "img": "assets/apps/math-studio/thumbs/projects/geometry-kernel.webp",
+   "category": [
+    "geometry",
+    "cfd"
+   ],
+   "importance": 21,
+   "route": "intersect?preset=0",
+   "fallback": "revolve?preset=0",
+   "url": "/projects/geometry-kernel/",
+   "video": "assets/apps/math-studio/thumbs/projects/geometry-kernel.webm"
+  },
+  {
+   "slug": "microfluidics",
+   "title": "PANSOPHIA microfluidics solver",
+   "description": "In-house 2D/3D finite-element flow solver and Maxey-Riley particle tracer for inertial-microfluidics separation studies, with a validation dossier",
+   "img": "assets/apps/math-studio/thumbs/projects/microfluidics.webp",
+   "category": [
+    "microfluidics",
+    "cfd"
+   ],
+   "importance": 22,
+   "route": "atlas?ch=S61&ex=0",
+   "fallback": "",
+   "url": "/projects/microfluidics/",
+   "video": "assets/apps/math-studio/thumbs/projects/microfluidics.webm"
+  },
+  {
+   "slug": "cfd-multiphysics",
+   "title": "PANSOPHIA multiphysics test cases",
+   "description": "Cavity, conjugate heat transfer, boiling, FSI, structural, ignition and stochastic/UQ test figures from the PANSOPHIA solver",
+   "img": "assets/apps/math-studio/thumbs/projects/cfd-multiphysics.webp",
+   "category": [
+    "cfd"
+   ],
+   "importance": 23,
+   "route": "atlas?ch=S34&ex=1",
+   "fallback": "",
+   "url": "/projects/cfd-multiphysics/",
+   "video": "assets/apps/math-studio/thumbs/projects/cfd-multiphysics.webm"
+  },
+  {
+   "slug": "phd-thesis",
+   "title": "PhD thesis: a fast, robust, kinetics-based optimization framework",
+   "description": "IIT Madras doctoral thesis on optimization of combustion kinetic models; Chapter 3 and Chapter 4 figures",
+   "img": "assets/apps/math-studio/thumbs/projects/phd-thesis.webp",
+   "category": [
+    "optimization",
+    "uq",
+    "combustion"
+   ],
+   "importance": 26,
+   "route": "atlas?ch=S13&ex=4",
+   "fallback": "",
+   "url": "/projects/phd-thesis/",
+   "video": ""
+  },
+  {
+   "slug": "japan-2026-paper",
+   "title": "Power-mean objective: Japan 2026 symposium paper",
+   "description": "Figures from the full paper on a power-mean objective for multi-dataset combustion mechanism optimization",
+   "img": "assets/apps/math-studio/thumbs/projects/japan-2026-paper.webp",
+   "category": [
+    "optimization",
+    "combustion"
+   ],
+   "importance": 27,
+   "route": "atlas?ch=S13&ex=4",
+   "fallback": "",
+   "url": "/projects/japan-2026-paper/",
+   "video": ""
+  },
+  {
+   "slug": "bangalore-2026-conference",
+   "title": "Enhanced Multi-Stage Optimization Technique for Fuel Combustion Kinetic Mechanisms",
+   "description": "Conference paper submitted to ICICEPC 2026",
+   "img": "",
+   "category": [
+    "optimization",
+    "combustion"
+   ],
+   "importance": 28,
+   "route": "atlas?ch=S13&ex=4",
+   "fallback": "",
+   "url": "/projects/bangalore-2026-conference/",
+   "video": ""
+  },
+  {
+   "slug": "future-work-cnf-mso",
+   "title": "Reaction-Classification-Aware Multi-Stage Optimization",
+   "description": "Forthcoming",
+   "img": "",
+   "category": [
+    "optimization",
+    "combustion"
+   ],
+   "importance": 29,
+   "route": "atlas?ch=S13&ex=4",
+   "fallback": "",
+   "url": "/projects/future-work-cnf-mso/",
+   "video": ""
+  },
+  {
+   "slug": "vzero-explainer",
+   "title": "vZero explainer",
+   "description": "Charts, diagrams and a slide deck explaining Neural ODEs for stiff chemistry, with toy experiments",
+   "img": "assets/apps/math-studio/thumbs/projects/vzero-explainer.webp",
+   "category": [
+    "sciml",
+    "education"
+   ],
+   "importance": 30,
+   "route": "solver?tab=ode&preset=4",
+   "fallback": "",
+   "url": "/projects/vzero-explainer/",
+   "video": ""
+  }
+ ],
+ "recent": [
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "Seam check of two stitched video parts",
+   "thumb": "assets/apps/math-studio/thumbs/recent/51_stitch-seam-qc-800-022ece.webp",
+   "date": "2026-10-07",
+   "video": false,
+   "explain": ""
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "Calibration from a ruler and the burner tube",
+   "thumb": "assets/apps/math-studio/thumbs/recent/50_MVI8025-calibration-800-4ba51d.webp",
+   "date": "2026-10-07",
+   "video": false,
+   "explain": ""
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "Stitching video parts into one stream",
+   "thumb": "assets/apps/math-studio/thumbs/recent/49_studio-S121-video-stitching-800-82da3f.webp",
+   "date": "2026-10-07",
+   "video": true,
+   "explain": ""
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "Detecting the onset with a sliding window",
+   "thumb": "assets/apps/math-studio/thumbs/recent/48_studio-S120-onset-detection-800-940e7c.webp",
+   "date": "2026-10-07",
+   "video": true,
+   "explain": ""
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "Onset of puffing: Hopf bifurcation",
+   "thumb": "assets/apps/math-studio/thumbs/recent/46_studio-S118-hopf-onset-800-07655d.webp",
+   "date": "2026-10-07",
+   "video": true,
+   "explain": ""
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "Inverse Abel transform by onion peeling",
+   "thumb": "assets/apps/math-studio/thumbs/recent/47_studio-S119-onion-peeling-abel-800-cd7883.webp",
+   "date": "2026-10-07",
+   "video": true,
+   "explain": ""
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "Flame height versus heat release",
+   "thumb": "assets/apps/math-studio/thumbs/recent/45_studio-S117-flame-height-800-cd9aff.webp",
+   "date": "2026-10-07",
+   "video": true,
+   "explain": ""
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "Kymograph: stripe slope is convection speed",
+   "thumb": "assets/apps/math-studio/thumbs/recent/44_studio-S116-kymograph-800-e8c3bb.webp",
+   "date": "2026-10-07",
+   "video": true,
+   "explain": ""
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "Sub-pixel edge detection",
+   "thumb": "assets/apps/math-studio/thumbs/recent/43_studio-S115-subpixel-edge-800-00c904.webp",
+   "date": "2026-10-07",
+   "video": true,
+   "explain": ""
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "Veiling glare and the threshold",
+   "thumb": "assets/apps/math-studio/thumbs/recent/42_studio-S114-veiling-glare-800-e52214.webp",
+   "date": "2026-10-07",
+   "video": true,
+   "explain": ""
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "Aliasing: a 14 Hz flame at 23.976 fps",
+   "thumb": "assets/apps/math-studio/thumbs/recent/41_studio-S113-aliasing-800-367b79.webp",
+   "date": "2026-10-07",
+   "video": true,
+   "explain": ""
+  },
+  {
+   "slug": "flamelab",
+   "title": "flamelab",
+   "caption": "All four regimes at once -- multi-location width tracking, one frame",
+   "thumb": "assets/apps/math-studio/thumbs/recent/34_MVI8036-zonal-four-regimes-quadrant-800-de95f7.webp",
+   "date": "2026-09-08",
+   "video": true,
+   "explain": "figure.flamelab.MVI8036-zonal-four-regimes-quadrant"
+  }
+ ]
+}

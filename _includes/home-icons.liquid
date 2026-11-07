@@ -1,0 +1,66 @@
+{%- comment -%}
+  PROJECT ICON WALL: one square tile per project (hero thumb, short title, category colour edge).
+  Desktop: a tile does not navigate; home.js posts {type:'go', route} to the Studio stage and opens the drawer.
+  Phones (<= 860px) and no-JS: the tile is a plain link to /studio/#route (full window). Projects without a Studio route link to their page.
+  Route: the project's `studio:` front matter, else _data/studio_map.yml; `static_fallback` replaces a server-only route.
+  Usage: {% include home-icons.liquid %}
+{%- endcomment -%}
+{%- assign wall = site.projects | sort: 'importance' -%}
+<ul class="hi" role="list" data-wall>
+  {%- for p in wall -%}
+    {%- assign sm = site.data.studio_map[p.slug] -%}
+    {%- assign route = p.studio | default: sm.route | strip -%}
+    {%- assign go = sm.static_fallback | default: route | strip -%}
+    {%- assign cat1 = p.category | first | default: 'sciml' -%}
+    {%- assign short = p.title | split: ' — ' | first -%}
+    <li class="hi__li">
+      <a
+        class="hi__tile fx-spot"
+        href="{% if go != '' %}{{ '/studio/' | relative_url }}#{{ go | escape }}{% else %}{{ p.url | relative_url }}{% endif %}"
+        style="--c: var(--cat-{{ cat1 }}, var(--teal));"
+        data-slug="{{ p.slug }}"
+        data-title="{{ p.title | escape }}"
+        data-cats="{{ p.category | join: ',' }}"
+        data-desc="{{ p.description | strip | escape }}"
+        data-route="{{ go | escape }}"
+        data-url="{{ p.url | relative_url }}"
+        aria-label="{{ p.title | escape }}{% if go == '' %} (project page){% endif %}"
+      >
+        <span class="hi__media" aria-hidden="true">
+          {%- assign hi_img = p.icon | default: p.img -%}
+          {%- assign hi_vid = p.icon_video | default: p.icon_video_mp4 -%}
+          {%- if hi_img -%}
+            <img src="{{ hi_img | relative_url }}" alt="" loading="lazy" decoding="async">
+            {%- if p.icon and hi_vid -%}
+              {%- comment -%} Loop: muted, no preload; assets/js/site/icon-video.js plays it only while visible and effects are on. {%- endcomment -%}
+              <video
+                class="hi__vid"
+                data-icon-video
+                muted
+                loop
+                playsinline
+                preload="none"
+                disablepictureinpicture
+                aria-hidden="true"
+                tabindex="-1"
+                poster="{{ p.icon | relative_url }}"
+              >
+                {%- if p.icon_video and p.icon_video contains '.webm' -%}
+                  <source src="{{ p.icon_video | relative_url }}" type="video/webm">
+                {%- endif -%}
+                {%- if p.icon_video_mp4 -%}
+                  <source src="{{ p.icon_video_mp4 | relative_url }}" type="video/mp4">
+                {%- elsif p.icon_video contains '.mp4' -%}
+                  <source src="{{ p.icon_video | relative_url }}" type="video/mp4">
+                {%- endif -%}
+              </video>
+            {%- endif -%}
+          {%- else -%}
+            <span class="hi__mono mono">{{ short | slice: 0, 2 | upcase }}</span>
+          {%- endif -%}
+        </span>
+        <span class="hi__t" aria-hidden="true">{{ short | escape }}</span>
+      </a>
+    </li>
+  {%- endfor -%}
+</ul>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>flow field demo</title>
+<style>
+  /* Same self-contained/theme-sync pattern as value_flow_demo.html (this
+     directory) -- see that file's own comment for the full purgecss/
+     same-origin-iframe reasoning, not repeated here. */
+  :root {
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-secondary: #52514e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --surface: #1a1a19;
+      --ink: #ffffff;
+      --ink-secondary: #c3c2b7;
+    }
+  }
+  :root[data-theme="dark"] {
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-secondary: #c3c2b7;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--surface);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    overflow: hidden;
+  }
+  .wrap {
+    padding: 10px 12px 6px;
+  }
+  .caption {
+    font-size: 11px;
+    color: var(--ink-secondary);
+    margin: 0 0 6px;
+  }
+  canvas {
+    display: block;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="caption">vZero flow field &mdash; a Neural ODE's learned right-hand side IS a vector field; this is the real Van der Pol system (mu=1) it learns to recover from data, the same equations vZero's own flowfield.py evaluates and overlays against a trained model</p>
+  <canvas id="viz" width="620" height="200" role="img" aria-label="animated phase portrait of the Van der Pol oscillator, particles advecting through the vector field"></canvas>
+</div>
+<script>
+(function () {
+  function syncThemeFromParent() {
+    try {
+      var t = parent.document.documentElement.getAttribute("data-theme");
+      if (t === "light" || t === "dark") {
+        document.documentElement.setAttribute("data-theme", t);
+      }
+    } catch (e) {
+      // cross-origin or no parent -- @media fallback in <style> handles it
+    }
+  }
+  syncThemeFromParent();
+  try {
+    new MutationObserver(syncThemeFromParent).observe(parent.document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+  } catch (e) {
+    // same cross-origin/no-parent fallback as above
+  }
+
+  function isDark() {
+    var attr = document.documentElement.getAttribute("data-theme");
+    if (attr === "dark") return true;
+    if (attr === "light") return false;
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
+  // The REAL Van der Pol equations, mu=1 -- the exact same fixed constant
+  // vZero's own data.py::_generate_vdp_synthetic and flowfield.py's
+  // _van_der_pol_uv use (see vZero/synthetic/vdp_default's preset). Not
+  // decorative: this is the actual dynamical system vZero's flow-field view
+  // (session 10) compares a trained model's learned RHS against.
+  var MU = 1.0;
+  function vdp(x, y) {
+    return [y, MU * (1 - x * x) * y - x];
+  }
+
+  var canvas = document.getElementById("viz");
+  var ctx = canvas.getContext("2d");
+  var W = canvas.width, H = canvas.height;
+  var X_LO = -3, X_HI = 3, Y_LO = -3, Y_HI = 3;
+
+  function toPx(x, y) {
+    return [
+      ((x - X_LO) / (X_HI - X_LO)) * W,
+      H - ((y - Y_LO) / (Y_HI - Y_LO)) * H,
+    ];
+  }
+
+  // A sparse quiver -- direction only, drawn once per theme change (the
+  // field itself never changes; only particles animate).
+  var GRID_N = 14;
+  function drawQuiver() {
+    ctx.strokeStyle = isDark() ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.30)";
+    ctx.lineWidth = 1;
+    for (var i = 0; i < GRID_N; i++) {
+      for (var j = 0; j < GRID_N; j++) {
+        var x = X_LO + ((i + 0.5) / GRID_N) * (X_HI - X_LO);
+        var y = Y_LO + ((j + 0.5) / GRID_N) * (Y_HI - Y_LO);
+        var d = vdp(x, y);
+        var mag = Math.hypot(d[0], d[1]) || 1;
+        var len = (W / GRID_N) * 0.32;
+        var dx = (d[0] / mag) * len, dy = (d[1] / mag) * len;
+        var center = toPx(x, y);
+        var px = center[0], py = center[1];
+        ctx.beginPath();
+        ctx.moveTo(px - dx * 0.4, py + dy * 0.4);
+        ctx.lineTo(px + dx * 0.6, py - dy * 0.6);
+        ctx.stroke();
+      }
+    }
+  }
+
+  function rk4(x, y, dt) {
+    var k1 = vdp(x, y);
+    var k2 = vdp(x + 0.5 * dt * k1[0], y + 0.5 * dt * k1[1]);
+    var k3 = vdp(x + 0.5 * dt * k2[0], y + 0.5 * dt * k2[1]);
+    var k4 = vdp(x + dt * k3[0], y + dt * k3[1]);
+    return [
+      x + (dt / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]),
+      y + (dt / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]),
+    ];
+  }
+
+  var N_PARTICLES = 10;
+  var particles = [];
+  function seedParticles() {
+    particles = [];
+    for (var i = 0; i < N_PARTICLES; i++) {
+      var angle = (i / N_PARTICLES) * Math.PI * 2;
+      var r = 0.6 + (i % 3) * 0.7;
+      particles.push({ x: r * Math.cos(angle), y: r * Math.sin(angle), trail: [] });
+    }
+  }
+  seedParticles();
+
+  var DT = 0.03;
+  function step() {
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      var next = rk4(p.x, p.y, DT);
+      p.x = next[0]; p.y = next[1];
+      p.trail.push([p.x, p.y]);
+      if (p.trail.length > 40) p.trail.shift();
+      if (Math.abs(p.x) > X_HI + 1 || Math.abs(p.y) > Y_HI + 1) {
+        var angle = Math.random() * Math.PI * 2;
+        p.x = 0.5 * Math.cos(angle);
+        p.y = 0.5 * Math.sin(angle);
+        p.trail = [];
+      }
+    }
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    drawQuiver();
+    var dotColor = isDark() ? "rgba(255,255,255,0.9)" : "rgba(20,20,20,0.85)";
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      ctx.beginPath();
+      for (var k = 0; k < p.trail.length; k++) {
+        var pt = toPx(p.trail[k][0], p.trail[k][1]);
+        var alpha = (k / p.trail.length) * 0.55;
+        ctx.fillStyle = isDark() ? "rgba(61,135,229," + alpha + ")" : "rgba(42,120,214," + alpha + ")";
+        ctx.fillRect(pt[0] - 1, pt[1] - 1, 2, 2);
+      }
+      var head = toPx(p.x, p.y);
+      ctx.beginPath();
+      ctx.fillStyle = dotColor;
+      ctx.arc(head[0], head[1], 2.4, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  }
+
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) {
+    render();
+  } else {
+    (function loop() {
+      step();
+      render();
+      requestAnimationFrame(loop);
+    })();
+  }
+})();
+</script>
+</body>
+</html>

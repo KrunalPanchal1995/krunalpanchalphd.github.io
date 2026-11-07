@@ -1,0 +1,56 @@
+# Design system + home-page hero configuration.
+#
+# hero: which hero the home page shows by default. One of: fluid | streamlines | card3d | photo.
+# A visitor / the owner can override it at runtime (no rebuild) with ?hero=card3d,
+# and ?heropick=1 shows a small picker to try all four (see _includes/hero-switch.liquid).
+hero: fluid
+
+hero_params:
+  fluid:
+    name: Krunal Panchal
+    cta:
+      label: ""
+      url: /projects/
+  streamlines:
+    name: Krunal Panchal
+    cta:
+      label: ""
+      url: /projects/
+  card3d:
+    name: Krunal Panchal
+    caption: Coordinate transformation, live
+    cta:
+      label: ""
+      url: /projects/
+    fallback_image: /assets/img/hero/placeholder_flow.jpg
+  photo:
+    title: Krunal Panchal
+    image: /assets/img/hero/placeholder_flow.jpg
+    menu:
+      - label: About
+        url: /about/
+      - label: Research
+        url: /projects/
+      - label: Activities
+        url: /news/
+
+# Design tokens (documentation + reference; assets/css/hero.css is the implementation).
+tokens:
+  dark:
+    bg: "#0e1116"
+    panel: "#151a21"
+    border: "#29313c"
+    text: "#e4eaf0"
+    muted: "#93a1b0"
+    teal: "#2dd4bf"
+    amber: "#f5a524"
+    rose: "#fb7185"
+    sky: "#60a5fa"
+  light:
+    bg: "#f4f6f8"
+    panel: "#ffffff"
+    text: "#17202b"
+    teal: "#0f9f8f"
+    amber: "#c7780a"
+    rose: "#d9465f"
+    sky: "#2f7fd6"

@@ -1,0 +1,37 @@
+{% comment %}
+  Home-page hero: a live, animated "value flow" demo -- the otoro.net-style
+  ask from the site redesign plan, showing a small piece of actual research
+  (the H2/O2 ablation study's real finding: unnormalized temperature
+  dominates every species channel by orders of magnitude) rather than a
+  purely decorative animation.
+
+  Embedded via <iframe> pointing at a FULLY SELF-CONTAINED static file
+  (assets/html/value_flow_demo.html -- own inline <style>/<script>, no
+  dependency on this theme's CSS classes) rather than inlined here, because
+  purgecss.config.js only scans _site/**/*.html for the classes it keeps in
+  _site/assets/css/*.css, and explicitly EXCLUDES _site/assets/**/*.html
+  from that scan -- any class used only inside an inlined demo would be
+  invisible to the scanner and risk getting stripped. A standalone file with
+  its own styles sidesteps that entirely.
+
+  Placed inside about.md's body (inside the about.liquid layout's
+  `.clearfix` wrapper, below the floated profile header) rather than a true
+  full-bleed hero above it, since `_layouts/about.liquid` is one of the 4
+  files .al-folio-overrides.yml SHA256-tracks -- editing it means
+  recomputing and re-acknowledging that hash. A full-bleed version is a
+  future upgrade if that cost is worth spending later.
+
+  Usage: {% include hero-value-flow.liquid %}
+{% endcomment %}
+<div class="hero-value-flow" style="margin: 1.5rem 0; max-width: 640px;">
+  <iframe
+    src="{{ '/assets/html/value_flow_demo.html' | relative_url }}"
+    title="Live demo: value-flow view from the vZero Neural ODE research playground"
+    width="100%"
+    height="200"
+    style="border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; display: block;"
+    loading="lazy"
+    scrolling="no"
+  >
+  </iframe>
+</div>

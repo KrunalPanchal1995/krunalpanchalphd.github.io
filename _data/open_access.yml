@@ -1,0 +1,98 @@
+# Open-science / open-access settings and UI copy (WP-J). Everything the /open/ page and the request component say lives here.
+# Owner: edit the wording freely; nothing is generated into this file. Items (what is open / on request) are in open_catalog.yml.
+# DISCLOSURE_POLICY.md still decides what may be published at all: a file is only ever listed as open after you approve it.
+
+# Request form. Leave "" to hide the form (the email route still works). Paste your form endpoint (Formspree, Getform, a Google
+# Apps Script web app, ...) to show it; "form enabled" is derived in the templates from a non-empty endpoint, there is no separate switch.
+form_endpoint: ""
+
+# Email route. The address is NEVER printed here or in static HTML: it comes from _data/socials.yml (email:) through the
+# site's protect_email mechanism (data-eu / data-ed halves) and is only joined in the browser when somebody clicks.
+# Placeholders: {title} {id} {url}
+email:
+  subject: "Open access request: {title} ({id})"
+  body: |
+    Hello,
+
+    I would like the code and PDF notes for: {title}
+    Item id: {id}
+    Page: {url}
+
+    Name:
+    Affiliation (optional):
+    What I plan to use it for (optional):
+
+    Thank you.
+  owner_to_confirm: true
+
+# Licences offered with shared files. owner_to_confirm: true until you have read and accepted them.
+license_code: "MIT"
+license_docs: "CC BY 4.0"
+license_owner_to_confirm: true
+
+# UI copy. Short, factual, editable.
+page:
+  eyebrow: "Open science"
+  title: "Open science"
+  intro: "The code and notes behind these plots can be shared. Nothing here costs money. Some files are open now, the rest are sent by email once I approve a request."
+  free_title: "Free of cost"
+  free_text: "Downloads and requests are free. There is no payment, no account and no subscription. The request step exists only so that a file reaches the person who wants it."
+  open_title: "Open now"
+  open_text: "The code and PDF notes for the home page fluid demo can be downloaded straight away."
+  request_title: "Shared on approval"
+  request_text: "For every other plot I review the request and reply by email with the code and the PDF notes. The request goes to me, and nobody else sees it."
+  shared_title: "What is shared"
+  shared:
+    - "The plot's code (Python or Julia), as a zip."
+    - "The PDF notes that explain the plot."
+  never_title: "What is never shared"
+  never:
+    - "Anything from work that is not yet published (see the disclosure policy)."
+    - "Private data and credentials."
+  reply_time_title: "Typical reply time"
+  reply_time: ""
+  studio_title: "How the Studio fits in"
+  studio_text: "The Math Studio is a teaching and showcase tool. It plays short clips of how a plot is built and explains each figure."
+  recreate_title: "To recreate a plot"
+  recreate_steps:
+    - "Watch the clip in the Studio."
+    - "Request the code and PDF notes for that plot."
+    - "Run the code and change the inputs."
+  table_title: "Open and on request"
+  table_caption: "Each row is one plot, project or page."
+
+# Studio "Beyond the projects" tab (WP-M): the topics outside my projects, shown as silent clips.
+promos:
+  title: "Beyond the projects"
+  intro: "These topics are not part of my projects, so the live Studio leaves them out. Each one is a short silent screen capture made in the Math Studio. If you want the code and the PDF notes behind a clip, ask for them and I will send them by email once I approve the request."
+  gallery: "Topics outside my projects, as short silent clips. The code and PDF notes are free and are sent on request."
+  how_title: "How this was made"
+  link: "How requests work"
+
+# Component copy.
+component:
+  free_note: "Free of cost."
+  download_code: "Download code"
+  download_pdf: "Download PDF"
+  request_button: "Request code + PDF"
+  request_note: "Free of cost. I approve each request and reply by email."
+  request_code: "Request code"
+  request_pdf: "Request PDF"
+  copy_button: "Copy the message"
+  copied: "Message copied."
+  copy_failed: "Could not copy. Select the text and copy it."
+  mail_opened: "Your email program should open. If it did not, copy the message instead."
+  mail_unavailable: "The email address is not available in this browser. Use the request form."
+  form_title: "Or send the request here"
+  form_name: "Name"
+  form_email: "Your email"
+  form_affiliation: "Affiliation (optional)"
+  form_purpose: "What it is for (optional)"
+  form_submit: "Send request"
+  form_sending: "Sending..."
+  form_success: "Request sent. I will reply by email."
+  form_error: "The request could not be sent. Use the email button instead."
+  form_invalid: "Please fill in your name and a valid email."
+  no_js: "To request the files, email me at"
+  no_js_tail: "and mention the item id."
+  locked_title: "Code + PDF on request"

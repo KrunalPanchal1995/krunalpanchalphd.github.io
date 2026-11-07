@@ -1,0 +1,93 @@
+---
+layout: default
+---
+{%- comment -%}
+  HOME layout (the page at /): "Studio Home". All text-like content comes from the owner's intake page
+  (PORTFOLIO_INTAKE/00_SITE/home/page.md -> site.data.intake_pages.home): title, subtitle, body_md, media[], extra.media_links.
+  The credentials line comes from the /about/ profile. Nothing here invents prose.
+  Sections, in order (each hides itself when it has no data):
+    hero (hero-switch) -> intro (credentials, pull paragraph, CTAs, links, Research at a glance) -> marquee + datasheet
+    -> Studio stage (icon wall + static Math Visual Studio iframe + drawer) -> numbers -> Selected work carousel -> Selected results
+    -> Recently added -> Try the research live -> teasers -> News -> Selected publications -> social.
+  Styles: assets/css/site/home.css. Behaviour: assets/js/site/home.js.
+{%- endcomment -%}
+{%- assign it = site.data.intake_pages.home -%}
+{%- assign ex = it.extra -%}
+{%- assign body = it.body_md | strip -%}
+{%- assign sub = it.subtitle | strip -%}
+{%- assign home_name = site.first_name | append: ' ' | append: site.last_name | strip -%}
+{%- if home_name == '' -%}{%- assign home_name = site.title -%}{%- endif -%}
+{%- assign tag = ex.tagline | default: sub | strip -%}
+{%- if tag == '' -%}{%- assign tag = ' ' -%}{%- endif -%}
+{%- assign acc = ex.accent_word | strip -%}
+{%- if acc == '' -%}{%- assign acc = site.last_name | strip -%}{%- endif -%}
+{%- if acc == '' -%}{%- assign acc = ' ' -%}{%- endif -%}
+{%- assign has_media = false -%}
+{%- if it.media and it.media.size > 0 -%}{%- assign has_media = true -%}{%- endif -%}
+
+<div class="home">
+  <div class="home-hero">
+    {% include hero-switch.liquid name=home_name tagline=tag accent_word=acc %}
+  </div>
+  {% include home-under-hood.liquid %}
+
+  {%- if body == '' and has_media == false -%}
+    <aside class="home-empty raised" aria-label="Home page not written yet">
+      <p class="eyebrow">Not written yet</p>
+      <h2 class="home-empty__t">Write your home page</h2>
+      <p class="home-empty__p">
+        Write your home page in <code class="home-empty__path">PORTFOLIO_INTAKE/00_SITE/home/page.md</code>. A subtitle, a body and media for the
+        Selected work carousel all appear here once you add them.
+      </p>
+    </aside>
+  {%- endif -%}
+
+  {% include home-intro.liquid %}
+  {% include home-marquee.liquid %}
+  {% include home-stage.liquid %}
+  {% include home-stats.liquid %}
+  {% include home-showcase.liquid %}
+  {% include home-recent.liquid %}
+
+  {%- comment -%} "Try the research live" strip (WP-Fluid): included once the file exists. {%- endcomment -%}
+  {% include home-live.liquid %}
+
+  {% include home-teasers.liquid %}
+
+  {%- if page.announcements and page.announcements.enabled -%}
+    <section class="home-sec" aria-labelledby="home-news">
+      <header class="home-sec__head">
+        <p class="eyebrow">Latest</p>
+        <h2 id="home-news" data-fx="split"><a href="{{ '/news/' | relative_url }}" class="about-h2-link">News</a></h2>
+      </header>
+      {% include news.liquid limit=true %}
+    </section>
+  {%- endif -%}
+
+  {%- if page.selected_papers -%}
+    {%- capture sel_count -%}{% bibliography_count --query @*[selected=true]* %}{%- endcapture -%}
+    {%- assign sel_n = sel_count | strip | plus: 0 -%}
+    {%- if sel_n > 0 -%}
+      <section class="home-sec" aria-labelledby="home-pubs">
+        <header class="home-sec__head">
+          <p class="eyebrow">Papers</p>
+          <h2 id="home-pubs" data-fx="split"><a href="{{ '/publications/' | relative_url }}" class="about-h2-link">Selected publications</a></h2>
+        </header>
+        {% include selected_papers.liquid %}
+      </section>
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- if content != blank -%}
+    <div class="home-sec home-prose">{{ content }}</div>
+  {%- endif -%}
+
+  {%- if page.social -%}
+    <div class="home-sec social">
+      <div class="contact-icons">{% social_links %}</div>
+      <div class="contact-note">{{ site.contact_note }}</div>
+    </div>
+  {%- endif -%}
+</div>
+<script defer src="{{ '/assets/js/site/home.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
+<script defer src="{{ '/assets/js/site/icon-video.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>

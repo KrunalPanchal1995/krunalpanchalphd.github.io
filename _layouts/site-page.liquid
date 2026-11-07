@@ -1,0 +1,417 @@
+---
+layout: default
+---
+{%- comment -%}
+  site-page: shared shell for the redesigned long-form pages (research, writing, beyond-research, playground, news, 404).
+  Text and media are ONLY ever the owner's: site.data.intake_pages[page.intake] (body_md, subtitle, tags, hero, media[], extra{}).
+  Front matter used:
+    intake       key into intake_pages (optional)
+    variant      prose | research | writing | beyond | playground | news | notfound
+    accent_word  one word of the title that gets the italic serif accent (ignored for one-word titles)
+    eyebrow      small label above the H1
+    header       false hides the header block (page brings its own)
+    sections     false disables the dot indicator / "On this page" sheet
+    no_empty     true hides the "not written yet" state (pages that render their own data)
+  {{ content }} is a structural slot (map, iframe, timeline). Beyond-research places it inside its Travel section; every other variant
+  renders it between the header and the owner's text.
+  Markdown is split on `## ` into sections; a `### ` inside a section becomes a sub-card (research themes, beyond mini cards).
+{%- endcomment -%}
+{%- capture nl %}
+{% endcapture -%}
+{%- assign sep2 = nl | append: '## ' -%}
+{%- assign sep3 = nl | append: '### ' -%}
+{%- assign nl_dash = nl | append: '- ' -%}
+{%- assign key = page.intake -%}
+{%- assign it = site.data.intake_pages[key] -%}
+{%- assign variant = page.variant | default: 'prose' -%}
+{%- assign body = it.body_md | strip -%}
+{%- assign media = it.media -%}
+{%- assign media_n = 0 -%}
+{%- if media -%}{%- assign media_n = media.size -%}{%- endif -%}
+{%- assign has_body = false -%}
+{%- if body != '' -%}{%- assign has_body = true -%}{%- endif -%}
+{%- assign has_posts = false -%}
+{%- if variant == 'writing' and site.posts.size > 0 -%}{%- assign has_posts = true -%}{%- endif -%}
+{%- assign has_any = false -%}
+{%- if has_body or media_n > 0 or has_posts or page.no_empty -%}{%- assign has_any = true -%}{%- endif -%}
+{%- assign h1_text = it.title | default: page.title -%}
+{%- assign h1 = h1_text | escape -%}
+{%- assign accent = page.accent_word | escape -%}
+{%- comment -%} The italic accent needs a headline of two or more words; one-word titles stay plain sans. {%- endcomment -%}
+{%- assign title_words = h1_text | split: ' ' -%}
+{%- if title_words.size < 2 -%}{%- assign accent = '' -%}{%- endif -%}
+{%- if accent != '' -%}
+  {%- capture accent_html -%}<span class="accent-serif">{{ accent }}</span>{%- endcapture -%}
+  {%- assign h1 = h1 | replace: accent, accent_html -%}
+{%- endif -%}
+{%- assign eyebrow = page.eyebrow | default: page.title -%}
+{%- assign links = it.extra.media_links -%}
+
+<div class="sp sp--{{ variant }}">
+  {%- if page.blueprint != false -%}<div class="sp__grid blueprint blueprint--fade" aria-hidden="true"></div>{%- endif -%}
+
+  {%- if page.header != false -%}
+    <header class="sp-head">
+      <p class="eyebrow">{{ eyebrow }}</p>
+      <h1 class="sp-head__title" data-fx="split">{{ h1 }}</h1>
+      {%- if it.subtitle and it.subtitle != '' -%}
+        <p class="sp-head__sub">{{ it.subtitle | escape }}</p>
+      {%- endif -%}
+      {%- if it.tags and it.tags.size > 0 -%}
+        <ul class="sp-tags" aria-label="Tags">
+          {%- for t in it.tags -%}
+            <li class="chip">{{ t | escape }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      {%- if it.status and it.status != '' and it.status != 'published' and it.status != 'live' -%}
+        <p class="sp-status">
+          <span class="chip chip--amber">{{ it.status | escape }}</span>
+        </p>
+      {%- endif -%}
+    </header>
+  {%- endif -%}
+
+  {%- if it.hero and it.hero != '' -%}
+    {%- assign hero_src = it.hero -%}
+    {%- unless hero_src contains '://' -%}{%- assign hero_src = hero_src | relative_url -%}{%- endunless -%}
+    <figure class="sp-hero raised"><img src="{{ hero_src }}" alt="" loading="eager" decoding="async"></figure>
+  {%- endif -%}
+
+  <div
+    class="sp-body"
+    {% unless page.sections == false %}
+      data-sp-sections
+    {% endunless %}
+  >
+    {%- assign slot = content | strip -%}
+    {%- assign slot_done = false -%}
+    {%- if slot != '' and variant != 'beyond' -%}
+      <div class="sp-slot">{{ content }}</div>
+      {%- assign slot_done = true -%}
+    {%- endif -%}
+
+    {%- comment -%} topic filter: media topics (research only) {%- endcomment -%}
+    {%- assign topics = media | map: 'topic' | compact | uniq -%}
+    {%- if topics.size > 1 and variant == 'research' -%}
+      <div class="sp-filter" role="group" aria-label="Filter by topic" data-sp-filter>
+        <button type="button" class="chip is-on" data-topic="*" aria-pressed="true">All</button>
+        {%- for t in topics -%}
+          <button type="button" class="chip" data-topic="{{ t | slugify }}" aria-pressed="false">{{ t | escape }}</button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- assign gal = media -%}
+    {%- assign card_slugs = '|' -%}
+
+    {%- if has_body -%}
+      {%- assign secs = body | prepend: nl | split: sep2 -%}
+      {%- assign sectioned = false -%}
+      {%- if variant == 'research' or variant == 'writing' or variant == 'beyond' -%}{%- assign sectioned = true -%}{%- endif -%}
+      {%- if sectioned and secs.size > 1 -%}
+        {%- assign intro = secs[0] | strip -%}
+        {%- comment -%} figures that belong to a section are not repeated in the leftover gallery {%- endcomment -%}
+        {%- for part in secs offset: 1 -%}
+          {%- assign hl = part | split: nl | first | strip -%}
+          {%- assign hs = hl | slugify -%}
+          {%- assign card_slugs = card_slugs | append: hs | append: '|' -%}
+        {%- endfor -%}
+        {%- assign gal = '' | split: '' -%}
+        {%- for m in media -%}
+          {%- assign ts = m.topic | slugify -%}
+          {%- assign needle = '|' | append: ts | append: '|' -%}
+          {%- assign inside = false -%}
+          {%- if card_slugs contains needle -%}{%- assign inside = true -%}{%- endif -%}
+          {%- if ts == '' or inside == false -%}{%- assign gal = gal | push: m -%}{%- endif -%}
+        {%- endfor -%}
+
+        {%- comment -%} intro: plain prose, and (beyond) mini cards from `### ` blocks {%- endcomment -%}
+        {%- if intro != '' -%}
+          {%- assign ipieces = intro | prepend: nl | split: sep3 -%}
+          {%- assign ilead = ipieces[0] | strip -%}
+          {%- if ilead != '' -%}
+            <div class="sp-prose sp-prose--intro" data-fx="reveal">{{ ilead | markdownify }}</div>
+          {%- endif -%}
+          {%- if ipieces.size > 1 -%}
+            <div class="sp-minis" data-fx-stagger="90">
+              {%- for piece in ipieces offset: 1 -%}
+                {%- assign pl = piece | split: nl -%}
+                {%- assign ph = pl[0] | strip -%}
+                {%- assign pt = piece | remove_first: pl[0] | strip -%}
+                <article class="sp-mini raised fx-spot" data-fx="reveal" data-topic="{{ ph | slugify }}">
+                  <p class="eyebrow mono">{{ forloop.index | prepend: '0' }}</p>
+                  <h2 id="{{ ph | slugify }}" data-fx="split">{{ ph | escape }}</h2>
+                  {%- if pt != '' -%}
+                    <div class="sp-prose">{{ pt | markdownify }}</div>
+                  {%- endif -%}
+                </article>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- if variant == 'writing' -%}
+          <div class="sp-cards sp-cards--writing" data-fx-stagger="80">
+            {%- for part in secs offset: 1 -%}
+              {%- assign lines = part | split: nl -%}
+              {%- assign heading = lines[0] | strip -%}
+              {%- assign slug = heading | slugify -%}
+              {%- assign rest = part | remove_first: lines[0] | strip -%}
+              <article class="sp-card raised fx-spot{% if forloop.first %} sp-card--featured{% endif %}" data-fx="reveal" data-topic="{{ slug }}">
+                <div class="sp-card__body">
+                  <p class="eyebrow mono">{{ forloop.index | prepend: '0' }}</p>
+                  <h2 id="{{ slug }}" data-fx="split">{{ heading | escape }}</h2>
+                  {%- if rest != '' -%}
+                    <div class="sp-prose">{{ rest | markdownify | replace: '<li>', '<li class="fx-spot">' }}</div>
+                  {%- endif -%}
+                </div>
+              </article>
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div class="sp-secs">
+            {%- for part in secs offset: 1 -%}
+              {%- assign lines = part | split: nl -%}
+              {%- assign heading = lines[0] | strip -%}
+              {%- assign slug = heading | slugify -%}
+              {%- assign rest = part | remove_first: lines[0] | strip -%}
+              {%- assign subs = rest | prepend: nl | split: sep3 -%}
+              {%- assign lead = subs[0] | strip -%}
+              {%- assign figs = '' | split: '' -%}
+              {%- for m in media -%}
+                {%- assign ts = m.topic | slugify -%}
+                {%- if ts == slug and ts != '' -%}{%- assign figs = figs | push: m -%}{%- endif -%}
+              {%- endfor -%}
+              {%- assign nsubs = subs.size | minus: 1 -%}
+              {%- assign pair = false -%}
+              {%- if nsubs > 0 and figs.size == nsubs -%}{%- assign pair = true -%}{%- endif -%}
+              {%- assign lead_t = lead | prepend: nl -%}
+              {%- assign is_list = false -%}
+              {%- if nsubs == 0 and lead_t contains nl_dash -%}{%- assign is_list = true -%}{%- endif -%}
+              {%- assign is_link = false -%}
+              {%- if nsubs == 0 and lead.size < 220 and lead contains '](' and is_list == false -%}{%- assign is_link = true -%}{%- endif -%}
+              <section
+                class="sp-sec sp-sec--{{ variant }}{% if is_list %} sp-sec--list{% endif %}{% if is_link %} sp-sec--link raised fx-spot{% endif %}"
+                data-topic="{{ slug }}"
+                aria-labelledby="{{ slug }}"
+              >
+                <header class="sp-sec__head" data-fx="reveal">
+                  <span class="sp-sec__num mono" aria-hidden="true">{{ forloop.index | prepend: '0' }}</span>
+                  <h2 id="{{ slug }}" data-fx="split">{{ heading | escape }}</h2>
+                </header>
+
+                {%- if figs.size > 0 and pair == false -%}
+                  <div class="sp-figs{% if figs.size == 1 %} sp-figs--one{% endif %}" data-fx-stagger="90">
+                    {%- for m in figs -%}
+                      {%- assign s8 = m.src_800 | default: m.src_1600 -%}
+                      {%- assign s16 = m.src_1600 | default: m.src_800 -%}
+                      {%- assign cap = m.caption | strip -%}
+                      {%- unless s8 contains '://' -%}{%- assign s8 = s8 | relative_url -%}{%- endunless -%}
+                      {%- unless s16 contains '://' -%}{%- assign s16 = s16 | relative_url -%}{%- endunless -%}
+                      <figure class="sp-fig raised" data-fx="reveal">
+                        <div class="fx-plate" data-slate-project="{{ heading | escape }}" data-slate-take="{{ forloop.index }}">
+                          {%- if m.video and m.video != '' -%}
+                            {%- assign vsrc = m.video -%}
+                            {%- unless vsrc contains '://' -%}{%- assign vsrc = vsrc | relative_url -%}{%- endunless -%}
+                            <video
+                              class="sp-video"
+                              data-sp-video
+                              muted
+                              loop
+                              playsinline
+                              preload="none"
+                              src="{{ vsrc }}"
+                              poster="{{ s8 }}"
+                              aria-label="{{ cap | default: heading | escape }}"
+                            ></video>
+                          {%- else -%}
+                            <a href="{{ s16 }}" data-lightbox="{{ slug }}" data-caption="{{ cap | escape }}"
+                              ><img src="{{ s8 }}" alt="{{ cap | default: heading | escape }}" loading="lazy" decoding="async"
+                            ></a>
+                          {%- endif -%}
+                        </div>
+                        {%- if cap != '' -%}
+                          <figcaption>{{ cap | escape }}</figcaption>
+                        {%- endif -%}
+                      </figure>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+
+                {%- if lead != '' -%}
+                  <div class="sp-prose" data-fx="reveal">
+                    {%- if is_list -%}
+                      {{ lead | markdownify | replace: '<li>', '<li class="fx-spot">' }}
+                    {%- else -%}
+                      {{ lead | markdownify }}
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+
+                {%- if nsubs > 0 -%}
+                  <div class="sp-themes" data-fx-stagger="90">
+                    {%- for sub in subs offset: 1 -%}
+                      {%- assign sl = sub | split: nl -%}
+                      {%- assign sh = sl[0] | strip -%}
+                      {%- assign st = sub | remove_first: sl[0] | strip -%}
+                      {%- assign sm = null -%}
+                      {%- if pair -%}{%- assign sm = figs[forloop.index0] -%}{%- endif -%}
+                      {%- comment -%} the card's project link: media_links by figure file name, else the first link in its text {%- endcomment -%}
+                      {%- assign go = '' -%}
+                      {%- if sm -%}
+                        {%- assign fname = sm.src_800 | split: '/' | last | replace: '-800.', '.' -%}
+                        {%- assign go = links[fname] -%}
+                      {%- endif -%}
+                      {%- if go == null or go == '' -%}
+                        {%- assign go = '' -%}
+                        {%- if st contains '](' -%}
+                          {%- assign go = st | split: '](' | last | split: ')' | first -%}
+                        {%- endif -%}
+                      {%- endif -%}
+                      <article class="sp-card sp-theme raised fx-spot" data-fx="reveal">
+                        {%- if sm -%}
+                          {%- assign s8 = sm.src_800 | default: sm.src_1600 -%}
+                          {%- assign s16 = sm.src_1600 | default: sm.src_800 -%}
+                          {%- assign cap = sm.caption | strip -%}
+                          {%- unless s8 contains '://' -%}{%- assign s8 = s8 | relative_url -%}{%- endunless -%}
+                          {%- unless s16 contains '://' -%}{%- assign s16 = s16 | relative_url -%}{%- endunless -%}
+                          <div class="sp-card__fig">
+                            <a class="sp-card__img" href="{{ s16 }}" data-lightbox="{{ slug }}" data-caption="{{ cap | escape }}"
+                              ><img src="{{ s8 }}" alt="{{ cap | default: sh | escape }}" loading="lazy" decoding="async"
+                            ></a>
+                          </div>
+                        {%- endif -%}
+                        <div class="sp-card__body">
+                          <p class="eyebrow mono">{{ forloop.index | prepend: '0' }}</p>
+                          <h3 data-fx="split">{{ sh | escape }}</h3>
+                          <div class="sp-prose">{{ st | markdownify }}</div>
+                          {%- if sm and sm.caption -%}
+                            <p class="sp-card__cap">{{ sm.caption | escape }}</p>
+                          {%- endif -%}
+                          {%- if go != '' -%}
+                            <a class="sp-card__go" href="{{ go | relative_url }}">Open project <span aria-hidden="true">&rarr;</span></a>
+                          {%- endif -%}
+                        </div>
+                      </article>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+
+                {%- comment -%} beyond: the structural slot (map) lives inside the Travel section {%- endcomment -%}
+                {%- if variant == 'beyond' and slot != '' and slot_done == false and slug contains 'travel' -%}
+                  <div class="sp-slot sp-slot--in">{{ content }}</div>
+                  {%- assign slot_done = true -%}
+                {%- endif -%}
+              </section>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      {%- else -%}
+        <div class="sp-prose sp-prose--long" data-fx="reveal">{{ body | markdownify }}</div>
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if slot != '' and slot_done == false -%}
+      <div class="sp-slot">{{ content }}</div>
+    {%- endif -%}
+
+    {%- comment -%} Writing: real posts take priority over intake cards. {%- endcomment -%}
+    {%- if has_posts -%}
+      <div class="sp-posts">
+        {%- for post in site.posts -%}
+          <a class="sp-post raised fx-spot{% if forloop.first %} sp-post--featured{% endif %}" href="{{ post.url | relative_url }}">
+            {%- assign pimg = post.thumbnail | default: post.image -%}
+            {%- if pimg -%}
+              {%- unless pimg contains '://' -%}{%- assign pimg = pimg | relative_url -%}{%- endunless -%}
+              <img src="{{ pimg }}" alt="" loading="lazy" decoding="async">
+            {%- endif -%}
+            <span class="sp-post__body">
+              <span class="eyebrow">
+                {{- post.date | date: '%d %b %Y' -}}
+                {%- if post.categories.size > 0 %} / {{ post.categories | first }}{% endif -%}
+              </span>
+              <span class="sp-post__title">{{ post.title | escape }}</span>
+              {%- if post.description -%}
+                <span class="sp-post__desc">{{ post.description | escape }}</span>
+              {%- endif -%}
+            </span>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Leftover media: figures whose topic matches no section (all media on prose pages). {%- endcomment -%}
+    {%- assign gal_n = gal.size | default: 0 -%}
+    {%- if gal_n > 0 -%}
+      {%- assign groups = gal | group_by: 'topic' -%}
+      {%- for g in groups -%}
+        {%- assign gname = g.name | strip -%}
+        <section class="sp-group" data-topic="{{ gname | slugify }}">
+          {%- if gname != '' -%}
+            <h2 class="sp-group__h" id="{{ gname | slugify }}">{{ gname | escape }}</h2>
+          {%- endif -%}
+          <div class="sp-media sp-media--{{ variant }}">
+            {%- for m in g.items -%}
+              {%- assign s8 = m.src_800 | default: m.src_1600 -%}
+              {%- assign s16 = m.src_1600 | default: m.src_800 -%}
+              {%- assign cap = m.caption | strip -%}
+              {%- if m.video and m.video != '' -%}
+                {%- assign vsrc = m.video -%}
+                {%- unless vsrc contains '://' -%}{%- assign vsrc = vsrc | relative_url -%}{%- endunless -%}
+                {%- if s8 -%}
+                  {%- unless s8 contains '://' -%}{%- assign s8 = s8 | relative_url -%}{%- endunless -%}
+                {%- endif -%}
+                <figure class="sp-media__item raised">
+                  <video
+                    class="sp-video"
+                    data-sp-video
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    src="{{ vsrc }}"
+                    {% if s8 %}
+                      poster="{{ s8 }}"
+                    {% endif %}
+                    aria-label="{{ cap | default: 'Video' | escape }}"
+                  ></video>
+                  {%- if cap != '' -%}
+                    <figcaption>{{ cap | escape }}</figcaption>
+                  {%- endif -%}
+                </figure>
+              {%- elsif s8 -%}
+                {%- unless s8 contains '://' -%}{%- assign s8 = s8 | relative_url -%}{%- endunless -%}
+                {%- unless s16 contains '://' -%}{%- assign s16 = s16 | relative_url -%}{%- endunless -%}
+                <figure class="sp-media__item raised">
+                  <a href="{{ s16 }}" data-lightbox="gallery" data-caption="{{ cap | escape }}"
+                    ><img src="{{ s8 }}" alt="{{ cap | default: m.topic | escape }}" loading="lazy" decoding="async"
+                  ></a>
+                  {%- if cap != '' -%}
+                    <figcaption>{{ cap | escape }}</figcaption>
+                  {%- endif -%}
+                </figure>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </section>
+      {%- endfor -%}
+    {%- endif -%}
+
+    {%- unless has_any -%}
+      <aside class="sp-empty raised" aria-label="Page not written yet">
+        <p class="eyebrow">Not written yet</p>
+        <h2 class="sp-empty__t">This page is waiting for your words</h2>
+        {%- if page.empty_hint -%}
+          <p class="sp-empty__p">{{ page.empty_hint | escape }}</p>
+        {%- endif -%}
+        <p class="sp-empty__p">
+          Write this page in <code class="sp-empty__path">PORTFOLIO_INTAKE/00_SITE/{{ key }}/page.md</code>, drop images or videos beside it, then run
+          the intake generator.
+        </p>
+      </aside>
+    {%- endunless -%}
+  </div>
+</div>
+
+<script defer src="{{ '/assets/js/site/pages.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>

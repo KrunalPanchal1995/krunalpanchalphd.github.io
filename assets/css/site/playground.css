@@ -1,0 +1,210 @@
+/* playground.css: owned by WP-H (the Playground section hub, layout section). Scoped to .pgs-*; tokens from tokens.css. */
+
+.pgs-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0 0;
+}
+.pgs-jump .chip {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.pgs-jump .mono {
+  color: var(--teal-text);
+  font-size: 11.5px;
+}
+.pgs-jump__studio {
+  border-color: var(--teal);
+  color: var(--teal-text);
+}
+.pgs-sec {
+  margin-bottom: 64px;
+  scroll-margin-top: 90px;
+}
+.pgs-owner {
+  margin-top: 8px;
+}
+.pgs-h3 {
+  margin: 34px 0 14px;
+  font: 600 13px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: capitalize;
+  color: var(--muted);
+}
+
+/* Learn: numbered mini-course */
+.pgs-course {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 20px;
+}
+.pgs-lesson {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.pgs-lesson__link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+.pgs-lesson__n {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  padding: 3px 9px;
+  border-radius: 99px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal-text);
+}
+.pgs-lesson__fig {
+  display: block;
+  background: var(--viewport);
+  border-bottom: 1px solid var(--border);
+  padding: 8px;
+  line-height: 0;
+}
+.pgs-lesson__fig img {
+  display: block;
+  width: 100%;
+  height: 170px;
+  object-fit: contain;
+}
+.pgs-lesson__t {
+  display: block;
+  padding: 16px 18px 6px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.pgs-lesson__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: auto;
+  padding: 0 18px 8px;
+  font-weight: 600;
+  color: var(--teal-text);
+}
+.pgs-lesson__link:hover .pgs-lesson__go,
+.pgs-lesson__link:focus-visible .pgs-lesson__go {
+  color: var(--amber-text);
+}
+
+/* link rows (concepts, documents, code) */
+.pgs-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 14px;
+}
+.pgs-links li {
+  margin: 0;
+  min-width: 0;
+}
+.pgs-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding: 12px 18px;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.pgs-link__go {
+  color: var(--teal-text);
+  flex: none;
+}
+.pgs-link:hover .pgs-link__go {
+  color: var(--amber-text);
+}
+.pgs-link__fmt {
+  margin-left: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.pgs-status {
+  display: flex;
+  align-items: center;
+}
+
+/* Experiments */
+.pgs-figs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 20px;
+}
+.pgs-fig {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.pgs-fig .fx-plate {
+  background: var(--viewport);
+  padding: 8px;
+  line-height: 0;
+  border-bottom: 1px solid var(--border);
+}
+.pgs-fig img {
+  display: block;
+  width: 100%;
+  height: 190px;
+  object-fit: contain;
+}
+.pgs-fig figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  padding: 14px 16px 6px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.pgs-fig__t {
+  color: var(--text);
+}
+.pgs-fig__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: auto;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--teal-text);
+}
+.pgs-fig__go:hover {
+  color: var(--amber-text);
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .pgs-sec {
+    margin-bottom: 44px;
+  }
+  .pgs-lesson__fig img,
+  .pgs-fig img {
+    height: 150px;
+  }
+}

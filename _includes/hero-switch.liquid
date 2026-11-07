@@ -1,0 +1,46 @@
+{% comment %}
+  Home-page hero switch: renders the hero chosen in _data/design.yml (`hero:`) and lets a
+  client-side override swap it with no rebuild:
+    ?hero=fluid|streamlines|card3d|photo   show that hero (?hero=reset forgets a remembered pick)
+    ?heropick=1                      show a small "Hero: [fluid | streamlines | 3d card | photo]"
+                                     picker; picks are remembered in localStorage
+  Only one hero animates at a time; three.js loads only when card3d is active, fluid.js only when fluid is active.
+  Optional params forwarded to every hero: name, tagline, accent_word.
+  Usage: {% include hero-switch.liquid %}
+{% endcomment %}
+{% assign default_hero = include.hero | default: site.data.design.hero | default: 'fluid' %}
+{% assign hide_fluid = true -%}
+{%- assign hide_streamlines = true -%}
+{%- assign hide_card3d = true -%}
+{%- assign hide_photo = true %}
+{% if default_hero == 'fluid' -%}
+  {%- assign hide_fluid = false -%}
+{%- elsif default_hero == 'streamlines' -%}
+  {%- assign hide_streamlines = false -%}
+{%- elsif default_hero == 'card3d' -%}
+  {%- assign hide_card3d = false -%}
+{%- elsif default_hero == 'photo' -%}
+  {%- assign hide_photo = false -%}
+{%- endif %}
+<link rel="stylesheet" href="{{ '/assets/css/hero.css' | relative_url }}">
+<script type="importmap">
+  {
+    "imports": {
+      "three": "{{ '/assets/vendor/three/three.module.min.js' | relative_url }}",
+      "three/addons/controls/OrbitControls.js": "{{ '/assets/vendor/three/OrbitControls.js' | relative_url }}"
+    }
+  }
+</script>
+<div
+  class="hero-switch"
+  data-hero-switch
+  data-default="{{ default_hero }}"
+  data-allowed="fluid,streamlines,card3d,photo"
+  data-module-base="{{ '/assets/js/hero/' | relative_url }}"
+>
+  {% include hero-fluid.liquid managed=true hidden=hide_fluid name=include.name tagline=include.tagline accent_word=include.accent_word %}
+  {% include hero-streamlines.liquid managed=true hidden=hide_streamlines name=include.name tagline=include.tagline accent_word=include.accent_word %}
+  {% include hero-card3d.liquid managed=true hidden=hide_card3d name=include.name tagline=include.tagline accent_word=include.accent_word %}
+  {% include hero-photo.liquid managed=true hidden=hide_photo title=include.name subtitle=include.tagline %}
+</div>
+<script type="module" src="{{ '/assets/js/hero/switch.js' | relative_url }}"></script>

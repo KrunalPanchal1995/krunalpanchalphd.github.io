@@ -1,0 +1,128 @@
+{%- comment -%}
+  LOCAL OVERRIDE of al_folio_core's header.liquid: floating pill navigation.
+  Keeps every hook the gem JS and tests rely on: #navbar, #navbarNav (+ .show via nav-toggle.js), .navbar-menu-list,
+  #search-toggle, #light-toggle with its three icons, and #progress. Nav items still come from page front matter (nav: true, nav_order).
+{%- endcomment -%}
+{% include site-styles.liquid %}
+<header class="site-header">
+  <nav id="navbar" class="pillnav" role="navigation" aria-label="Main">
+    <a class="pillnav__brand" href="{{ '/' | relative_url }}">
+      {%- if site.first_name -%}{{ site.first_name }}{%- else -%}{{ site.title }}{%- endif -%}
+      <span class="accent-dot">.</span>
+    </a>
+    <button
+      class="navbar-toggler collapsed pillnav__toggle"
+      type="button"
+      data-nav-toggle="navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar top-bar"></span>
+      <span class="icon-bar middle-bar"></span>
+      <span class="icon-bar bottom-bar"></span>
+    </button>
+
+    <div class="pillnav__panel" id="navbarNav">
+      <ul class="navbar-menu-list pillnav__list">
+        <li class="nav-item {% if page.permalink == '/' %}active{% endif %}">
+          <a
+            class="nav-link"
+            href="{{ '/' | relative_url }}"
+            {% if page.permalink == '/' %}
+              aria-current="page"
+            {% endif %}
+            >Home</a
+          >
+        </li>
+        {% assign sorted_pages = site.pages | sort: 'nav_order' %}
+        {% assign more_active = false %}
+        {% for p in sorted_pages %}
+          {% if p.nav and p.autogen == null and p.nav_group != 'more' %}
+            {%- if p.permalink contains '://' -%}
+              {%- assign url = p.permalink -%}
+            {%- elsif p.permalink contains '/blog/' -%}
+              {%- assign url = '/blog/' -%}
+            {%- else -%}
+              {%- assign url = p.url -%}
+            {%- endif -%}
+            {% assign is_active = false %}
+            {% if page.url == p.url or page.url contains p.url and p.url != '/' %}{% assign is_active = true %}{% endif %}
+            <li class="nav-item {% if is_active %}active{% endif %}">
+              <a
+                class="nav-link"
+                href="{{ url | relative_url }}"
+                {% if is_active %}
+                  aria-current="page"
+                {% endif %}
+              >
+                {{- p.title -}}
+              </a>
+            </li>
+          {% endif %}
+          {% if p.nav and p.nav_group == 'more' and page.url == p.url %}{% assign more_active = true %}{% endif %}
+        {% endfor %}
+        <li class="nav-item pillnav__more {% if more_active %}active{% endif %}" data-more>
+          <button
+            type="button"
+            class="nav-link pillnav__morebtn"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="pillnav-more-list"
+            data-more-toggle
+          >
+            More
+            <svg class="pillnav__caret" viewBox="0 0 10 6" width="10" height="6" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <ul class="pillnav__morelist" id="pillnav-more-list" role="menu" hidden>
+            {% for p in sorted_pages %}
+              {% if p.nav and p.autogen == null and p.nav_group == 'more' %}
+                <li role="none">
+                  <a
+                    role="menuitem"
+                    class="pillnav__moreitem {% if page.url == p.url %}is-current{% endif %}"
+                    href="{{ p.url | relative_url }}"
+                    {% if page.url == p.url %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    {%- if p.nav_icon -%}<i class="fa-solid {{ p.nav_icon }} pillnav__icon" aria-hidden="true"></i>{%- endif -%}
+                    {{- p.title -}}
+                  </a>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
+      </ul>
+      <div class="pillnav__tools">
+        <button id="fx-toggle" type="button" title="Visual effects" aria-label="Visual effects" aria-pressed="true" hidden>
+          <span class="fx-toggle__dot" aria-hidden="true"></span><span class="fx-toggle__label">FX</span>
+        </button>
+        {% if site.search_enabled %}
+          <button id="search-toggle" type="button" title="Search" aria-label="Open search">
+            <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span>
+          </button>
+        {% endif %}
+        {% if site.enable_darkmode %}
+          <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme">
+            <i class="fa-half-sun-moon" id="light-toggle-system"></i>
+            <i class="fa-solid fa-moon" id="light-toggle-dark"></i>
+            <i class="fa-solid fa-sun" id="light-toggle-light"></i>
+          </button>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+  {% if site.enable_progressbar %}
+    <progress id="progress" value="0">
+      <div class="progress-container"><span class="progress-bar"></span></div>
+    </progress>
+  {% endif %}
+</header>
+{% include fx-intro.liquid %}
+<script defer src="{{ '/assets/js/site/nav.js' | relative_url }}"></script>
+<script defer src="{{ '/assets/js/site/fx.js' | relative_url }}"></script>

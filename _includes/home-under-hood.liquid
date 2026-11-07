@@ -1,0 +1,259 @@
+{%- comment -%}
+  "Under the hood" panel for the home-page fluid hero (WP-K). Hidden by default; a quiet button over the hero's bottom-left toggles it.
+  Include once, right after the hero switch:  {% include home-under-hood.liquid %}
+  Behaviour: assets/js/site/home.js (block "Under the hood"), styles: assets/css/site/home.css (block "Under the hood").
+  Everything is local: the equations are typeset by the KaTeX copy that Math Studio ships (assets/apps/math-studio/vendor/katex),
+  loaded on first open only. Without JS or KaTeX each equation shows its plain-text form.
+  The live dashboard reads el.__fluid.getStats() from assets/js/hero/fluid.js while the panel is open (and only then).
+{%- endcomment -%}
+{%- assign uh_studio = '/studio/#flow?preset=0' | relative_url -%}
+{%- assign uh_theory = '/studio/#explain?id=concept.flow.projection-and-the-pressure-poisson-matrix' | relative_url -%}
+{%- assign uh_quiz = '/studio/#explain?id=concept.flow.projection-and-the-pressure-poisson-matrix' | relative_url -%}
+<section class="uh" data-under-hood aria-label="How the fluid hero works">
+  <div class="uh__bar">
+    <button type="button" class="uh__btn" id="uh-toggle" aria-expanded="false" aria-controls="uh-panel">
+      <svg class="uh__ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+        <path d="M3 8c3 0 3-3 6-3s3 3 6 3 3-3 6-3M3 14c3 0 3-3 6-3s3 3 6 3 3-3 6-3M3 20c3 0 3-3 6-3s3 3 6 3 3-3 6-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      <span class="uh__btn-t">How this works</span>
+    </button>
+  </div>
+
+  <div
+    class="uh__panel"
+    id="uh-panel"
+    role="region"
+    aria-labelledby="uh-title"
+    hidden
+    data-katex-js="{{ '/assets/apps/math-studio/vendor/katex/katex.min.js' | relative_url }}"
+    data-katex-css="{{ '/assets/apps/math-studio/vendor/katex/katex.min.css' | relative_url }}"
+  >
+    <div class="uh__wrap">
+      <div class="uh__inner">
+        <header class="uh__head">
+          <div>
+            <p class="eyebrow">Under the hood</p>
+            <h2 class="uh__title" id="uh-title">The solver behind the flow</h2>
+            <p class="uh__lede">
+              The hero is a 2D incompressible flow solved on the GPU every frame (WebGL2, stable-fluids scheme). Below: the equations, the matrix its
+              pressure step inverts, and live numbers from the running simulation.
+            </p>
+          </div>
+          <button type="button" class="uh__close" data-uh-close>Close</button>
+        </header>
+
+        <div class="uh__actions" role="group" aria-label="Continue in Math Studio">
+          <a class="uh-act uh-act--primary" href="{{ uh_studio }}">Open in Math Studio</a>
+          <a class="uh-act" href="{{ uh_theory }}">Theory page</a>
+          <a class="uh-act" href="{{ uh_quiz }}">Quiz</a>
+          <div class="uh__oa">{% include request-access.liquid id="home-fluid" compact=true %}</div>
+        </div>
+
+        <div class="uh__cols">
+          <section class="uh__sec" aria-labelledby="uh-h-eq">
+            <h3 id="uh-h-eq">1. The equations</h3>
+            <p class="uh__p">Incompressible Navier-Stokes for velocity <em>u</em> and pressure <em>p</em>:</p>
+            {% raw %}
+            <div class="uh-eq" data-tex="\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u}\cdot\nabla)\,\mathbf{u} = -\frac{1}{\rho}\nabla p + \nu\,\nabla^{2}\mathbf{u} + \mathbf{f}, \qquad \nabla\cdot\mathbf{u} = 0">
+              &part;u/&part;t + (u&middot;&nabla;)u = -&nabla;p/&rho; + &nu;&nabla;&sup2;u + f, &nbsp;&nabla;&middot;u = 0
+            </div>
+            <p class="uh__p">
+              The solver advances one time step in three stages, in this order: <strong>force</strong> (vorticity confinement, buoyancy, inflow, your
+              pointer), <strong>project</strong> (make the field divergence-free), <strong>advect</strong> (MacCormack semi-Lagrangian). There is no
+              explicit &nu;&nabla;&sup2;u term: viscosity here is the numerical diffusion of the advection step plus a small linear decay.
+            </p>
+            <div class="uh-eq" data-tex="\mathbf{u}^{*} = \mathbf{u}^{n} + \Delta t\,\mathbf{f}">u* = u_n + &Delta;t f</div>
+            <div class="uh-eq" data-tex="\nabla^{2}p = \frac{\rho}{\Delta t}\,\nabla\cdot\mathbf{u}^{*}, \qquad \mathbf{u}^{n+1/2} = \mathbf{u}^{*} - \frac{\Delta t}{\rho}\nabla p">
+              &nabla;&sup2;p = (&rho;/&Delta;t) &nabla;&middot;u*, &nbsp;u = u* - (&Delta;t/&rho;) &nabla;p
+            </div>
+            <div class="uh-eq" data-tex="\mathbf{u}(\mathbf{x},\,t+\Delta t) \approx \mathbf{u}\bigl(\mathbf{x} - \Delta t\,\mathbf{u},\,t\bigr)">
+              u(x, t+&Delta;t) &asymp; u(x - &Delta;t u, t)
+            </div>
+            <p class="uh__p">On the grid (spacing <em>h</em>) the Laplacian is the 5-point stencil, one linear equation per cell:</p>
+            <div class="uh-eq" data-tex="\frac{p_{i+1,j} + p_{i-1,j} + p_{i,j+1} + p_{i,j-1} - 4\,p_{i,j}}{h^{2}} = b_{i,j}">
+              (p(i+1,j) + p(i-1,j) + p(i,j+1) + p(i,j-1) - 4p(i,j)) / h&sup2; = b(i,j)
+            </div>
+            <div class="uh-eq" data-tex="b_{i,j} = \frac{\rho}{\Delta t}\,\frac{u^{*}_{i+1,j} - u^{*}_{i-1,j} + v^{*}_{i,j+1} - v^{*}_{i,j-1}}{2h}">b(i,j) = (&rho;/&Delta;t) (u*(i+1,j) - u*(i-1,j) + v*(i,j+1) - v*(i,j-1)) / 2h</div>
+            {% endraw %}
+          </section>
+
+          <section class="uh__sec" aria-labelledby="uh-h-mx">
+            <h3 id="uh-h-mx">2. The matrix it solves</h3>
+            <p class="uh__p">
+              Stacking all cells gives a sparse linear system <strong>A p = b</strong>. Each row has at most five nonzeros: the diagonal and the four
+              neighbours (<span class="uh-key uh-key--nb">+1</span>). Hero boundaries: left, top and bottom are zero-gradient walls (the missing
+              neighbour is replaced by the cell itself, so the diagonal becomes <span class="uh-key uh-key--dg">-3</span> or
+              <span class="uh-key uh-key--dg">-2</span>); the right edge is an outlet with p = 0 (diagonal stays
+              <span class="uh-key uh-key--dg">-4</span>, no right neighbour).
+            </p>
+            <div class="uh-mx">
+              <div class="uh-mx__ctl">
+                <label for="uh-mx-n">Grid</label>
+                <select id="uh-mx-n" data-uh-n>
+                  <option value="4">4 &times; 4 (16 &times; 16 matrix)</option>
+                  <option value="6" selected>6 &times; 6 (36 &times; 36 matrix)</option>
+                  <option value="8">8 &times; 8 (64 &times; 64 matrix)</option>
+                  <option value="10">10 &times; 10 (100 &times; 100 matrix)</option>
+                </select>
+                <span class="uh-mx__nnz" data-uh-nnz aria-live="polite"></span>
+              </div>
+              <div class="uh-mx__body">
+                <canvas
+                  class="uh-mx__cv"
+                  data-uh-mx
+                  tabindex="0"
+                  role="img"
+                  aria-label="Heat map of the sparse pressure matrix. Use the arrow keys to read single entries."
+                ></canvas>
+                <div class="uh-mx__side">
+                  <p class="uh-mx__read" data-uh-read aria-live="polite">Hover or focus the matrix (arrow keys) to read an entry.</p>
+                  <svg
+                    class="uh-st"
+                    viewBox="-14 -14 178 178"
+                    role="img"
+                    aria-label="Five-point stencil: centre cell with coefficient minus four, four neighbours with coefficient one"
+                  >
+                    <g class="uh-st__lines"><path d="M75 75V25M75 75V125M75 75H25M75 75H125" /></g>
+                    <g class="uh-st__nb">
+                      <circle cx="75" cy="25" r="17" />
+                      <circle cx="75" cy="125" r="17" />
+                      <circle cx="25" cy="75" r="17" />
+                      <circle cx="125" cy="75" r="17" />
+                    </g>
+                    <circle class="uh-st__c" cx="75" cy="75" r="21" />
+                    <g class="uh-st__t" text-anchor="middle" dominant-baseline="central">
+                      <text x="75" y="75">-4</text>
+                      <text x="75" y="25">1</text>
+                      <text x="75" y="125">1</text>
+                      <text x="25" y="75">1</text>
+                      <text x="125" y="75">1</text>
+                      <text class="uh-st__s" x="75" y="-6">T</text>
+                      <text class="uh-st__s" x="75" y="156">B</text>
+                      <text class="uh-st__s" x="-6" y="75">L</text>
+                      <text class="uh-st__s" x="156" y="75">R</text>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+              <ul class="uh-mx__leg" aria-label="Matrix colour key">
+                <li><i class="uh-sw uh-sw--dg"></i>diagonal (-4, -3, -2)</li>
+                <li><i class="uh-sw uh-sw--nb"></i>neighbour (+1)</li>
+                <li><i class="uh-sw uh-sw--z"></i>zero</li>
+              </ul>
+            </div>
+            <p class="uh__p">
+              The solver does not factorise A. It runs a fixed number of Jacobi sweeps per frame (see iterations below), warm-started from last
+              frame's pressure times 0.8. In the shader the units are h = 1 and p is scaled by &Delta;t/(&rho;h), so &rho; and &Delta;t drop out:
+            </p>
+            {% raw %}
+            <div class="uh-eq" data-tex="p^{(k+1)}_{i,j} = \tfrac14\bigl(p_{i-1,j} + p_{i+1,j} + p_{i,j-1} + p_{i,j+1} - b_{i,j}\bigr)">
+              p_new = (p_L + p_R + p_B + p_T - b) / 4
+            </div>
+            <div class="uh-eq" data-tex="b_{i,j} = \tfrac12\bigl(u_{i+1,j} - u_{i-1,j} + v_{i,j+1} - v_{i,j-1}\bigr)">b = &frac12;(u_R - u_L + v_T - v_B)</div>
+            <p class="uh__p">
+              With general spacing the update is p_new = (p_L + p_R + p_B + p_T - h&sup2;b)/4. At a wall the shader substitutes the cell's own value for the
+              missing neighbour, so those rows iterate p &larr; p - (b - A p)/4. After the sweeps the velocity is corrected with a central difference:
+            </p>
+            <div class="uh-eq" data-tex="\mathbf{u} \leftarrow \mathbf{u} - \tfrac12\,(p_{i+1,j} - p_{i-1,j},\; p_{i,j+1} - p_{i,j-1})">
+              u &larr; u - &frac12;(p_R - p_L, p_T - p_B)
+            </div>
+            {% endraw %}
+            <p class="uh__p uh__p--note">
+              The cylinder and the hot burner act as extra zero-gradient interior walls; the demo matrix above leaves them out.
+            </p>
+          </section>
+        </div>
+
+        <section class="uh__sec uh__sec--dash" aria-labelledby="uh-h-db" data-uh-dash>
+          <h3 id="uh-h-db">3. Live numbers from the running hero</h3>
+          <p class="uh__p uh__p--note" data-uh-dnote>Reading the simulation.</p>
+          <div class="uh-dash" data-uh-live hidden>
+            <dl class="uh-tiles">
+              <div class="uh-tile">
+                <dt>Sim grid</dt>
+                <dd data-k="grid">-</dd>
+              </div>
+              <div class="uh-tile">
+                <dt>Quality tier</dt>
+                <dd data-k="tier">-</dd>
+              </div>
+              <div class="uh-tile">
+                <dt>Jacobi sweeps / frame</dt>
+                <dd data-k="iters">-</dd>
+              </div>
+              <div class="uh-tile">
+                <dt>Frames per second</dt>
+                <dd data-k="fps">-</dd>
+              </div>
+              <div class="uh-tile">
+                <dt>Frame interval (median)</dt>
+                <dd data-k="ms">-</dd>
+              </div>
+              <div class="uh-tile">
+                <dt>Time step &Delta;t</dt>
+                <dd data-k="dt">-</dd>
+              </div>
+              <div class="uh-tile">
+                <dt>CFL number</dt>
+                <dd data-k="cfl">-</dd>
+              </div>
+              <div class="uh-tile">
+                <dt>max |&nabla;&middot;u| before solve</dt>
+                <dd data-k="db">-</dd>
+              </div>
+              <div class="uh-tile">
+                <dt>max |&nabla;&middot;u| after solve</dt>
+                <dd data-k="da">-</dd>
+              </div>
+            </dl>
+            <figure class="uh-spark">
+              <canvas
+                data-uh-spark
+                width="320"
+                height="84"
+                role="img"
+                aria-label="Rolling chart of the maximum divergence before and after the pressure solve, last 60 samples"
+              ></canvas>
+              <figcaption>
+                <span class="uh-key uh-key--before">before solve</span> <span class="uh-key uh-key--after">after solve</span> max |&nabla;&middot;u|,
+                log scale, one sample per second, last 60.
+              </figcaption>
+            </figure>
+          </div>
+          <p class="uh-dash__once" data-uh-once hidden>
+            <button type="button" class="uh-act" data-uh-sample>Read the numbers once</button>
+            <span>Effects are reduced or off, so the panel does not poll. This takes a single reading.</span>
+          </p>
+          <details class="uh-leg" open>
+            <summary>What each number means</summary>
+            <dl>
+              <dt>Sim grid</dt>
+              <dd>Cells of the velocity and pressure grid (width &times; height). The picture is drawn at a higher resolution than this.</dd>
+              <dt>Quality tier</dt>
+              <dd>0 is highest, 3 lowest. The hero lowers it automatically if frames take too long.</dd>
+              <dt>Jacobi sweeps / frame</dt>
+              <dd>How many times the pressure update above is applied each frame. More sweeps leave less divergence.</dd>
+              <dt>Frames per second, frame interval</dt>
+              <dd>Measured between browser animation frames, so it is capped by the display rate. It is not GPU time.</dd>
+              <dt>Time step &Delta;t</dt>
+              <dd>Seconds advanced per step: the frame interval, clamped to 1/120 - 1/30 s.</dd>
+              <dt>CFL number</dt>
+              <dd>
+                &Delta;t &middot; max|u| / h, the number of cells the fastest fluid crosses in one step, using the speed after the solve.
+                Semi-Lagrangian advection stays stable above 1.
+              </dd>
+              <dt>max |&nabla;&middot;u| before / after</dt>
+              <dd>
+                Largest divergence of the velocity field over the whole grid (boundary cells included), in 1/s: the field entering the pressure solve
+                versus the field leaving it, sampled once a second from the GPU in 8 &times; 8 cell blocks. After is not zero: a fixed number of
+                sweeps solves A p = b only approximately. Advection, applied afterwards, is not included.
+              </dd>
+            </dl>
+          </details>
+        </section>
+
+        <p class="uh__foot">Numbers shown come from the solver in this tab; nothing is sent anywhere.</p>
+      </div>
+    </div>
+  </div>
+</section>

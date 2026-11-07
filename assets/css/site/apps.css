@@ -1,0 +1,91 @@
+/* apps.css: full-window app pages (layout: app). */
+.app-page {
+  padding-bottom: 64px;
+}
+.app-head {
+  padding: 24px 0 8px;
+}
+.app-stage {
+  padding: 0;
+  overflow: hidden;
+  margin-top: 18px;
+}
+.app-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel2);
+}
+.app-bar__title {
+  font: 600 13px var(--font-ui);
+  color: var(--muted);
+}
+.app-bar__spacer {
+  flex: 1;
+}
+.app-bar .chip {
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--muted);
+}
+.app-bar .chip:hover {
+  color: var(--text);
+  border-color: var(--teal);
+}
+.app-bar .chip--teal {
+  color: var(--on-accent);
+  cursor: default;
+}
+.app-frame {
+  display: block;
+  width: 100%;
+  height: min(78vh, 860px);
+  min-height: 420px;
+  border: 0;
+  background: var(--viewport);
+}
+.app-stage:fullscreen {
+  border-radius: 0;
+}
+.app-stage:fullscreen .app-frame {
+  height: calc(100vh - 46px);
+}
+.app-empty {
+  padding: 28px;
+  margin-top: 18px;
+  max-width: var(--measure);
+}
+.app-empty p {
+  margin: 0.4em 0;
+}
+.app-body {
+  margin-top: 32px;
+  max-width: var(--measure);
+}
+.app-media {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: 28px 24px;
+  margin-top: 36px;
+}
+.app-media figure {
+  padding: 12px 12px 8px;
+  min-width: 0;
+}
+.app-media img,
+.app-media video {
+  display: block;
+  width: 100%;
+  border-radius: 9px;
+  background: var(--plate);
+}
+@media (max-width: 640px) {
+  .app-frame {
+    height: 70vh;
+  }
+  .app-bar .chip:not(.chip--teal) {
+    padding: 5px 8px;
+  }
+}

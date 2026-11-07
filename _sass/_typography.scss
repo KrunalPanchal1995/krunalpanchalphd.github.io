@@ -1,0 +1,529 @@
+/*******************************************************************************
+ * LOCAL OVERRIDE of al_folio_core's _sass/_typography.scss (editorial skin).
+ * Full-file shadow: every original rule is kept (see docs/ARCHITECTURE.md);
+ * only the top block is new -- it sets the display-serif / body / mono font
+ * stack. Because this partial compiles into a plain (non-@layer) stylesheet,
+ * it wins over Tailwind's @layer base font-family declaration by cascade-
+ * layer rules alone, no !important needed. See DESIGN_SYSTEM.md.
+ ******************************************************************************/
+
+@use "variables" as v;
+@use "sass:color";
+
+// ---------------------------------------------------------------------------
+// Editorial type system
+// ---------------------------------------------------------------------------
+$font-serif-display:
+  "Public Sans",
+  system-ui,
+  -apple-system,
+  "Segoe UI",
+  sans-serif; // headlines are sans now; the serif lives in .accent-serif
+$font-sans-body:
+  "Public Sans",
+  system-ui,
+  -apple-system,
+  "Segoe UI",
+  sans-serif;
+$font-mono-data: "IBM Plex Mono", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+
+body {
+  font-family: $font-sans-body;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-serif-display;
+  letter-spacing: -0.01em;
+}
+
+// Deliberate type scale -- each level visually unmistakable from its
+// neighbors, not just a fraction of a rem apart. h2 = major section
+// (Problem/Approach/Results...), h3 = subsection within it, h4 = a small
+// functional label (e.g. an image-gallery topic group), never confused
+// for a real heading.
+h1 {
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+h2 {
+  font-size: 2.05rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 2.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--global-divider-color);
+}
+
+h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 1.6rem;
+  color: var(--global-theme-color);
+}
+
+h4 {
+  font-family: $font-sans-body;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--global-label-color); // instrument register: functional labels
+  margin-top: 1.2rem;
+  margin-bottom: 0.6rem;
+}
+
+h5,
+h6 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+// Component-internal headings (project cards, etc.) opt out of the h2/h3
+// section treatment above -- they're labels inside a card, not page sections.
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  color: var(--global-text-color);
+}
+
+// Data labels, figure captions, and source paths read as monospace --
+// consistent with the site's "here is real data behind every figure" stance.
+.caption,
+figcaption,
+.post-meta,
+code {
+  font-family: $font-mono-data;
+}
+
+// ---------------------------------------------------------------------------
+// Obvious links -- the theme color on warm paper reads as body text at a
+// glance (no underline until hover is too subtle a signal on this palette).
+// Scoped to prose containers only, so nav links, the footer, social icons,
+// and card/tag chips -- which have their own affordances -- are untouched.
+// ---------------------------------------------------------------------------
+article a,
+.post a,
+.card-text a,
+.publications a {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-color: #{color.adjust(v.$purple-color, $alpha: -0.6)}; // light-mode theme color, dimmed -- derived, not hardcoded
+  text-decoration-thickness: 1px;
+
+  &:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+// Dark-mode selector matches this codebase's existing convention in
+// _themes.scss (html[data-theme="dark"], set by the gem's theme.js).
+html[data-theme="dark"] article a,
+html[data-theme="dark"] .post a,
+html[data-theme="dark"] .card-text a,
+html[data-theme="dark"] .publications a {
+  text-decoration-color: #{color.adjust(v.$cyan-color, $alpha: -0.55)}; // dark-mode theme color, dimmed -- derived, not hardcoded
+}
+
+// About-page hero, styled from the local _layouts/about.liquid fork (see that
+// file's header comment for why it's forked). Two defects this fixes:
+// (1) `.desc` -- the about-page subtitle -- had no rule anywhere, gem or
+// site, so it fell back to plain body text; (2) al_folio_core's `.more-info`
+// forces every child <p> to display: inline-block, which collapsed a
+// multi-line affiliation block onto one run-on line -- the fork replaces
+// that raw-HTML blob with real markup (a definition-list-style card), styled
+// here instead.
+.hero-credentials {
+  font-family: $font-sans-body;
+  font-size: 1.05rem;
+  color: var(--global-text-color-light);
+  margin: 0.15rem 0 0.6rem;
+}
+
+.desc {
+  font-family: $font-sans-body;
+  font-size: 1.05rem;
+  color: var(--global-text-color-light);
+  margin-bottom: 1rem;
+  max-width: 42rem;
+}
+
+.credentials-card {
+  margin-top: 0.85rem;
+  font-family: $font-sans-body;
+  font-size: 0.88rem;
+}
+
+.credentials-block {
+  margin-bottom: 0.75rem;
+
+  p {
+    margin: 0.15rem 0 0;
+    line-height: 1.4;
+  }
+}
+
+.credentials-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--global-text-color-light);
+}
+
+.research-tags {
+  list-style: none;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+
+  li {
+    font-size: 0.78rem;
+    border: 1px solid v.$amber-accent-border;
+    border-radius: 4px;
+    padding: 0.1rem 0.5rem;
+    color: var(--global-text-color);
+    background: v.$amber-accent-soft; // flame register: research areas
+  }
+}
+
+// Call-to-action rows and .btn-cta buttons now live in assets/css/site/base.css (tokenised, contrast-checked).
+
+// ---------------------------------------------------------------------------
+// Entrance transition -- a page's header and its first row of section cards
+// fade + rise in on load, instead of appearing all at once. Pure CSS, no JS:
+// cheap, and it degrades to "just visible" if animations are disabled.
+// Respects prefers-reduced-motion, per WCAG 2.3.3.
+// ---------------------------------------------------------------------------
+@keyframes fade-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .post-header {
+    animation: fade-rise-in 0.5s ease-out both;
+  }
+
+  .row-cols-md-2 > .col,
+  .row-cols-md-3 > .col {
+    animation: fade-rise-in 0.5s ease-out both;
+
+    @for $i from 1 through 6 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.06}s;
+      }
+    }
+  }
+}
+
+// A small looping clip (GIF/video) used as an inline research visual --
+// e.g. the Arrhenius-sampling animation on /research/ -- styled like a
+// figure so it reads as data, not decoration, consistent with the
+// monospace figcaption convention above.
+.loop-media {
+  margin: 1.25rem 0;
+  text-align: center;
+
+  img,
+  video {
+    max-width: 100%;
+    border-radius: 6px;
+    border: 1px solid var(--global-divider-color);
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    color: var(--global-text-color-light);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Home-page "Selected work" showcase slideshow (see _includes/showcase_
+// slideshow.liquid and assets/js/showcase.js). Every class below appears in
+// the static include markup, so purgecss keeps it (.active is pre-seeded on
+// slide 1 and dot 1). The caption strip is white-on-gradient by design --
+// theme-independent over arbitrary media. JS disables autoplay under
+// prefers-reduced-motion; the fade is disabled here for the same preference.
+// ---------------------------------------------------------------------------
+.showcase {
+  margin: 1.5rem 0;
+  outline: none;
+}
+
+.showcase-viewport {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid var(--global-divider-color);
+  background: #000;
+}
+
+.showcase-slide {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease;
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.showcase-media-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.showcase-media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.showcase-caption {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0.6rem 0.9rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));
+  color: #fff;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  font-size: 0.85rem;
+}
+
+.showcase-title {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.7);
+  text-underline-offset: 0.18em;
+}
+
+.showcase-desc {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.showcase-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.showcase-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid var(--global-divider-color);
+  background: var(--global-card-bg-color);
+  color: var(--global-text-color);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--global-hover-text-color);
+    background: var(--global-theme-color);
+    border-color: var(--global-theme-color);
+  }
+}
+
+.showcase-dots {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.showcase-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--global-divider-color);
+  background: transparent;
+  cursor: pointer;
+
+  &.active {
+    background: var(--global-theme-color);
+    border-color: var(--global-theme-color);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-slide {
+    transition: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .showcase-caption {
+    font-size: 0.75rem;
+    gap: 0.4rem;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Original al_folio_core typography rules (unchanged below this line)
+// ---------------------------------------------------------------------------
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+em,
+div,
+li,
+span,
+strong {
+  color: var(--global-text-color);
+}
+
+hr {
+  border-top: 1px solid var(--global-divider-color);
+}
+
+table:not(.table) {
+  td,
+  th {
+    font-size: 1rem;
+    padding: 0.45rem 1rem 0.45rem 0;
+    border-top: 1px solid var(--global-divider-color);
+  }
+
+  th {
+    font-weight: 600;
+  }
+}
+
+a,
+table.table a {
+  color: var(--global-theme-color);
+
+  &:hover {
+    color: var(--global-theme-color);
+    text-decoration: underline;
+  }
+
+  &:hover:after :not(.nav-item.dropdown) {
+    width: 100%;
+  }
+}
+
+.table-dark {
+  background-color: transparent;
+  &.table-bordered {
+    border: 1px solid var(--global-divider-color) !important;
+  }
+}
+
+blockquote {
+  background: var(--global-bg-color);
+  border-left: 5px solid var(--global-theme-color);
+  margin: 1.5em 0;
+  padding: 1em;
+  font-size: 1.2rem;
+
+  p {
+    margin-bottom: 0;
+  }
+
+  /* Tips, warnings, and dangers blockquotes */
+  &.block-tip {
+    border-color: var(--global-tip-block);
+    background-color: var(--global-tip-block-bg);
+
+    em,
+    li,
+    p,
+    strong {
+      color: var(--global-tip-block-text);
+    }
+
+    a,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--global-tip-block-title);
+    }
+  }
+
+  &.block-warning {
+    border-color: var(--global-warning-block);
+    background-color: var(--global-warning-block-bg);
+
+    em,
+    li,
+    p,
+    strong {
+      color: var(--global-warning-block-text);
+    }
+
+    a,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--global-warning-block-title);
+    }
+  }
+
+  &.block-danger {
+    border-color: var(--global-danger-block);
+    background-color: var(--global-danger-block-bg);
+
+    em,
+    li,
+    p,
+    strong {
+      color: var(--global-danger-block-text);
+    }
+
+    a,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--global-danger-block-title);
+    }
+  }
+}

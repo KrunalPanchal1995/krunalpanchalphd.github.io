@@ -1,0 +1,132 @@
+---
+layout: default
+---
+{%- comment -%}
+  reel: full-screen showreel of the owner's own videos. Nothing here is written text: titles come from project front matter, captions from _data/project_images.yml / intake_pages.home.media.
+  Clip order: projects by `importance`, then the order of the media list; then home-slide videos that are not already a project clip.
+  The <ol class="reel-grid"> is both the data source for reel.js and the no-JS / reduced-motion fallback.
+{%- endcomment -%}
+{%- assign plist = site.projects | sort: 'importance' -%}
+{%- assign seen = '|' -%}
+{%- assign n = 0 -%}
+{%- capture tiles -%}
+  {%- for p in plist -%}
+    {%- assign vids = site.data.project_images[p.slug] -%}
+    {%- assign cats = p.category | join: ',' | split: ',' -%}
+    {%- assign cat0 = cats | first -%}
+    {%- assign route = p.studio | default: site.data.studio_map[p.slug].route -%}
+    {%- for it in vids -%}
+      {%- if it.video -%}
+        {%- assign n = n | plus: 1 -%}
+        {%- assign seen = seen | append: it.video | append: '|' -%}
+        {%- include reel-tile.liquid n=n title=p.title cat=cat0 caption=it.caption video=it.video poster=it.src_800 url=p.url route=route -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endfor -%}
+  {%- assign home = site.data.intake_pages.home -%}
+  {%- for m in home.media -%}
+    {%- if m.video -%}
+      {%- assign base = m.video | split: '/' | last -%}
+      {%- assign stem = base | slice: 3, 200 | remove: '.mp4' -%}
+      {%- unless seen contains stem -%}
+        {%- assign link = home.extra.media_links[base] -%}
+        {%- assign hs = link | split: '/' | last -%}
+        {%- assign hp = site.projects | where: 'slug', hs | first -%}
+        {%- assign hcats = hp.category | join: ',' | split: ',' -%}
+        {%- assign hcat0 = hcats | first -%}
+        {%- assign hroute = hp.studio | default: site.data.studio_map[hs].route -%}
+        {%- assign n = n | plus: 1 -%}
+        {%- include reel-tile.liquid n=n title=hp.title cat=hcat0 caption=m.caption video=m.video poster=m.src_800 url=hp.url route=hroute -%}
+      {%- endunless -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+<div class="reel" data-reel data-count="{{ n }}" data-studio-base="{{ '/studio/' | relative_url }}">
+  {%- if n == 0 -%}
+    <div class="reel-empty raised blueprint">
+      <p class="eyebrow">No clips yet</p>
+      <h1 class="post-title">Reel</h1>
+      <p class="reel-empty__hint">Add a <code>video:</code> path to an item in <code>_data/project_images.yml</code> and it appears here.</p>
+    </div>
+  {%- else -%}
+    <header class="reel-head">
+      <p class="eyebrow">Showreel</p>
+      <h1 class="post-title">Re<span class="accent-serif">el</span></h1>
+    </header>
+    <section class="reel-stage" data-stage aria-roledescription="carousel" aria-label="Showreel" tabindex="-1">
+      <div class="reel-layers" data-layers>
+        <div class="reel-layer fx-plate" data-fps="24" data-slate-project="Reel">
+          <video muted playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+        </div>
+        <div class="reel-layer fx-plate" data-fps="24" data-slate-project="Reel">
+          <video muted playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+        </div>
+      </div>
+      <span class="reel-h1" aria-hidden="true">Reel</span>
+      <button type="button" class="reel-start" data-start hidden>
+        <span class="reel-start__icon" aria-hidden="true"></span><span data-start-label>Play with sound</span>
+      </button>
+      <div class="reel-ui">
+        <div class="reel-lt" data-lt aria-live="polite" aria-atomic="true">
+          <div class="reel-lt__meta"><span class="reel-chip" data-lt-cat></span><span class="reel-lt__n" data-lt-n></span></div>
+          <h2 class="reel-lt__title" data-lt-title></h2>
+          <p class="reel-lt__cap" data-lt-cap></p>
+          <div class="reel-lt__acts">
+            <a class="reel-btn reel-btn--pri" data-lt-open href="{{ '/projects/' | relative_url }}">Open project</a>
+            <a class="reel-btn" data-lt-studio href="{{ '/studio/' | relative_url }}">Explore in Studio</a>
+          </div>
+        </div>
+        <div class="reel-bar">
+          <ol class="reel-seg" data-seg aria-label="Clips"></ol>
+          <div class="reel-ctrl" role="group" aria-label="Playback controls">
+            <button type="button" class="reel-icon" data-prev aria-label="Previous clip" title="Previous (Left)">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path fill="currentColor" d="M6 5h2v14H6zM20 5v14L9 12z"/>
+              </svg>
+            </button>
+            <button type="button" class="reel-icon" data-play aria-label="Pause" title="Play / pause (Space)">
+              <svg class="i-pause" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path fill="currentColor" d="M6 5h4v14H6zM14 5h4v14h-4z"/>
+              </svg>
+              <svg class="i-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path fill="currentColor" d="M7 4v16l13-8z"/>
+              </svg>
+            </button>
+            <button type="button" class="reel-icon" data-next aria-label="Next clip" title="Next (Right)">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path fill="currentColor" d="M16 5h2v14h-2zM4 5v14l11-7z"/>
+              </svg>
+            </button>
+            <button type="button" class="reel-icon" data-mute aria-label="Unmute" aria-pressed="true" title="Mute / unmute (M)">
+              <svg class="i-off" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path fill="currentColor" d="M3 9v6h4l5 4V5L7 9zm13.6 3 2.7-2.7-1.4-1.4-2.7 2.7-2.7-2.7-1.4 1.4 2.7 2.7-2.7 2.7 1.4 1.4 2.7-2.7 2.7 2.7 1.4-1.4z"/>
+              </svg>
+              <svg class="i-on" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path fill="currentColor" d="M3 9v6h4l5 4V5L7 9zm11.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM12 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/>
+              </svg>
+            </button>
+            <button type="button" class="reel-icon" data-fs aria-label="Full screen" title="Full screen (F)">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path fill="currentColor" d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zM5 14h2v3h3v2H5zm12 0h2v5h-5v-2h3z"/>
+              </svg>
+            </button>
+            <span class="reel-tc" data-tc aria-hidden="true">00:00:00:00</span>
+            <span class="reel-count" data-count-label>01 / {{ n | prepend: '00' | slice: -2, 2 }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="reel-index" aria-labelledby="reel-index-h">
+      <div class="reel-index__head">
+        <p class="eyebrow">Index</p>
+        <h2 id="reel-index-h" class="reel-index__title">
+          All clips <span class="reel-index__n">{{ n }}</span>
+        </h2>
+      </div>
+      <ol class="reel-grid" data-grid>
+        {{ tiles }}
+      </ol>
+    </section>
+  {%- endif -%}
+</div>
+<script defer src="{{ '/assets/js/site/reel.js' | relative_url }}"></script>

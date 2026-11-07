@@ -1,0 +1,606 @@
+---
+layout: default
+---
+{%- comment -%}
+  LOCAL FORK of al_folio_core's _layouts/about.liquid (v1.0.15), rewritten for the redesign. Styles live in assets/css/site/pages.css.
+
+  Two modes, chosen by front matter:
+    page.tabs: true  -> the /about/ page: serif-accent name card + headshot, tabs About / Experience / Education / Activities,
+                        CV button and a compact social link row. Text = site.data.intake_pages[page.intake]; facts = _data/cv.yml, _data/socials.yml.
+    otherwise        -> generic layout (home page): title, subtitle, content, news, selected papers, social_links, newsletter, visitor badge.
+  Hooks kept for the home page: page.profile, page.announcements, page.latest_posts, page.selected_papers, page.social, site.newsletter.
+{%- endcomment -%}
+{%- if page.tabs -%}
+  {%- assign key = page.intake | default: 'about' -%}
+  {%- assign it = site.data.intake_pages[key] -%}
+  {%- assign body = it.body_md | strip -%}
+  {%- assign cv = site.data.cv.cv -%}
+  {%- assign soc = site.data.socials -%}
+  {%- assign activities = '' | split: '' -%}
+  {%- for m in it.media -%}
+    {%- assign ts = m.topic | downcase -%}
+    {%- if ts == 'activities' or ts == 'activity' -%}{%- assign activities = activities | push: m -%}{%- endif -%}
+  {%- endfor -%}
+  {%- capture nl %}
+{% endcapture -%}
+  {%- assign sep2 = nl | append: '## ' -%}
+  {%- assign sep3 = nl | append: '### ' -%}
+  {%- assign nl_dash = nl | append: '- ' -%}
+  {%- assign ex = it.extra -%}
+  {%- assign areas = ex.research_areas | default: page.profile.research_areas -%}
+  {%- assign p_degree = ex.degree | default: page.profile.degree -%}
+  {%- assign p_inst = ex.institute | default: page.profile.institute -%}
+  {%- assign p_year = ex.degree_year | default: page.profile.degree_year -%}
+  {%- assign p_role = ex.current_role | default: page.profile.current_role -%}
+  {%- assign p_addr = ex.address | default: page.profile.address -%}
+  {%- assign cv_pdf = page.cv_pdf | default: 'assets/pdf/cv_general.pdf' -%}
+  {%- assign name = cv.name | default: site.title -%}
+  {%- assign accent = page.accent_word | default: site.last_name -%}
+  {%- capture accent_html -%}<span class="accent-serif">{{ accent }}</span>{%- endcapture -%}
+  {%- assign name_html = name | escape | replace: accent, accent_html -%}
+
+  <div class="sp sp--about">
+    <div class="sp__grid blueprint blueprint--fade" aria-hidden="true"></div>
+
+    <header class="ab-card">
+      <div class="ab-card__main">
+        <p class="eyebrow">{{ page.eyebrow | default: 'About' }}</p>
+        <h1 class="sp-head__title">
+          {{ name_html -}}
+          <span class="accent-dot">.</span>
+        </h1>
+        {%- if it.subtitle and it.subtitle != '' -%}
+          <p class="sp-head__sub">{{ it.subtitle | escape }}</p>
+        {%- endif -%}
+        {%- if p_degree -%}
+          <p class="ab-card__cred mono">
+            {{ p_degree -}}
+            {%- if p_inst %} / {{ p_inst }}{% endif -%}
+            {%- if p_year %} / {{ p_year }}{% endif -%}
+          </p>
+        {%- endif -%}
+        <div class="cta-row">
+          <a class="btn-cta btn-cta-primary" href="{{ '/cv/' | relative_url }}">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>
+            </svg>
+            View CV
+          </a>
+          <a class="btn-cta" href="{{ cv_pdf | relative_url }}" download>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>
+            </svg>
+            Download PDF
+          </a>
+        </div>
+        <ul class="ab-links" aria-label="Links">
+          {%- if soc.email -%}
+            <li>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>
+              </svg>
+              {% al_email_protect_link soc.email %}
+            </li>
+          {%- endif -%}
+          {%- if soc.github_username -%}
+            <li>
+              <i class="fa-brands fa-github" aria-hidden="true"></i><a href="https://github.com/{{ soc.github_username }}" rel="noopener">GitHub</a>
+            </li>
+          {%- endif -%}
+          {%- if soc.linkedin_username -%}
+            <li>
+              <i class="fa-brands fa-linkedin" aria-hidden="true"></i
+              ><a href="https://linkedin.com/in/{{ soc.linkedin_username }}" rel="noopener">LinkedIn</a>
+            </li>
+          {%- endif -%}
+          {%- if soc.orcid_id -%}
+            <li><i class="ai ai-orcid" aria-hidden="true"></i><a href="https://orcid.org/{{ soc.orcid_id }}" rel="noopener">ORCID</a></li>
+          {%- endif -%}
+          {%- if soc.custom_social.url -%}
+            <li>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/>
+              </svg>
+              <a href="{{ soc.custom_social.url }}" rel="noopener">{{ soc.custom_social.title }}</a>
+            </li>
+          {%- endif -%}
+        </ul>
+        {%- if p_role or p_addr or cv.location -%}
+          <dl class="ab-facts raised">
+            {%- if p_role -%}
+              <div>
+                <dt class="eyebrow">Now</dt>
+                <dd>
+                  {{ p_role.title -}}
+                  {%- if p_role.org %}, {{ p_role.org }}{% endif -%}
+                  {%- if p_role.until %}
+                    <span class="mono">(through {{ p_role.until }})</span>
+                  {%- endif %}
+                </dd>
+              </div>
+            {%- endif -%}
+            {%- if p_addr or cv.location -%}
+              <div>
+                <dt class="eyebrow">Based</dt>
+                <dd>{{ p_addr | default: cv.location }}</dd>
+              </div>
+            {%- endif -%}
+          </dl>
+        {%- endif -%}
+      </div>
+
+      <aside class="ab-card__side">
+        {%- if page.profile.image -%}
+          {%- assign profile_image_path = page.profile.image | prepend: 'assets/img/' -%}
+          <div class="ab-photo raised">
+            {%- include figure.liquid loading="eager" path=profile_image_path class="img-fluid" alt="Portrait of Krunal Panchal" cache_bust=true -%}
+          </div>
+        {%- endif -%}
+        {%- comment -%} Typing terminal: every line is a fact from the data (name, degree, institute, year, role, research areas). {%- endcomment -%}
+        {%- capture lines_json -%}
+          [
+          {{- '"whoami"' }},{{ name | prepend: '> ' | jsonify -}}
+          {%- if p_degree -%}
+            ,"degree",{{ p_degree | append: ', ' | append: p_inst | append: ' ' | append: p_year | prepend: '> ' | jsonify -}}
+          {%- endif -%}
+          {%- if p_role -%}
+            ,"now",{{ p_role.title | append: ', ' | append: p_role.org | prepend: '> ' | jsonify -}}
+          {%- endif -%}
+          {%- if areas -%}
+            ,"research --areas"
+            {%- for a in areas -%},{{ a | prepend: '> ' | jsonify }}{%- endfor -%}
+          {%- endif -%}
+          ]
+        {%- endcapture -%}
+        <div
+          class="ab-term raised fx-typing"
+          data-lines="{{ lines_json | strip | escape }}"
+          data-typing-speed="22"
+          role="group"
+          aria-label="Profile summary"
+        >
+          <ul class="ab-term__plain">
+            <li>{{ name }}</li>
+            {%- if p_degree -%}
+              <li>
+                {{ p_degree }}, {{ p_inst }}
+                {{ p_year }}
+              </li>
+            {%- endif -%}
+            {%- if p_role -%}
+              <li>{{ p_role.title }}, {{ p_role.org }}</li>
+            {%- endif -%}
+            {%- for a in areas -%}
+              <li>{{ a }}</li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </aside>
+    </header>
+
+    {%- if areas -%}
+      <div class="ab-areas fx-marquee" role="group" data-speed="38" aria-label="Research areas">
+        {%- for area in areas -%}
+          <span class="chip">{{ area | strip_html | replace: '&amp;', '&' | escape }}</span>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="ab-tabs" data-tabs data-sp-sections>
+      <div class="ab-tabs__list" role="tablist" aria-label="About sections">
+        <button type="button" role="tab" id="tab-about" aria-controls="panel-about" aria-selected="true">About</button>
+        <button type="button" role="tab" id="tab-experience" aria-controls="panel-experience" aria-selected="false" tabindex="-1">Experience</button>
+        <button type="button" role="tab" id="tab-education" aria-controls="panel-education" aria-selected="false" tabindex="-1">Education</button>
+        <button type="button" role="tab" id="tab-activities" aria-controls="panel-activities" aria-selected="false" tabindex="-1">Activities</button>
+      </div>
+
+      <section class="ab-panel" role="tabpanel" id="panel-about" aria-labelledby="tab-about" tabindex="0">
+        {%- if body != '' -%}
+          {%- assign secs = body | prepend: nl | split: sep2 -%}
+          {%- assign ab_intro = secs[0] | strip -%}
+          {%- if ab_intro != '' -%}
+            <div class="sp-prose">{{ ab_intro | markdownify }}</div>
+          {%- endif -%}
+          <div class="ab-blocks">
+            {%- for part in secs offset: 1 -%}
+              {%- assign lines = part | split: nl -%}
+              {%- assign heading = lines[0] | strip -%}
+              {%- assign slug = heading | slugify -%}
+              {%- assign rest = part | remove_first: lines[0] | strip -%}
+              {%- assign subs = rest | prepend: nl | split: sep3 -%}
+              {%- assign lead = subs[0] | strip -%}
+              {%- assign nsubs = subs.size | minus: 1 -%}
+              {%- assign kind = 'prose' -%}
+              {%- assign lead_t = lead | prepend: nl -%}
+              {%- if nsubs > 0 -%}
+                {%- assign kind = 'timeline' -%}
+              {%- elsif lead_t contains nl_dash and lead contains ': ' -%}
+                {%- assign first_line = lead | split: nl | first -%}
+                {%- assign first_label = first_line | remove_first: '- ' | split: ': ' | first -%}
+                {%- if first_line contains ': ' and first_label.size < 16 -%}
+                  {%- assign kind = 'contact' -%}
+                {%- else -%}
+                  {%- assign kind = 'grid' -%}
+                {%- endif -%}
+              {%- elsif lead_t contains nl_dash -%}
+                {%- assign kind = 'grid' -%}
+              {%- elsif slug contains 'philosophy' -%}
+                {%- assign kind = 'quote' -%}
+              {%- endif -%}
+              <section class="ab-block ab-block--{{ kind }}" aria-labelledby="{{ slug }}">
+                <header class="sp-sec__head" data-fx="reveal">
+                  <span class="sp-sec__num mono" aria-hidden="true">{{ forloop.index | prepend: '0' }}</span>
+                  <h2 id="{{ slug }}" data-fx="split">{{ heading | escape }}</h2>
+                </header>
+                {%- if kind == 'prose' -%}
+                  <div class="sp-prose ab-who raised" data-fx="reveal">{{ lead | markdownify }}</div>
+                {%- elsif kind == 'quote' -%}
+                  <blockquote class="ab-quote" data-fx="reveal">{{ lead | markdownify }}</blockquote>
+                {%- elsif kind == 'grid' -%}
+                  <div class="ab-grid" data-fx-stagger="80">
+                    {{ lead | markdownify | replace: '<li>', '<li class="raised fx-spot" data-fx="reveal">' }}
+                  </div>
+                {%- elsif kind == 'contact' -%}
+                  <ul class="ab-contact" data-fx-stagger="70">
+                    {%- assign clines = lead | split: nl -%}
+                    {%- for cl in clines -%}
+                      {%- assign cl = cl | strip -%}
+                      {%- if cl != '' -%}
+                        {%- assign ctext = cl | remove_first: '- ' -%}
+                        {%- assign clabel = ctext | split: ': ' | first -%}
+                        {%- assign cval = ctext | remove_first: clabel | remove_first: ': ' -%}
+                        <li class="ab-contact__card raised fx-spot" data-fx="reveal">
+                          <span class="eyebrow">{{ clabel | escape }}</span>
+                          <span class="ab-contact__val">{{ cval | markdownify | remove: '<p>' | remove: '</p>' | strip }}</span>
+                        </li>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                {%- elsif kind == 'timeline' -%}
+                  {%- if lead != '' -%}
+                    <div class="sp-prose">{{ lead | markdownify }}</div>
+                  {%- endif -%}
+                  <ol class="ab-rail">
+                    {%- for sub in subs offset: 1 -%}
+                      {%- assign sl = sub | split: nl -%}
+                      {%- assign sh = sl[0] | strip -%}
+                      {%- assign stext = sub | remove_first: sl[0] | strip -%}
+                      {%- assign tl = stext | split: nl -%}
+                      {%- assign tfirst = tl[0] -%}
+                      {%- assign fp = tfirst | split: '**' -%}
+                      {%- assign yr = '' -%}
+                      {%- assign org = tfirst -%}
+                      {%- assign detail = stext -%}
+                      {%- if fp.size > 1 -%}
+                        {%- assign yr = fp[1] -%}
+                        {%- assign org = fp[2] | remove_first: ' · ' | strip -%}
+                        {%- assign detail = stext | remove_first: tfirst | strip -%}
+                      {%- endif -%}
+                      <li class="ab-rail__item{% if yr contains 'present' %} is-current{% endif %}" data-fx="reveal">
+                        <p class="ab-rail__yr mono">{{ yr | escape }}</p>
+                        <div class="ab-rail__card raised fx-spot">
+                          <h3>{{ sh | escape }}</h3>
+                          {%- if org != '' -%}
+                            <p class="ab-rail__org">{{ org | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>
+                          {%- endif -%}
+                          {%- if detail != '' -%}
+                            <div class="ab-rail__detail">{{ detail | markdownify }}</div>
+                          {%- endif -%}
+                        </div>
+                      </li>
+                    {%- endfor -%}
+                  </ol>
+                {%- endif -%}
+              </section>
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <aside class="sp-empty raised" aria-label="Section not written yet">
+            <p class="eyebrow">Not written yet</p>
+            <h2 class="sp-empty__t">Your About text goes here</h2>
+            <p class="sp-empty__p">
+              Write this page in <code class="sp-empty__path">PORTFOLIO_INTAKE/00_SITE/{{ key }}/page.md</code>.
+            </p>
+          </aside>
+        {%- endif -%}
+        <div class="sp-slot">{{ content }}</div>
+      </section>
+
+      <section class="ab-panel" role="tabpanel" id="panel-experience" aria-labelledby="tab-experience" tabindex="0">
+        {%- assign rows = cv.sections.Experience -%}
+        {%- if rows and rows.size > 0 -%}
+          <ol class="sp-timeline">
+            {%- for e in rows -%}
+              <li class="sp-timeline__item{% if e.end_date == nil or e.end_date == 'present' %} is-current{% endif %}">
+                <p class="sp-timeline__when mono">{{ e.start_date }} &ndash; {{ e.end_date | default: 'present' }}</p>
+                <h3>{{ e.position }}</h3>
+                <p class="sp-timeline__org">
+                  {{ e.company -}}
+                  {%- if e.location %} &middot; {{ e.location }}{% endif %}
+                </p>
+                {%- if e.summary -%}
+                  <p>{{ e.summary }}</p>
+                {%- endif -%}
+                {%- if e.highlights -%}
+                  <ul>
+                    {%- for h in e.highlights -%}
+                      <li>{{ h }}</li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ol>
+        {%- else -%}
+          <aside class="sp-empty raised">
+            <p class="eyebrow">No data</p>
+            <p class="sp-empty__p">Add an <code>Experience</code> list under <code>cv.sections</code> in <code>_data/cv.yml</code>.</p>
+          </aside>
+        {%- endif -%}
+      </section>
+
+      <section class="ab-panel" role="tabpanel" id="panel-education" aria-labelledby="tab-education" tabindex="0">
+        {%- assign rows = cv.sections.Education -%}
+        {%- if rows and rows.size > 0 -%}
+          <ol class="sp-timeline">
+            {%- for e in rows -%}
+              <li class="sp-timeline__item{% if e.end_date == nil or e.end_date == 'present' %} is-current{% endif %}">
+                <p class="sp-timeline__when mono">{{ e.start_date }} &ndash; {{ e.end_date | default: 'present' }}</p>
+                <h3>{{ e.studyType }}, {{ e.area }}</h3>
+                <p class="sp-timeline__org">
+                  {{ e.institution -}}
+                  {%- if e.location %} &middot; {{ e.location }}{% endif -%}
+                  {%- if e.score %}
+                    &middot; <span class="mono">{{ e.score }}</span>
+                  {%- endif %}
+                </p>
+                {%- if e.courses -%}
+                  <p>{{ e.courses }}</p>
+                {%- endif -%}
+                {%- if e.highlights -%}
+                  <ul>
+                    {%- for h in e.highlights -%}
+                      <li>{{ h }}</li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ol>
+        {%- else -%}
+          <aside class="sp-empty raised">
+            <p class="eyebrow">No data</p>
+            <p class="sp-empty__p">Add an <code>Education</code> list under <code>cv.sections</code> in <code>_data/cv.yml</code>.</p>
+          </aside>
+        {%- endif -%}
+      </section>
+
+      <section class="ab-panel" role="tabpanel" id="panel-activities" aria-labelledby="tab-activities" tabindex="0">
+        {%- assign teach = cv.sections.Teaching -%}
+        {%- assign awards = cv.sections.Awards -%}
+        {%- if awards and awards.size > 0 -%}
+          <h3 class="ab-sub">Awards</h3>
+          <ul class="ab-list">
+            {%- for a in awards -%}
+              <li>
+                <span class="mono">{{ a.date }}</span> {{ a.title -}}
+                {%- if a.awarder %}
+                  <span class="ab-muted">&middot; {{ a.awarder }}</span>
+                {%- endif %}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        {%- if teach and teach.size > 0 -%}
+          <h3 class="ab-sub">Teaching</h3>
+          <ul class="ab-list">
+            {%- for t in teach -%}
+              <li>
+                <span class="mono">{{ t.start_date }}</span> {{ t.position }}
+                <span class="ab-muted">&middot; {{ t.company }}</span>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        {%- if activities.size > 0 -%}
+          <div class="sp-media sp-media--prose">
+            {%- for m in activities -%}
+              {%- assign s8 = m.src_800 | default: m.src_1600 -%}
+              {%- assign s16 = m.src_1600 | default: m.src_800 -%}
+              {%- assign cap = m.caption | strip -%}
+              {%- if s8 -%}
+                {%- unless s8 contains '://' -%}{%- assign s8 = s8 | relative_url -%}{%- endunless -%}
+                {%- unless s16 contains '://' -%}{%- assign s16 = s16 | relative_url -%}{%- endunless -%}
+                <figure class="sp-media__item raised">
+                  <a href="{{ s16 }}" data-lightbox="activities" data-caption="{{ cap | escape }}"
+                    ><img src="{{ s8 }}" alt="{{ cap | default: 'Activity' | escape }}" loading="lazy" decoding="async"
+                  ></a>
+                  {%- if cap != '' -%}
+                    <figcaption>{{ cap | escape }}</figcaption>
+                  {%- endif -%}
+                </figure>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <aside class="sp-empty raised">
+            <p class="eyebrow">Activities</p>
+            <p class="sp-empty__p">
+              Add media with <code>topic: activities</code> in <code>PORTFOLIO_INTAKE/00_SITE/{{ key }}/</code> to show talks, outreach and events
+              here.
+            </p>
+          </aside>
+        {%- endif -%}
+      </section>
+    </div>
+  </div>
+  <script defer src="{{ '/assets/js/site/pages.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
+{%- else -%}
+  <div class="post">
+    <header class="post-header hero-header">
+      <h1 class="post-title">
+        {% if site.title == 'blank' %}
+          <span class="font-weight-bold">{{ site.first_name }}</span> {{ site.middle_name }}
+          {{ site.last_name }}
+        {% else %}
+          {{ site.title }}
+        {% endif %}
+      </h1>
+      {% if page.profile.degree %}
+        <p class="hero-credentials">
+          {{ page.profile.degree -}}
+          {%- if page.profile.institute %} &middot; {{ page.profile.institute }}{% endif -%}
+          {%- if page.profile.degree_year %} &middot; {{ page.profile.degree_year }}{% endif %}
+        </p>
+      {% endif %}
+      <p class="desc">{{ page.subtitle }}</p>
+    </header>
+
+    <article>
+      {% if page.profile %}
+        <div class="profile float-{% if page.profile.align == 'left' %}left{% else %}right{% endif %}">
+          {% if page.profile.image %}
+            {% assign profile_image_path = page.profile.image | prepend: 'assets/img/' %}
+            {% if page.profile.image_circular %}
+              {% assign profile_image_class = 'img-fluid z-depth-1 rounded-circle' %}
+            {% else %}
+              {% assign profile_image_class = 'img-fluid z-depth-1 rounded' %}
+            {% endif %}
+            {% capture sizes %}(min-width: {{ site.max_width }}) {{ site.max_width | minus: 30 | times: 0.3}}px, (min-width: 576px)
+      30vw, 95vw"{% endcapture %}
+            {%
+              include figure.liquid loading="eager" path=profile_image_path class=profile_image_class sizes=sizes alt=page.profile.image
+              cache_bust=true
+            %}
+          {% endif %}
+
+          {% if page.profile.research_areas or page.profile.current_role or page.profile.address %}
+            <div class="credentials-card">
+              {% if page.profile.research_areas %}
+                <div class="credentials-block">
+                  <span class="credentials-label">Research</span>
+                  <ul class="research-tags">
+                    {% for area in page.profile.research_areas %}
+                      <li>{{ area }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+              {% if page.profile.current_role %}
+                <div class="credentials-block">
+                  <span class="credentials-label">Now</span>
+                  <p>
+                    {{ page.profile.current_role.title -}}
+                    {%- if page.profile.current_role.org %}, {{ page.profile.current_role.org }}{% endif %}
+                    {% if page.profile.current_role.until -%}
+                      <br>
+                      through {{ page.profile.current_role.until -}}
+                    {%- endif %}
+                  </p>
+                </div>
+              {% endif %}
+              {% if page.profile.address %}
+                <div class="credentials-block">
+                  <span class="credentials-label">Institute</span>
+                  <p>{{ page.profile.address }}</p>
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <div class="clearfix">{{ content }}</div>
+
+      <!-- News -->
+      {% if page.announcements and page.announcements.enabled %}
+        <h2>
+          <a href="{{ '/news/' | relative_url }}" class="about-h2-link">News</a>
+        </h2>
+        {% include news.liquid limit=true %}
+      {% endif %}
+
+      <!-- Latest posts -->
+      {% if page.latest_posts and page.latest_posts.enabled %}
+        <h2>
+          <a href="{{ '/blog/' | relative_url }}" class="about-h2-link">Latest Posts</a>
+        </h2>
+        {% include latest_posts.liquid %}
+      {% endif %}
+
+      <!-- Selected papers -->
+      {% if page.selected_papers %}
+        <h2>
+          <a href="{{ '/publications/' | relative_url }}" class="about-h2-link">Selected Publications</a>
+        </h2>
+        {% include selected_papers.liquid %}
+      {% endif %}
+
+      <!-- Social -->
+      {% if page.social %}
+        <div class="social">
+          <div class="contact-icons">{% social_links %}</div>
+
+          <div class="contact-note">{{ site.contact_note }}</div>
+        </div>
+      {% endif %}
+
+      <!-- Public visitor counter (third-party badge, visitorbadge.io; styled in pages.css). -->
+      <div class="visitor-badge">
+        <img
+          src="https://api.visitorbadge.io/api/visitors?path={{ site.url }}{{ site.baseurl }}%2F&label=page%20views&countColor=%239C2F16&style=flat"
+          alt="page view count"
+          loading="lazy"
+        >
+      </div>
+
+      {% if site.newsletter and site.newsletter.enabled and site.footer_fixed %}
+        {% if site.plugins contains 'al_newsletter' %}
+          {% include plugins/al_newsletter_form_center_margin.liquid %}
+        {% else %}
+          {% include newsletter.liquid center=true %}
+        {% endif %}
+      {% endif %}
+    </article>
+  </div>
+{%- endif -%}

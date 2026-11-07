@@ -1,0 +1,17 @@
+{
+  "parts": [
+    "p01_foundations.json",
+    "p02_calculus.json",
+    "p03_multivariable.json",
+    "p04_diffeq.json",
+    "p05_linalg.json",
+    "p06_prob_numerics.json",
+    "p08_mechanics.json",
+    "p11_thermo_fluids_solids.json",
+    "p14_em_optics_modern.json",
+    "p18_advanced.json",
+    "p26_projects.json",
+    "p30_extensions.json",
+    "p31_flamelab.json"
+  ]
+}

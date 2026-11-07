@@ -1,0 +1,128 @@
+/* studio.css: the full-window Studio page (layout: studio). Tokens from tokens.css only. */
+:root {
+  --studio-top: 76px;
+}
+.studio-page {
+  position: fixed;
+  top: var(--studio-top);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px 12px;
+  background: var(--bg);
+}
+/* the page is the whole window: no document scroll, no footer */
+html:has(.studio-page),
+body:has(.studio-page) {
+  overflow: hidden;
+  height: 100%;
+}
+body:has(.studio-page) .site-footer,
+body:has(.studio-page) #back-to-top {
+  display: none;
+}
+body:has(.studio-page) .container[role="main"] {
+  padding: 0;
+  margin: 0 !important;
+  max-width: none;
+}
+.studio-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  width: min(100%, var(--page-max, 1200px));
+  margin: 0 auto;
+  padding: 0 4px;
+}
+.studio-bar__title {
+  font: 600 13px var(--font-ui);
+  color: var(--text);
+  white-space: nowrap;
+}
+.studio-bar__hint {
+  font: 400 12.5px var(--font-ui);
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.studio-bar__spacer {
+  flex: 1;
+}
+.studio-bar .chip {
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.studio-bar .chip:hover {
+  color: var(--text);
+  border-color: var(--teal);
+}
+.studio-bar .chip--teal {
+  color: var(--on-accent);
+  cursor: default;
+}
+.studio-frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--viewport);
+  box-shadow: var(--raised);
+  display: block;
+}
+.studio-noscript {
+  padding: 24px;
+  color: var(--muted);
+}
+.studio-page:fullscreen {
+  top: 0;
+  padding: 0;
+  gap: 0;
+}
+.studio-page:fullscreen .studio-bar {
+  display: none;
+}
+.studio-page:fullscreen .studio-frame {
+  border: 0;
+  border-radius: 0;
+}
+
+/* phones and small tablets: the frame takes everything under the nav; page chrome shrinks to one thin row */
+@media (max-width: 860px) {
+  :root {
+    --studio-top: 68px;
+  }
+  .studio-page {
+    padding: 0;
+    gap: 0;
+  }
+  .studio-bar {
+    min-height: 30px;
+    padding: 0 10px;
+    gap: 6px;
+  }
+  .studio-bar__hint,
+  .studio-bar .chip--teal,
+  [data-studio-full] {
+    display: none;
+  }
+  .studio-bar .chip {
+    padding: 4px 9px;
+    font-size: 12px;
+  }
+  .studio-frame {
+    border-radius: 0;
+    border-width: 1px 0 0;
+    box-shadow: none;
+  }
+}

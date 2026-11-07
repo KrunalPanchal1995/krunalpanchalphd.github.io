@@ -1,0 +1,545 @@
+home:
+  title: Home
+  subtitle: Computational methods for complex physical systems — combustion kinetics, optimization & uncertainty quantification, reduced-order & scientific ML.
+  tags: []
+  hero: ''
+  order: 0
+  status: live
+  body_md: '
+
+    I build computational methods that connect detailed chemical models with practical combustion applications — kinetics, mechanism reduction, fair multi-objective optimization, uncertainty quantification, and scientific ML, treated as one connected problem rather than separate tools. Every figure on this site is backed by real runs — pool-flame experiments measured with instruments I built, stiff autoignition chemistry validated against 426 experimental targets, an open-source optimization workbench, and a live Neural ODE research playground — with the honest failures on record next to the results. [The full story →](/about/)
+
+
+    ### Research at a glance
+
+
+    - **Combustion Kinetics & Mechanism Reduction** — mechanism development, validation, and reduction of detailed kinetic models to tractable, simulation-ready form
+
+    - **Experimental & Numerical Combustion** — [pool-flame characterization](/projects/flamelab/) and downdraft gasification alongside CFD and chemical-kinetics simulation of the same systems
+
+    - **Fair Multi-Objective Optimization & Uncertainty Quantification** — multi-stage, multi-dataset calibration of Arrhenius parameters with correlated-parameter Bayesian UQ, built around [MOSIAC](/projects/mosiac/), my open-source optimization framework
+
+    - **Reduced-Order Modelling & Scientific ML** — neural and response-surface surrogates that stand in for expensive stiff simulations
+
+    - **[Gasification](/projects/gasification/)** — steam/catalyst-assisted downdraft fixed-bed gasification, from rig commissioning to syngas analysis
+
+    - **CFD** — [PANSOPHIA](/projects/cfdcore/), an in-house CFD/multiphysics solver, and reacting-flow and rig-design studies built on top of it
+
+    - **Optimization & Reinforcement Learning** — [dokimazo](/projects/dokimazo/), an open-source, dependency-light optimization/RL workbench with a plug-and-play graph IR — closed with an RL agent that tunes a real molecule''s rotatable bonds to find its lowest-energy 3D shape
+
+
+    The full research overview — themes, methods, experiments, and publications — is on the [Research page](/research/).
+
+    '
+  media:
+  - src_800: assets/img/site/home/01_MVI8036-zonal-four-regimes-quadrant-800.png
+    src_1600: assets/img/site/home/01_MVI8036-zonal-four-regimes-quadrant-1600.png
+    video: assets/img/site/home/01_MVI8036-zonal-four-regimes-quadrant.mp4
+    caption: 'Four regimes, tracked live, one frame: flamelab — ignition through periodic flickering, width tracked at multiple zone heights at once, in real time'
+    topic: Selected work
+  - src_800: assets/img/site/home/02_four_classes_live-800.png
+    src_1600: assets/img/site/home/02_four_classes_live-1600.png
+    video: assets/img/site/home/02_four_classes_live.mp4
+    caption: 'Four sampling methods, live, one frame: MUQ-SAC — all four sampling-method classes building their uncertainty bands at once, each at its own real measured speed'
+    topic: Selected work
+  - src_800: assets/img/site/home/03_02b_ignitability_3d_map-800.png
+    caption: '3D ignitability map: MOSIAC — ignitable vs. non-ignitable conditions across T, P and equivalence ratio'
+    topic: Selected work
+  - src_800: assets/img/site/home/04_wmre_vs_powermean-800.png
+    caption: 'Fair objective-function design: MSO objectives — WMRE vs. power-mean behaviour, the optimizer''s own objective library'
+    topic: Selected work
+  - src_800: assets/img/site/home/05_01_collinearity-800.png
+    src_1600: assets/img/site/home/05_01_collinearity-1600.png
+    caption: 'Symbolic regression for rate rules: PySR — collinearity diagnostics for universal rate-rule discovery'
+    topic: Selected work
+  - src_800: assets/img/site/home/06_fig1_noise_floor-800.png
+    caption: 'The 115-run seed-noise floor: SciML — bootstrapped ranking with the seed-noise band that humbles most hyperparameter effects'
+    topic: Selected work
+  - src_800: assets/img/site/home/07_optimizer_race-800.png
+    caption: '12 optimizers, one race: Neural ODE playground — all 12 gradient optimizers trained from scratch, same seed, same budget'
+    topic: Selected work
+  - src_800: assets/img/site/home/08_rf_ignition_transient-800.png
+    src_1600: assets/img/site/home/08_rf_ignition_transient-1600.png
+    caption: 'Hot-spot ignition: PANSOPHIA — a warm patch reaching a tipping point and turning into a self-sustaining flame'
+    topic: Selected work
+  - src_800: assets/img/site/home/09_Flame-800.png
+    caption: 'Steam-catalytic gasification: gasification — a real flame over the downdraft gasifier, from rig commissioning to syngas'
+    topic: Selected work
+  - src_800: assets/img/site/home/10_slide_25-25_crop-800.png
+    src_1600: assets/img/site/home/10_slide_25-25_crop-1600.png
+    caption: 'H₂/CH₄ co-injection in tuyeres: decarbonisation — blast-furnace tuyere co-injection study for lower-carbon ironmaking'
+    topic: Selected work
+  - src_800: assets/img/site/home/11_length_comparison-800.png
+    src_1600: assets/img/site/home/11_length_comparison-1600.png
+    caption: 'Vaporizer & combustion rig design: vaporizer-rigs — design and fabrication comparison across rig generations'
+    topic: Selected work
+  - src_800: assets/img/site/home/12_ensemble-frame-matrix-800.png
+    src_1600: assets/img/site/home/12_ensemble-frame-matrix-1600.png
+    caption: Flame development across eight repeat n-heptane pool-flame runs, ignition-aligned and shown at a common physical scale — measured with flamelab, the computer-vision instrument behind it (animated overlay videos on the project page).
+    topic: Selected results
+  - src_800: assets/img/site/home/13_four_classes_live-800.png
+    src_1600: assets/img/site/home/13_four_classes_live-1600.png
+    video: assets/img/site/home/13_four_classes_live.mp4
+    caption: All four MUQ-SAC sampling-method classes (A, B, C, D) building their joint-uncertainty bands at once, each panel's own real measured compute time ticking at its true rate — one crawls, three finish almost instantly — see MUQ-SAC.
+    topic: Selected results
+  - src_800: assets/img/site/home/14_three_way_benchmark-800.png
+    caption: An RL agent and dokimazo's own IPOP-CMA-ES both independently reach n-dodecane's true global-minimum conformer energy, verified against a directly-computable structural ground truth — see dokimazo (optimization-process video on the project page).
+    topic: Selected results
+  extra:
+    selected_work_note: A rotating sample of the best results across every research area — each slide links to its full project page. [Browse all projects →](/projects/)
+    media_links:
+      01_MVI8036-zonal-four-regimes-quadrant.mp4: /projects/flamelab/
+      02_four_classes_live.mp4: /projects/muq-sac/
+      03_02b_ignitability_3d_map.png: /projects/mosiac/
+      04_wmre_vs_powermean.png: /projects/mso-objectives/
+      05_01_collinearity.png: /projects/pysr-rate-rules/
+      06_fig1_noise_floor.png: /projects/sciml/
+      07_optimizer_race.png: /projects/neural-ode-playground/
+      08_rf_ignition_transient.png: /projects/cfdcore/
+      09_Flame.png: /projects/gasification/
+      10_slide_25-25_crop.png: /projects/decarbonisation-tuyeres/
+      11_length_comparison.png: /projects/vaporizer-rigs/
+      12_ensemble-frame-matrix.png: /projects/flamelab/
+      13_four_classes_live.mp4: /projects/muq-sac/
+      14_three_way_benchmark.png: /projects/dokimazo/
+    restored_from: main@5fe9141
+research:
+  title: Research
+  subtitle: Combustion kinetics and mechanism reduction, fair multi-objective optimization and uncertainty quantification, reduced-order and scientific machine learning.
+  tags: []
+  hero: ''
+  order: 1
+  status: live
+  body_md: '
+
+    ## Overview
+
+
+    I develop fair multi-objective optimization, uncertainty-quantification and reduced-order/scientific-ML methods for expensive, stiff physical simulations — using combustion chemical kinetics and mechanism reduction as a primary proving ground, and reaching into CFD, propulsion and quantum chemistry as the same methods generalize. My PhD work produced **MOSIAC**, an open-source workbench for uncertainty-aware combustion mechanism optimization, alongside hands-on experimental and numerical combustion work: pool-flame characterization, a downdraft gasifier, and the computer-vision measurement instrument ([flamelab](/projects/flamelab/)) that quantifies pool-flame video in physical units.
+
+
+    ## Research themes
+
+
+    ### Combustion Kinetics & Mechanism Reduction
+
+
+    Chemical kinetic mechanism development, validation and reduction to tractable, simulation-ready form — from H<sub>2</sub>/O<sub>2</sub> to n-heptane, methyl butanoate and 1,3-butadiene. Workbench: [MOSIAC](/projects/mosiac/).
+
+
+    ### Fair Multi-Objective Optimization & UQ
+
+
+    Multi-stage, multi-dataset optimization of Arrhenius rate parameters built around a fair mean objective across datasets; correlated-parameter Bayesian uncertainty quantification and its propagation forward through the model. Method: [MUQ-SAC](/projects/muq-sac/), applied via [MSO objectives](/projects/mso-objectives/).
+
+
+    ### Reduced-Order Modelling & Scientific ML
+
+
+    Neural and response-surface surrogates that stand in for expensive stiff simulations — where they work, where they don''t, and why. Deep dive: [SciML](/projects/sciml/); live demo: [the Neural ODE playground](/playground/).
+
+
+    ### Experimental & Numerical Combustion, CFD
+
+
+    Pool-flame characterization and downdraft gasification alongside an in-house CFD/multiphysics solver, reacting-flow studies, vaporizer/burner rig design, and early-stage quantum-chemical rate-constant estimation. Rig design: [vaporizer rigs](/projects/vaporizer-rigs/); imaging: [flamelab](/projects/flamelab/).
+
+
+    ### Optimization & Reinforcement Learning
+
+
+    A from-scratch, dependency-light optimization/RL workbench with a plug-and-play graph IR — solvers cross-benchmarked head to head, sampling & UQ, a jax-backed NN/RL training layer, a browser pipeline editor, and an RL agent that tunes a real molecule''s rotatable bonds. Workbench: [dokimazo](/projects/dokimazo/).
+
+
+    ## Featured projects
+
+
+    [Browse the full, filterable project list →](/projects/)
+
+
+    The strongest single thread: **MOSIAC**, the optimization workbench built during the PhD — see its [step-by-step guide](/projects/mosiac/) — feeding into the [MSO objective-function work](/projects/mso-objectives/) and the published [MUQ-SAC uncertainty quantification method](/projects/muq-sac/).
+
+
+    ## Research experiments
+
+
+    Smaller, self-contained studies that show how I work, not just what I''ve published:
+
+
+    - **[Scientific ML for Stiff Kinetics](/projects/sciml/)** — a documented, 50-generation journey from an untrainable neural ODE to a working surrogate, closing with a 115-run statistical audit of my own results.
+
+    - **[Symbolic Regression for Rate Rules](/projects/pysr-rate-rules/)** — using SR to rediscover the Evans–Polanyi relation from data, with a leave-one-class-out generalization check.
+
+    - **[flamelab](/projects/flamelab/)** — a computer-vision instrument that measures flame length, width and flicker from pool-fire video in physical units with propagated uncertainty: eight-run ensemble campaign, regime classification, thirteen analysis methods, honest limitations included.
+
+    - **[dokimazo](/projects/dokimazo/)** — an RL agent tunes a real molecule''s rotatable bonds one at a time, independently reaching the same global-minimum conformer as a from-scratch CMA-ES implementation, checked against a directly-computable structural ground truth rather than solver agreement alone.
+
+
+    ## Methods & tools
+
+
+    Every tool below links to a project that actually used it — no skill bars.
+
+
+    - **Fair Multi-Objective Optimization** — genetic algorithms, CMA-ES, gradient/NLLS, Bayesian & GP optimization, surrogate-assisted search — see [MSO objectives](/projects/mso-objectives/)
+
+    - **Uncertainty quantification** — correlated-parameter UQ, Sobol sensitivity analysis — see [MUQ-SAC](/projects/muq-sac/)
+
+    - **Reduced-order modelling & scientific ML** — physics-informed neural networks, neural ODEs, response-surface surrogates — see [SciML](/projects/sciml/)
+
+    - **Simulation & CFD** — Cantera, CHEMKIN-PRO, FlameMaster, OpenFOAM, an in-house CFD/multiphysics solver — see [MOSIAC](/projects/mosiac/) and [PANSOPHIA](/projects/cfdcore/)
+
+    - **Experimental combustion** — rig design and commissioning, gas chromatography, thermocouple instrumentation, gasification, computer-vision flame measurement — see [gasification](/projects/gasification/) and [flamelab](/projects/flamelab/)
+
+    - **Optimization & reinforcement learning software** — a from-scratch graph-IR workbench, cross-benchmarked solvers, REINFORCE — see [dokimazo](/projects/dokimazo/)
+
+
+    ## Publications
+
+
+    [Full publication list →](/publications/)
+
+
+    5 refereed journal articles, 1 published conference paper, 1 manuscript under review, and 3 accepted conference abstracts (64th Symposium (Japanese) on Combustion, Fukuoka, Nov 2026).
+
+
+    ## CV
+
+
+    [View the full CV →](/cv/)
+
+    '
+  media:
+  - src_800: assets/img/site/research/01_muqsac_kappa_classC-800.png
+    src_1600: assets/img/site/research/01_muqsac_kappa_classC-1600.png
+    video: assets/img/site/research/01_muqsac_kappa_classC.mp4
+    caption: 'MUQ-SAC in motion: each frame is one sampled Arrhenius curve tightening the joint uncertainty band for an n-heptane reaction (10× real speed) — see MUQ-SAC.'
+    topic: Overview
+  - src_800: assets/img/site/research/02_02b_ignitability_3d_map-800.png
+    caption: MOSIAC ignitability 3D map
+    topic: Research themes
+  - src_800: assets/img/site/research/03_fig1_ellipsoid_containment-800.png
+    caption: MUQ-SAC correlated-parameter uncertainty ellipsoid
+    topic: Research themes
+  - src_800: assets/img/site/research/04_fig1_noise_floor-800.png
+    caption: SciML noise-floor figure from the Neural ODE surrogate study
+    topic: Research themes
+  - src_800: assets/img/site/research/05_pressure_drop_vs_diameter-800.png
+    src_1600: assets/img/site/research/05_pressure_drop_vs_diameter-1600.png
+    caption: Vaporizer rig pressure-drop-vs-diameter design chart
+    topic: Research themes
+  - src_800: assets/img/site/research/06_training_curve-800.png
+    caption: RL training curve for rotor-tuning conformer search
+    topic: Research themes
+  extra:
+    description: Combustion kinetics and mechanism reduction, fair multi-objective optimization and uncertainty quantification, reduced-order and scientific machine learning.
+    media_links:
+      01_muqsac_kappa_classC.mp4: /projects/muq-sac/
+      02_02b_ignitability_3d_map.png: /projects/mosiac/
+      03_fig1_ellipsoid_containment.png: /projects/muq-sac/
+      04_fig1_noise_floor.png: /projects/sciml/
+      05_pressure_drop_vs_diameter.png: /projects/vaporizer-rigs/
+      06_training_curve.png: /projects/dokimazo/
+    restored_from: main@5fe9141
+playground:
+  title: Playground
+  subtitle: A public, server-free playground -- train a Neural ODE or a classifier live in your browser and watch it learn.
+  tags: []
+  hero: ''
+  order: 2
+  status: live
+  body_md: |
+    This is the public build of **vZero**, a research playground for Neural ODEs built around a
+    chemical-kinetics problem (H2/O2 autoignition). Everything below runs **entirely in your browser**:
+    no server, no data leaves this tab, and it works offline. It has two tabs.
+
+    ## Neural ODE tab: watch a network learn the physics
+
+    A neural network `f` is trained so that integrating `dy/dt = f(y)` reproduces trajectories sampled from a
+    known system. You see the true trajectories (grey, dashed), the network's own trajectories from the same
+    starting points (blue), a start the network never trained on (orange), the learned vector field as small
+    arrows, and the training loss falling live.
+
+    - **How it trains.** A small tanh network is the right-hand side; a fixed-step Runge-Kutta (RK4)
+      integrator turns it into trajectories; and the gradient is back-propagated by hand through every RK4
+      stage. It is checked against finite differences, not trusted by eye.
+    - **Two systems.** A damped spiral and a predator-prey (Lotka-Volterra) orbit. Change the network width
+      or learning rate and press Reset; if the loss blows up, the page tells you.
+    - **An honest limit.** These are smooth, non-stiff systems. Stiff H2/O2 autoignition did **not** pass the
+      same test in the browser: the loss fell about a hundred-fold, but the radical species peaks stayed
+      wrong, so that case is trained with the Python version and shown as figures on the
+      [project page](/projects/neural-ode-playground/), not faked here.
+
+    ## Classifier tab: the toy-dataset playground
+
+    Pick a dataset, edit the network's width and depth, choose an activation, and watch a real
+    gradient-descent loop train live.
+
+    - **9 datasets.** The original 6 (circle, XOR, two-Gaussian, spiral, plane regression, Gaussian-mixture
+      regression) re-implement the formulas TensorFlow Playground's `dataset.ts` uses (Apache-2.0; re-derived
+      from the main project's Python port, not copied). Three are written for this playground: **moons**,
+      **checkerboard**, and **rings**.
+    - **Bring your own data.** A CSV upload (`x, y, label`, label -1/0/1) trains the same network on your
+      data, parsed and kept entirely in your browser (capped at 2,000 rows).
+    - **Your personal best**, per dataset, saved in this browser's local storage only; never shared.
+    - **The network** is a from-scratch multi-layer perceptron (own initialization, hand-derived
+      backpropagation, Adam, mini-batches, optional L1/L2). It is verified to reach comparable accuracy to
+      the main project's PyTorch version, not to match it bit-for-bit.
+    - **Two things TensorFlow Playground doesn't have:** a small activation heatmap for every neuron, and a
+      loss-function picker (squared error or cross-entropy).
+
+    ## What the full vZero trains
+
+    The full local environment trains the H2/O2 autoignition Neural ODE with the real chemistry: Cantera
+    `h2o2.yaml`, a constant-pressure reactor at a range of starting temperatures, an 11-value state (ten
+    species fractions plus temperature), an adaptive stiff-capable ODE solver, and a loss that can be plain
+    squared error or a power mean. Its best-known finding is a plain one: scaling temperature is what makes
+    the training work (about an order of magnitude lower error), because otherwise temperature's raw size
+    dominates the gradient. The environment is not public yet; the project page tells the full story.
+
+    Built with Claude Code across a multi-week collaboration.
+  media: []
+  extra:
+    description: A public, server-free playground -- train a Neural ODE or a classifier live in your browser and watch it learn.
+    restored_from: main@5fe9141
+writing:
+  title: Writing
+  subtitle: Research notes, essays, and things I haven't stopped thinking about.
+  tags: []
+  hero: ''
+  order: 5
+  status: live
+  body_md: '
+
+    I write about the research as I do it, not just after it''s published — and occasionally about questions that don''t fit inside a paper at all. Until the first long-form posts land, everything written on this site lives in the places below, each one linked. The four sections here are the planned shape of what''s coming.
+
+
+    ## Research Notes
+
+
+    Technical explanations of methods and problems from the research itself.
+
+
+    - **[vZero — A Neural ODE Research Playground](/projects/neural-ode-playground/)** — the project page is itself a long-form technical document: 44 script versions unified into one codebase, a real 12-optimizer race, four PINN benchmark case studies with the losing rows published, and an executed optimizer-race notebook embedded in full.
+
+    - **[Publications](/publications/)** — 13 journal articles, conference papers and preprints, searchable by author, year and abstract text.
+
+
+    ## Essays
+
+
+    Longer pieces about science, computation and how models relate to the systems they describe.
+
+
+    - **[Research philosophy](/about/#research-philosophy)** — why a rate constant is a range, not a value, and the 115-run audit that found a supposed "10× improvement" was mostly seed noise.
+
+
+    ## Food for Thought
+
+
+    *Questions, reflections and things that stayed with me.*
+
+
+    - **[News](/news/)** — short items on what''s happening in the research: the PhD conferred, and three abstracts accepted at the 64th Japanese Symposium on Combustion, Fukuoka.
+
+
+    ## Journal
+
+
+    *Shorter, more personal observations — still being written.*
+
+
+    ---
+
+
+    [All posts, in order →](/blog/)
+
+    '
+  media: []
+  extra:
+    description: Research notes, essays, and things I haven't stopped thinking about.
+    restored_from: main@5fe9141
+beyond-research:
+  title: Beyond Research
+  subtitle: Research is what I do. It isn't all of who I am.
+  tags: []
+  hero: ''
+  order: 6
+  status: live
+  body_md: '
+
+    ### ♟ Chess
+
+
+    Strategy, puzzles, and thoughts about calculation under uncertainty — coming soon.
+
+
+    ### 📷 Photography
+
+
+    Places, people and details worth remembering — coming soon.
+
+
+    ## 🌐 Travel
+
+
+    Conference travel has been the main occasion so far — most recently the 14th Asia-Pacific Conference on Combustion (ASPACC 2023), held in Kaohsiung, Taiwan, with a side trip to Taipei. Chess took me to a few campuses during the M.Tech years at Nirma University, and there''s been some exploring around Chennai during the PhD besides.
+
+
+    - **Conference travel:** Kaohsiung · Taipei (ASPACC 2023)
+
+    - **Chess tournaments (M.Tech years, Nirma University):** IIT Guwahati (winter) · IIT Kharagpur · Bhopal (All India Chess Federation tournament) · SVNIT, Surat
+
+    - **Exploring around Chennai (PhD years):** Yelagiri · Ooty · Mahabalipuram · Chennai (beaches & museums)
+
+
+    ## 📚 Books & Ideas
+
+
+    Books and questions that shaped how I think — see the [bookshelf](/books/).
+
+    '
+  media:
+  - src_800: assets/img/site/beyond-research/01_kaohsiung-800.jpg
+    caption: 'Kaohsiung skyline. Photo: 毛貓大少爺, Wikimedia Commons, CC BY-SA 2.0 — placeholder until I add my own.'
+    topic: Travel
+  - src_800: assets/img/site/beyond-research/02_taipei-800.jpg
+    caption: 'Taipei skyline. Photo: 毛貓大少爺, Wikimedia Commons, CC BY-SA 2.0 — placeholder until I add my own.'
+    topic: Travel
+  extra:
+    description: Research is what I do. It isn't all of who I am.
+    map: true
+    places:
+    - - 22.6273
+      - 120.3014
+      - Kaohsiung — ASPACC 2023
+    - - 25.033
+      - 121.5654
+      - Taipei
+    - - 26.1878
+      - 91.6919
+      - IIT Guwahati — chess (winter)
+    - - 22.3149
+      - 87.3105
+      - IIT Kharagpur — chess
+    - - 23.2599
+      - 77.4126
+      - Bhopal — AICF chess tournament
+    - - 21.1594
+      - 72.7869
+      - SVNIT, Surat — chess
+    - - 12.5833
+      - 78.6333
+      - Yelagiri
+    - - 11.4102
+      - 76.695
+      - Ooty
+    - - 12.6208
+      - 80.1982
+      - Mahabalipuram
+    - - 13.0827
+      - 80.2707
+      - Chennai — beaches & museums
+    restored_from: main@5fe9141
+about:
+  title: About
+  subtitle: Kinetics, optimization, and uncertainty — treated as one connected problem.
+  tags: []
+  hero: ''
+  order: 7
+  status: live
+  body_md: '
+
+    ## Who I am
+
+
+    I''m Dr. Krunal Panchal. I hold a PhD in Mechanical Engineering from IIT Madras (thesis submitted Oct 2025, degree conferred Jul 2026, advised by Prof. Krithika Narayanaswamy) and am currently a Project Associate in the same department through 30 November 2026. My work builds computational methods that connect detailed chemical models with practical combustion applications. My PhD work is a fast, robust, kinetics-based fair multi-objective optimization framework for combustion kinetic models — including mechanism reduction and reduced-order surrogate modelling — built into the open-source **MOSIAC** workbench. Alongside the computational work, I''ve done hands-on experimental and numerical combustion research: pool-flame characterization of n-heptane, designed and commissioned jointly with Gagan Verma, with an eye toward extending it to Methanol-to-Gasoline surrogate fuels, quantified with **flamelab**, the computer-vision measurement instrument I built for it; and, earlier, an M.Tech project on steam/catalyst-assisted downdraft gasification, paired with CFD and chemical-kinetics simulation of the same systems. I''m also building experience in quantum-chemical calculations (Gaussian) for reaction-rate estimation — an area I''m actively working to strengthen further.
+
+
+    ## Research philosophy
+
+
+    I try to understand the structure of a problem before optimizing it. A rate constant is a range, not a value — uncertainty is a first-class citizen in everything I build, not an afterthought bolted on at the end. I value methods that are accurate _and_ interpretable, reproducible, and computationally honest about their own cost. When something doesn''t work, I''d rather document why than quietly move on — the clearest example is a 115-run statistical audit of my own scientific-ML results that found a supposed "10× improvement" was mostly seed noise. That finding is now part of the record, not something I buried.
+
+
+    ## Background
+
+
+    ### B.E., Mechanical Engineering
+
+
+    **2012–2016** · Government Engineering College, Modasa
+
+
+    ### M.Tech, Thermal Engineering
+
+
+    **2016–2018** · Nirma University, Institute of Technology · ISTE National Award for Best M.Tech Thesis, 2018
+
+
+    Experimental steam/catalyst-assisted downdraft gasification research — first hands-on rig work.
+
+
+    ### PhD, Mechanical Engineering
+
+
+    **2018–2026** · Indian Institute of Technology Madras · advised by Prof. Krithika Narayanaswamy
+
+
+    MUQ-SAC joint-Arrhenius uncertainty quantification (published, *Combustion Theory and Modelling*, 2024); a multi-stage optimization strategy (ASPACC 2023); the open-source MOSIAC workbench; n-heptane pool-flame characterization.
+
+
+    ### Project Associate
+
+
+    **2026–present** · Dept. of Mechanical Engineering, IIT Madras · through 30 Nov 2026
+
+
+    A Shell-funded combustion project, while preparing the MOSIAC software paper and extending the multi-dataset objective-function work to journal form.
+
+
+    ## Questions I''m exploring
+
+
+    - How can uncertainty be represented honestly when model parameters are correlated, rather than treated independently for convenience?
+
+    - Can optimization algorithms learn useful structure about a physical system, rather than merely finding parameter values that fit?
+
+    - How can scientific ML remain trustworthy — and its claimed gains distinguishable from noise — when the underlying dynamics are stiff?
+
+    - Where does a fast neural surrogate actually replace an expensive physical simulation without losing the structure that makes it scientifically meaningful?
+
+
+    ## Contact
+
+
+    - Email: krunalpanchal1995 [at] gmail [dot] com
+
+    - ORCID: [0000-0003-2595-8824](https://orcid.org/0000-0003-2595-8824)
+
+    - GitHub: [KrunalPanchal1995](https://github.com/KrunalPanchal1995)
+
+    - LinkedIn: [Krunal-panchal-phd](https://linkedin.com/in/Krunal-panchal-phd)
+
+    - ResearchGate: [Krunal-Panchal](https://www.researchgate.net/profile/Krunal-Panchal)
+
+    '
+  media: []
+  extra:
+    description: Who I am, how I think about research, and where I'm headed.
+    degree: PhD, Mechanical Engineering
+    institute: IIT Madras
+    degree_year: '2026'
+    research_areas:
+    - Experimental & Numerical Combustion
+    - Combustion Kinetics & Mechanism Reduction
+    - Fair Multi-Objective Optimization & UQ
+    - Reduced-Order Modelling & Scientific ML
+    - Gasification
+    - CFD
+    current_role:
+      title: Project Associate
+      org: Dept. of Mechanical Engineering, IIT Madras
+      until: 30 Nov 2026
+    address: Dept. of Mechanical Engineering, IIT Madras, Chennai 600036, India
+    restored_from: main@5fe9141

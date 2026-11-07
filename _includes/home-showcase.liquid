@@ -1,0 +1,192 @@
+{%- comment -%}
+  SELECTED WORK carousel + SELECTED RESULTS figures, from the owner's intake home media ([{src_800, src_1600?, video?, caption, topic}]).
+  Caption "title: caption" is split into a title and a caption; links come from extra.media_links (keyed by the media file name).
+  Accessible: role=region + aria-roledescription=carousel, prev/next, dots, arrow keys, swipe, pause on hover/focus, pause button; behaviour in assets/js/site/home.js.
+{%- endcomment -%}
+{%- assign hm = site.data.intake_pages.home -%}
+{%- assign items = hm.media | where: 'topic', 'Selected work' -%}
+{%- assign results = hm.media | where: 'topic', 'Selected results' -%}
+{%- if items.size == 0 and results.size == 0 -%}{%- assign items = hm.media -%}{%- endif -%}
+{%- assign links = hm.extra.media_links -%}
+{%- if items and items.size > 0 -%}
+  <section class="home-sec" aria-labelledby="home-work">
+    <header class="home-sec__head">
+      <p class="eyebrow">Showcase</p>
+      <h2 id="home-work" data-fx="split">Selected work</h2>
+    </header>
+    {%- if hm.extra.selected_work_note -%}
+      <div class="home-note">{{ hm.extra.selected_work_note | markdownify }}</div>
+    {%- endif -%}
+    <div class="hc" data-carousel role="region" aria-roledescription="carousel" aria-label="Selected work" tabindex="-1">
+      <div class="hc__plate raised">
+        <div class="hc__stage" aria-live="off">
+          {%- for m in items -%}
+            {%- assign s8 = m.src_800 | default: m.src_1600 -%}
+            {%- assign s16 = m.src_1600 | default: m.src_800 -%}
+            {%- if s8 or m.video -%}
+              {%- assign cap = m.caption | strip -%}
+              {%- assign ttl = cap | split: ': ' | first -%}
+              {%- assign rest = cap | remove_first: ttl | remove_first: ': ' -%}
+              {%- if rest == '' -%}
+                {%- assign rest = ttl -%}
+                {%- assign ttl = '' -%}
+              {%- endif -%}
+              {%- if m.video -%}
+                {%- assign key = m.video | split: '/' | last -%}
+              {%- else -%}
+                {%- assign key = s8 | split: '/' | last | replace: '-800.', '.' -%}
+              {%- endif -%}
+              {%- assign href = links[key] -%}
+              <figure
+                class="hc__slide{% if forloop.first %} is-active{% endif %}"
+                data-slide
+                role="group"
+                aria-roledescription="slide"
+                aria-label="{{ forloop.index }} of {{ items.size }}"
+                {% unless forloop.first %}
+                  inert
+                {% endunless %}
+              >
+                <div
+                  class="hc__fig fx-plate"
+                  data-slate-project="{{ href | split: '/' | last }}"
+                  data-slate-take="{{ forloop.index | prepend: '0' | slice: -2, 2 }}"
+                  data-slate-file="{{ key }}"
+                >
+                  {%- if m.video -%}
+                    <video
+                      class="hc__media"
+                      data-src="{{ m.video | relative_url }}"
+                      {% if s8 %}
+                        poster="{{ s8 | relative_url }}"
+                      {% endif %}
+                      muted
+                      loop
+                      playsinline
+                      preload="none"
+                      aria-label="{{ cap | default: 'Selected work video' | escape }}"
+                    ></video>
+                  {%- else -%}
+                    <img
+                      class="hc__media"
+                      src="{{ s8 | relative_url }}"
+                      {% if s16 != s8 %}
+                        srcset="{{ s8 | relative_url }} 800w, {{ s16 | relative_url }} 1600w" sizes="(min-width: 1200px) 1100px, 94vw"
+                      {% endif %}
+                      alt="{{ cap | default: 'Selected work' | escape }}"
+                      {% unless forloop.first %}
+                        loading="lazy"
+                      {% endunless %}
+                      decoding="async"
+                    >
+                  {%- endif -%}
+                </div>
+                <figcaption class="hc__cap">
+                  {%- if ttl != '' -%}
+                    <strong class="hc__ttl">{{ ttl | escape }}</strong>
+                  {%- endif -%}
+                  <span class="hc__txt">{{ rest | escape }}</span>
+                  {%- if href -%}
+                    <a class="hc__go mono" href="{{ href | relative_url }}">Open project <span aria-hidden="true">&rarr;</span></a>
+                  {%- endif -%}
+                </figcaption>
+              </figure>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+      <div class="hc__bar">
+        <button type="button" class="hc__btn" data-prev aria-label="Previous slide">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M15 5l-7 7 7 7"/>
+          </svg>
+        </button>
+        <button type="button" class="hc__btn" data-next aria-label="Next slide">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+        <div class="hc__dots" role="group" aria-label="Choose slide">
+          {%- for m in items -%}
+            <button
+              type="button"
+              class="hc__dot"
+              data-dot
+              aria-label="Slide {{ forloop.index }}"
+              {% if forloop.first %}
+                aria-current="true"
+              {% endif %}
+            ></button>
+          {%- endfor -%}
+        </div>
+        <span class="hc__count mono" data-count-label>01 / {{ items.size | prepend: '0' | slice: -2, 2 }}</span>
+        <button type="button" class="hc__btn hc__play" data-play aria-pressed="false" aria-label="Pause automatic rotation">
+          <svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>
+          </svg>
+          <svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M7 5l12 7-12 7z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{%- if results.size > 0 -%}
+  <section class="home-sec" aria-labelledby="home-results">
+    <header class="home-sec__head">
+      <p class="eyebrow">Showcase</p>
+      <h2 id="home-results" data-fx="split">Selected results</h2>
+    </header>
+    <ul class="hres" role="list" data-fx-stagger>
+      {%- for m in results -%}
+        {%- assign s8 = m.src_800 | default: m.src_1600 -%}
+        {%- if m.video -%}
+          {%- assign key = m.video | split: '/' | last -%}
+        {%- else -%}
+          {%- assign key = s8 | split: '/' | last | replace: '-800.', '.' -%}
+        {%- endif -%}
+        {%- assign href = links[key] -%}
+        <li class="hres__li">
+          <figure class="hres__fig raised fx-spot">
+            <div
+              class="hres__plate fx-plate"
+              data-slate-project="{{ href | split: '/' | last }}"
+              data-slate-take="{{ forloop.index | prepend: '0' | slice: -2, 2 }}"
+              data-slate-file="{{ key }}"
+            >
+              <img src="{{ s8 | relative_url }}" alt="{{ m.caption | strip | truncate: 110 | escape }}" loading="lazy" decoding="async">
+            </div>
+            <figcaption class="hres__cap">
+              {{ m.caption | strip | escape }}
+              {%- if href %}
+                <a class="hc__go mono" href="{{ href | relative_url }}">Open project <span aria-hidden="true">&rarr;</span></a>
+              {%- endif -%}
+            </figcaption>
+          </figure>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </section>
+{%- endif -%}

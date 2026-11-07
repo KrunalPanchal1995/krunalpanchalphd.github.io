@@ -1,0 +1,91 @@
+{% comment %}
+  Home-page hero, THIRD vignette (session 11): the real trimmed public
+  playground itself (vZero/PublicDemo.tsx via `make static-demo`,
+  assets/playground/), not a decorative single-file animation like
+  hero-value-flow.liquid/hero-flow-field.liquid (this directory) -- those
+  two stay untouched, per goal.md's "do not remove anything, just keep
+  adding" instruction. This is a real classification playground: pick a
+  dataset, edit the network, watch a real from-scratch MLP train live, right
+  inside the iframe, no server involved (see vZero's own
+  PublicDemo.tsx/engine/browser/* for what's actually running).
+
+  Auto-sizing (fix for "the playground keeps moving" -- diagnosed empirically,
+  see main-public.tsx's own comment): a fixed height guess here can never
+  match the iframe's real content, which is viewport-width-dependent and was
+  MEASURED at ~1939px at this embed's own 620x360 size -- height="360"
+  scrolling="no" was clipping ~80% of the app, permanently unreachable. The
+  iframe's own page (main-public.tsx) now posts its real content height via
+  postMessage on load and on every resize; the listener below just applies
+  it, so the iframe is always exactly as tall as its content -- one scroll
+  container (this page), not two. height="360" below is only the BEFORE-JS
+  fallback (first paint, or postMessage somehow blocked), not a claim of
+  correctness on its own -- scrolling stays enabled (no scrolling="no") so
+  that fallback is at least reachable via the iframe's own scrollbar rather
+  than fully clipped.
+
+  Full-size on the home page (explicit request: the small 640px/700px-capped
+  teaser box read as "shrunk up" -- this now renders at the page's own
+  content width and the same generous height ceiling as playground.md's
+  full-page embed, not a token-sized preview). Still capped, not literally
+  infinite, for the same reason playground.md's own embed is: a runaway
+  postMessage value elsewhere shouldn't be able to grow either page without
+  bound.
+
+  `?nostory=1` on the src (fix for a SECOND regression caught in review,
+  before shipping): a first-time visitor -- i.e. every visitor landing on
+  the home page, which is the entire point of a homepage hero -- has no
+  `vzero-public-seen-v1` in localStorage, so PublicDemo.tsx defaults to
+  StoryView, the 4-section scroll-driven explainer, not the actual "pick a
+  dataset, edit the network, watch it train" teaser this include's own copy
+  promises. Auto-sizing then correctly reported StoryView's real height
+  (~4200px at this embed's 640px width) and the hero became a scroll-
+  monster on the home page -- a different failure mode than the original
+  360px clip, but still wrong. `?nostory=1` (PublicDemo.tsx's own
+  `showStory` initializer) skips straight to Instrument for this embed
+  specifically, the same way a returning visitor's localStorage flag
+  already does; the full-page /playground/ embed does NOT pass this
+  param, so first-time visitors there still see the explainer.
+  MAX_HERO_HEIGHT below is a second, independent line of defense, matching
+  the full-page embed's own 6000px sanity bound now that this is full-size
+  too -- a future content change here shouldn't be able to grow the home
+  page unboundedly even if `?nostory=1` itself were ever removed or
+  bypassed; scrolling stays enabled precisely
+  so hitting that cap degrades to "scroll within a small box," not clipping.
+
+  Usage: {% include hero-playground.liquid %}
+{% endcomment %}
+<div class="hero-playground" style="margin: 1.5rem 0;">
+  <iframe
+    id="vzero-hero-playground-frame"
+    src="{{ '/assets/playground/index.html' | relative_url }}?nostory=1"
+    title="Live demo: the vZero Neural ODE playground, running entirely in your browser"
+    width="100%"
+    height="360"
+    style="border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; display: block;"
+    loading="lazy"
+  >
+  </iframe>
+  <p style="margin-top: 0.4rem; font-size: 0.85rem;">
+    <a href="{{ '/playground/' | relative_url }}">Open the full playground &rarr;</a>
+  </p>
+</div>
+<script>
+  (function () {
+    var frame = document.getElementById('vzero-hero-playground-frame');
+    if (!frame) return;
+    // Same generous ceiling as playground.md's full-page embed -- this is
+    // no longer a token-sized teaser, so it uses the same bound: never
+    // below a stubby sliver, never past a degenerate runaway value (a real
+    // bug elsewhere shouldn't grow either page unbounded).
+    var MAX_HERO_HEIGHT = 6000;
+    window.addEventListener('message', function (event) {
+      if (event.source !== frame.contentWindow) return;
+      var data = event.data;
+      if (!data || data.source !== 'vzero-playground' || data.type !== 'resize') return;
+      var h = Number(data.height);
+      if (!isFinite(h) || h <= 0) return;
+      h = Math.max(400, Math.min(h, MAX_HERO_HEIGHT));
+      frame.style.height = h + 'px';
+    });
+  })();
+</script>

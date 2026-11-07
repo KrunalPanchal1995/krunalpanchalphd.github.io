@@ -1,0 +1,97 @@
+{%- comment -%}
+  INTRO: credentials line (facts from the /about/ profile), the owner's restored intro paragraph as a pull block, CTA buttons, links row,
+  and "Research at a glance" cards. Everything is the owner's restored text (intake home body_md, first paragraph; the list after
+  "### Research at a glance"). Nothing here invents prose.
+{%- endcomment -%}
+{%- assign it = site.data.intake_pages.home -%}
+{%- assign ab = site.data.intake_pages.about.extra -%}
+{%- assign body = it.body_md | strip -%}
+{%- assign parts = body | split: '### Research at a glance' -%}
+{%- assign intro_md = parts[0] | strip -%}
+{%- assign glance_md = parts[1] | strip -%}
+<section class="home-intro" id="about" aria-label="Introduction">
+  {%- if ab.degree or ab.current_role -%}
+    <p class="home-cred mono">
+      {%- if ab.degree -%}
+        <span>
+          {{- ab.degree | escape -}}
+          {%- if ab.institute %}, {{ ab.institute | escape }}{% endif -%}
+          {%- if ab.degree_year %} ({{ ab.degree_year | escape }}){% endif -%}
+        </span>
+      {%- endif -%}
+      {%- if ab.current_role -%}
+        <span>
+          {{- ab.current_role.title | escape }}, {{ ab.current_role.org | escape -}}
+          {%- if ab.current_role.until %}, until {{ ab.current_role.until | escape }}{% endif -%}
+        </span>
+      {%- endif -%}
+    </p>
+  {%- endif -%}
+  {%- if intro_md != '' -%}
+    <div class="home-pull" data-fx="reveal">{{ intro_md | markdownify }}</div>
+  {%- endif -%}
+
+  <div class="home-dock">
+    <ul class="home-cta" aria-label="Main sections">
+      <li><a class="btn-cta btn-cta-primary" data-fx="magnetic" href="{{ '/research/' | relative_url }}">Explore Research</a></li>
+      <li><a class="btn-cta" data-fx="magnetic" href="{{ '/studio/' | relative_url }}">Open the Studio</a></li>
+      <li><a class="btn-cta" data-fx="magnetic" href="{{ '/projects/' | relative_url }}">Browse Projects</a></li>
+      <li><a class="btn-cta" data-fx="magnetic" href="{{ '/reel/' | relative_url }}">Reel</a></li>
+      <li><a class="btn-cta" data-fx="magnetic" href="{{ '/cv/' | relative_url }}">CV</a></li>
+    </ul>
+    {%- assign soc = site.data.socials -%}
+    <ul class="home-links" aria-label="Profiles and contact">
+      {%- if soc.github_username -%}
+        <li>
+          <a href="https://github.com/{{ soc.github_username }}" rel="me noopener"><i class="fa-brands fa-github" aria-hidden="true"></i>GitHub</a>
+        </li>
+      {%- endif -%}
+      {%- if soc.linkedin_username -%}
+        <li>
+          <a href="https://linkedin.com/in/{{ soc.linkedin_username }}" rel="me noopener"
+            ><i class="fa-brands fa-linkedin" aria-hidden="true"></i>LinkedIn</a
+          >
+        </li>
+      {%- endif -%}
+      {%- if soc.scholar_userid -%}
+        <li>
+          <a href="https://scholar.google.com/citations?user={{ soc.scholar_userid }}" rel="me noopener"
+            ><i class="ai ai-google-scholar" aria-hidden="true"></i>Scholar</a
+          >
+        </li>
+      {%- endif -%}
+      {%- if soc.orcid_id -%}
+        <li>
+          <a href="https://orcid.org/{{ soc.orcid_id }}" rel="me noopener"><i class="ai ai-orcid" aria-hidden="true"></i>ORCID</a>
+        </li>
+      {%- endif -%}
+      {%- if soc.custom_social.url -%}
+        <li>
+          <a href="{{ soc.custom_social.url }}" rel="me noopener"
+            ><i class="fa-brands fa-researchgate" aria-hidden="true"></i>{{ soc.custom_social.title -}}
+          </a>
+        </li>
+      {%- endif -%}
+      {%- if soc.email -%}
+        <li>
+          <a href="mailto:{{ soc.email }}"><i class="fa-solid fa-envelope" aria-hidden="true"></i>Email</a>
+        </li>
+      {%- endif -%}
+      {%- for l in it.extra.links -%}
+        <li>
+          <a href="{{ l.url | relative_url }}" rel="noopener"><i class="fa-solid fa-link" aria-hidden="true"></i>{{ l.label | escape }}</a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+
+  {%- if glance_md != '' -%}
+    <div class="home-glance" aria-labelledby="home-glance-t">
+      <header class="home-sec__head">
+        <p class="eyebrow">Overview</p>
+        <h2 id="home-glance-t" data-fx="split">Research at a glance</h2>
+      </header>
+      <div class="home-glance__body" data-fx="reveal">{{ glance_md | markdownify }}</div>
+    </div>
+  {%- endif -%}
+</section>

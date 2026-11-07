@@ -1,0 +1,312 @@
+/* Base layer of the redesign. Loaded after main.css (see _includes/site-styles.liquid), so equal-specificity rules here win. */
+html {
+  scroll-padding-top: 96px;
+}
+body {
+  font-family: var(--font-ui);
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body.fixed-top-nav {
+  padding-top: 88px;
+}
+.container {
+  max-width: var(--page-max);
+}
+a {
+  color: var(--teal-text);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+a:hover {
+  color: var(--amber-text);
+}
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+::selection {
+  background: color-mix(in srgb, var(--teal) 35%, transparent);
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  text-wrap: balance;
+  color: var(--text);
+}
+h1,
+.post-title {
+  font-size: clamp(2.4rem, 5.2vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  margin: 0.2em 0 0.15em;
+}
+h2 {
+  font-size: clamp(1.55rem, 2.6vw, 2.1rem);
+  border-bottom: 0;
+  padding-bottom: 0;
+  margin: 2.2em 0 0.6em;
+}
+h3 {
+  font-size: 1.28rem;
+}
+p {
+  max-width: var(--measure);
+}
+.post-description,
+.post-header .desc {
+  color: var(--muted);
+  font-size: 1.12rem;
+  max-width: var(--measure);
+}
+code,
+pre,
+kbd,
+samp,
+.mono {
+  font-family: var(--font-mono);
+}
+code {
+  font-size: 0.88em;
+  background: var(--field);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.08em 0.35em;
+}
+pre code {
+  border: 0;
+  padding: 0;
+  background: none;
+}
+pre {
+  background: var(--field);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow: auto;
+}
+table {
+  font-variant-numeric: tabular-nums;
+}
+hr {
+  border-color: var(--border);
+  opacity: 1;
+}
+
+/* the one signature move: a sans headline with an italic serif accent word */
+.accent-serif,
+.ital {
+  font-family: var(--font-serif-accent);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--amber);
+}
+.accent-dot {
+  color: var(--teal-text);
+}
+.eyebrow {
+  font: 600 11.5px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* blueprint grid backdrop (opt-in on a section) */
+.blueprint {
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+}
+.blueprint--fade {
+  -webkit-mask-image: linear-gradient(#000 60%, transparent);
+  mask-image: linear-gradient(#000 60%, transparent);
+}
+
+/* raised surfaces */
+.raised {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--raised);
+}
+a.raised,
+button.raised,
+.raised--lift {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+a.raised:hover,
+button.raised:hover,
+.raised--lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--raised-hover);
+  border-color: color-mix(in srgb, var(--teal) 55%, var(--border));
+  color: inherit;
+}
+a.raised:active,
+button.raised:active,
+.raised--lift:active {
+  transform: translateY(2px);
+  box-shadow: var(--raised-press);
+}
+
+/* chips, tags, buttons */
+.chip,
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 11.5px/1 var(--font-mono);
+  color: var(--muted);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 10px;
+}
+.chip--teal {
+  color: var(--on-accent);
+  background: var(--teal);
+  border-color: var(--teal);
+}
+.chip--amber {
+  color: var(--on-accent2);
+  background: var(--amber);
+  border-color: var(--amber);
+}
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 14px/1 var(--font-ui);
+  border-radius: var(--radius-button);
+  padding: 11px 18px;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--panel2);
+}
+.btn-cta:hover {
+  color: var(--text);
+  border-color: var(--teal);
+}
+.btn-cta-primary {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--on-accent2);
+}
+.btn-cta-primary:hover {
+  color: var(--on-accent2);
+  filter: brightness(1.06);
+}
+.btn-cta-secondary {
+  background: transparent;
+  border-color: var(--teal);
+  color: var(--text);
+}
+.btn-cta-secondary:hover {
+  background: var(--accent-tint);
+  color: var(--text);
+}
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 1.2rem 0;
+}
+
+/* bands: alternate light/dark contrast on long pages */
+.band {
+  padding-block: 56px;
+  margin-inline: calc(50% - 50vw);
+  padding-inline: calc(50vw - 50%);
+}
+.band--panel {
+  background: var(--panel);
+  border-block: 1px solid var(--border);
+}
+
+/* media */
+img,
+video {
+  max-width: 100%;
+}
+figure {
+  margin: 0;
+}
+figcaption {
+  font: 12.5px/1.45 var(--font-mono);
+  color: var(--muted);
+  margin-top: 8px;
+}
+.block-tip,
+.block-warning,
+.block-danger {
+  border-radius: 10px;
+}
+
+/* footer follows tokens */
+footer.sticky-bottom-footer,
+footer {
+  background: var(--panel);
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+}
+footer a {
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- Touch targets (WCAG 2.5.5/2.5.8): controls outside running text are >= 44px on phones and coarse pointers ---- */
+@media (max-width: 900px), (pointer: coarse) {
+  .site-footer__links a,
+  .site-footer__name,
+  .home-dock li a,
+  .home-links li a,
+  .home-socials a,
+  .ab-links a,
+  .pj-toc a,
+  .pj-toc__a,
+  .pg-more,
+  .pi-f,
+  .pub-chip,
+  .app-bar .chip,
+  button.chip,
+  a.chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  #light-toggle,
+  #search-toggle,
+  #fx-toggle {
+    min-height: 44px;
+  }
+}
+
+.btn,
+.btn-cta {
+  min-height: 44px;
+}

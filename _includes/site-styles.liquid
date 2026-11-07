@@ -1,0 +1,10 @@
+{%- comment -%} Redesign stylesheets, loaded after main.css so they win at equal specificity. One place to add a stylesheet. {%- endcomment -%}
+{%- assign v = site.time | date: '%s' -%}
+<link rel="stylesheet" href="{{ '/assets/css/site/tokens.css' | relative_url }}?v={{ v }}">
+<link rel="stylesheet" href="{{ '/assets/css/site/base.css' | relative_url }}?v={{ v }}">
+<link rel="stylesheet" href="{{ '/assets/css/site/nav.css' | relative_url }}?v={{ v }}">
+{%- comment -%} Per-area sheets (one owner each, see the first comment line of every file). {%- endcomment -%}
+{% assign sheets = 'project,projects-index,home,pages,hero,apps,components,fx,studio,reel,playground,open' | split: ',' %}
+{% for sheet in sheets %}
+  <link rel="stylesheet" href="{{ '/assets/css/site/' | append: sheet | append: '.css' | relative_url }}?v={{ v }}">
+{% endfor %}

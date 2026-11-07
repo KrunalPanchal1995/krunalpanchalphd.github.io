@@ -1,0 +1,24 @@
+# Project -> Math Visual Studio route (what the project's "Explore in Studio" action opens).
+# Editable by the owner; a `studio:` key in a project's page.md header (intake) overrides this file.
+# Route format: <workspace>?k=v&k=v  (see assets/apps/math-studio, hash routing). confidence: how well the Studio feature explains the project.
+mosiac: { route: "molecules?preset=11", confidence: medium, why: "Arrhenius plot: ln k vs 1/T is the parameter space being calibrated" }
+mso-objectives: { route: "atlas?ch=S13&ex=4", confidence: medium, why: "least-squares error surface in 3D with the gradient" }
+muq-sac: { route: "atlas?ch=S27&ex=2", confidence: medium-high, why: "uncertainty propagation and sampling" }
+sciml: { route: "atlas?ch=S32&ex=0", confidence: high, why: "stiffness and the stability region" }
+neural-ode-course: { route: "deform?preset=2", confidence: high, why: "maps u(x,y), v(x,y) and their Jacobian ellipses" }
+neural-ode-playground: { route: "solver?tab=ode&preset=4", confidence: medium-high, why: "phase plane and flow of an ODE" }
+turbulence-closures: { route: "atlas?ch=S82&ex=3", confidence: medium, why: "strain and rotation decomposition behind eddy-viscosity closures" }
+cfdcore: { route: "atlas?ch=S34&ex=1", confidence: high, why: "numerical PDEs, stability, verification" }
+gasification: { route: "molecules?preset=12", confidence: low, why: "catalyst lowers the activation barrier; review" }
+flamelab: { route: "atlas?ch=S113&ex=0", confidence: high, why: "FlameLab chapters S113-S121: aliasing, glare, kymograph, flame height, Hopf onset, stitching" }
+vaporizer-rigs: { route: "atlas?ch=S53&ex=2", confidence: low, why: "heat through a wall; review" }
+pysr-rate-rules:
+  {
+    route: "solver?tab=sr&preset=0",
+    confidence: high,
+    why: "PySR-type search with Pareto front (needs the server; static fallback molecules?preset=11)",
+    static_fallback: "molecules?preset=11",
+  }
+decarbonisation-tuyeres: { route: "molecules?preset=8", confidence: low, why: "collision theory with activation energy; review" }
+dokimazo: { route: "mechanism?preset=19", confidence: medium, why: "rotor degrees of freedom and optimization landscape" }
+math-studio-course: { route: "gallery", confidence: high, why: "the Studio itself" }

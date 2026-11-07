@@ -1,0 +1,394 @@
+/* Floating pill navigation. Keeps the hooks used by gem JS: #navbar, #navbarNav (.show toggled by nav-toggle.js), .navbar-menu-list, #search-toggle, #light-toggle (+3 icons), #progress. */
+.site-header {
+  position: relative;
+}
+.pillnav {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  width: min(calc(100% - 24px), var(--page-max));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px 6px 18px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid var(--border);
+  box-shadow: var(--raised);
+}
+.pillnav__brand {
+  font: 700 16px/1 var(--font-ui);
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+  padding-right: 10px;
+}
+.pillnav__brand:hover {
+  color: var(--text);
+}
+.pillnav__brand .accent-dot {
+  margin-left: 1px;
+}
+.pillnav__panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+}
+.pillnav__list {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pillnav__list::-webkit-scrollbar {
+  display: none;
+}
+.pillnav .nav-item {
+  margin: 0;
+}
+.pillnav .nav-link {
+  display: block;
+  white-space: nowrap;
+  font: 600 13px/1 var(--font-ui);
+  color: var(--muted);
+  text-decoration: none;
+  padding: 9px 13px;
+  border-radius: 999px;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.pillnav .nav-link:hover {
+  color: var(--text);
+  background: var(--panel2);
+}
+.pillnav .nav-item.active .nav-link {
+  color: var(--on-accent);
+  background: var(--teal);
+}
+.pillnav__tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-left: 6px;
+  margin-left: 4px;
+  border-left: 1px solid var(--border);
+}
+.pillnav__tools button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  min-width: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: 500 11.5px/1 var(--font-mono);
+  cursor: pointer;
+  gap: 6px;
+}
+.pillnav__tools button:hover {
+  background: var(--panel2);
+  color: var(--text);
+}
+.pillnav__tools #search-toggle .nav-link {
+  padding: 0;
+  background: none;
+  font: 500 11.5px/1 var(--font-mono);
+  color: inherit;
+}
+.pillnav__tools #search-toggle .nav-link:hover {
+  background: none;
+}
+.pillnav__toggle {
+  display: none;
+  appearance: none;
+  margin-left: auto;
+  width: 38px;
+  height: 34px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--panel2);
+  cursor: pointer;
+  position: relative;
+}
+.pillnav__toggle .icon-bar {
+  display: block;
+  position: absolute;
+  left: 11px;
+  right: 11px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--text);
+  transition:
+    transform 0.18s,
+    opacity 0.18s;
+}
+.pillnav__toggle .top-bar {
+  top: 11px;
+}
+.pillnav__toggle .middle-bar {
+  top: 16px;
+}
+.pillnav__toggle .bottom-bar {
+  top: 21px;
+}
+.pillnav__toggle:not(.collapsed) .top-bar {
+  top: 16px;
+  transform: rotate(45deg);
+}
+.pillnav__toggle:not(.collapsed) .middle-bar {
+  opacity: 0;
+}
+.pillnav__toggle:not(.collapsed) .bottom-bar {
+  top: 16px;
+  transform: rotate(-45deg);
+}
+#progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  width: 100%;
+  height: 3px;
+  border: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+}
+#progress::-webkit-progress-bar {
+  background: transparent;
+}
+#progress::-webkit-progress-value {
+  background: var(--amber);
+}
+#progress::-moz-progress-bar {
+  background: var(--amber);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .pillnav {
+    flex-wrap: wrap;
+    border-radius: 22px;
+    padding: 6px 8px 6px 16px;
+  }
+  .pillnav__toggle {
+    display: block;
+  }
+  .pillnav__panel {
+    display: none;
+    flex: 1 1 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 8px 0 6px;
+  }
+  .pillnav__panel.show {
+    display: flex;
+  }
+  .pillnav__list {
+    flex-direction: column;
+    align-items: stretch;
+    overflow: visible;
+  }
+  .pillnav .nav-link {
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+  .pillnav__tools {
+    border-left: 0;
+    margin-left: 0;
+    padding: 6px 0 0;
+    border-top: 1px solid var(--border);
+    justify-content: space-between;
+  }
+}
+
+/* ---- More menu ---- */
+.pillnav__more {
+  position: relative;
+}
+.pillnav__morebtn {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pillnav__caret {
+  transition: transform 0.18s ease;
+}
+.pillnav__more.is-open .pillnav__caret {
+  transform: rotate(180deg);
+}
+.pillnav__more.active .pillnav__morebtn {
+  color: var(--on-accent);
+  background: var(--teal);
+}
+.pillnav__morelist {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 60;
+  min-width: 200px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--panel) 94%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid var(--border);
+  box-shadow: var(--raised);
+}
+.pillnav__morelist[hidden] {
+  display: none;
+}
+.pillnav__moreitem {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font: 600 13px/1.1 var(--font-ui);
+  color: var(--text);
+  text-decoration: none;
+}
+.pillnav__moreitem:hover,
+.pillnav__moreitem:focus-visible {
+  background: var(--panel2);
+  color: var(--text);
+}
+.pillnav__moreitem.is-current {
+  color: var(--teal-text);
+}
+/* the list can overflow the scrolling main list: keep the dropdown above it */
+.pillnav__list {
+  overflow: visible;
+}
+/* ---- Effects toggle ---- */
+#fx-toggle {
+  gap: 6px;
+}
+.fx-toggle__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 8px var(--teal);
+}
+#fx-toggle[aria-pressed="false"] .fx-toggle__dot {
+  background: var(--faint);
+  box-shadow: none;
+}
+@media (max-width: 860px) {
+  .pillnav__more {
+    width: 100%;
+  }
+  .pillnav__morebtn {
+    display: none;
+  }
+  .pillnav__morelist {
+    position: static;
+    display: block !important;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .pillnav__moreitem {
+    padding: 12px 14px;
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .pillnav__morelist li {
+    list-style: none;
+  }
+}
+
+/* ---- Touch targets: every nav control >= 44px on coarse pointers and in the phone sheet ---- */
+@media (pointer: coarse), (max-width: 860px) {
+  .pillnav__tools button {
+    height: 44px;
+    min-width: 44px;
+  }
+  .pillnav__toggle {
+    width: 44px;
+    height: 44px;
+  }
+  .pillnav__toggle .icon-bar {
+    left: 13px;
+    right: 13px;
+  }
+  .pillnav__toggle .top-bar {
+    top: 14px;
+  }
+  .pillnav__toggle .middle-bar {
+    top: 21px;
+  }
+  .pillnav__toggle .bottom-bar {
+    top: 28px;
+  }
+  .pillnav__toggle:not(.collapsed) .top-bar,
+  .pillnav__toggle:not(.collapsed) .bottom-bar {
+    top: 21px;
+  }
+  .pillnav .nav-link {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .pillnav__moreitem {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .pillnav__brand {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* tools row: tap targets are 44px everywhere */
+.pillnav__tools button {
+  min-height: 44px;
+}
+
+/* More-menu item icon (front matter nav_icon, e.g. the Playground flask) */
+.pillnav__icon {
+  width: 1.1em;
+  margin-right: 8px;
+  text-align: center;
+  color: var(--teal-text);
+}

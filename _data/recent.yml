@@ -1,0 +1,64 @@
+- project: flamelab
+  title: flamelab
+  caption: Seam check of two stitched video parts
+  src_800: assets/img/projects/flamelab/51_stitch-seam-qc-800.png
+  date: '2026-10-07'
+- project: flamelab
+  title: flamelab
+  caption: Calibration from a ruler and the burner tube
+  src_800: assets/img/projects/flamelab/50_MVI8025-calibration-800.png
+  date: '2026-10-07'
+- project: flamelab
+  title: flamelab
+  caption: Stitching video parts into one stream
+  src_800: assets/img/projects/flamelab/49_studio-S121-video-stitching-800.png
+  date: '2026-10-07'
+  video: assets/img/projects/flamelab/49_studio-S121-video-stitching.mp4
+- project: flamelab
+  title: flamelab
+  caption: Detecting the onset with a sliding window
+  src_800: assets/img/projects/flamelab/48_studio-S120-onset-detection-800.png
+  date: '2026-10-07'
+  video: assets/img/projects/flamelab/48_studio-S120-onset-detection.mp4
+- project: flamelab
+  title: flamelab
+  caption: 'Onset of puffing: Hopf bifurcation'
+  src_800: assets/img/projects/flamelab/46_studio-S118-hopf-onset-800.png
+  date: '2026-10-07'
+  video: assets/img/projects/flamelab/46_studio-S118-hopf-onset.mp4
+- project: flamelab
+  title: flamelab
+  caption: Inverse Abel transform by onion peeling
+  src_800: assets/img/projects/flamelab/47_studio-S119-onion-peeling-abel-800.png
+  date: '2026-10-07'
+  video: assets/img/projects/flamelab/47_studio-S119-onion-peeling-abel.mp4
+- project: flamelab
+  title: flamelab
+  caption: Flame height versus heat release
+  src_800: assets/img/projects/flamelab/45_studio-S117-flame-height-800.png
+  date: '2026-10-07'
+  video: assets/img/projects/flamelab/45_studio-S117-flame-height.mp4
+- project: flamelab
+  title: flamelab
+  caption: 'Kymograph: stripe slope is convection speed'
+  src_800: assets/img/projects/flamelab/44_studio-S116-kymograph-800.png
+  date: '2026-10-07'
+  video: assets/img/projects/flamelab/44_studio-S116-kymograph.mp4
+- project: flamelab
+  title: flamelab
+  caption: Sub-pixel edge detection
+  src_800: assets/img/projects/flamelab/43_studio-S115-subpixel-edge-800.png
+  date: '2026-10-07'
+  video: assets/img/projects/flamelab/43_studio-S115-subpixel-edge.mp4
+- project: flamelab
+  title: flamelab
+  caption: Veiling glare and the threshold
+  src_800: assets/img/projects/flamelab/42_studio-S114-veiling-glare-800.png
+  date: '2026-10-07'
+  video: assets/img/projects/flamelab/42_studio-S114-veiling-glare.mp4
+- project: flamelab
+  title: flamelab
+  caption: 'Aliasing: a 14 Hz flame at 23.976 fps'
+  src_800: assets/img/projects/flamelab/41_studio-S113-aliasing-800.png
+  date: '2026-10-07'
+  video: assets/img/projects/flamelab/41_studio-S113-aliasing.mp4

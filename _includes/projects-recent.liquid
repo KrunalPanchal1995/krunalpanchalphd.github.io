@@ -1,0 +1,27 @@
+{%- comment -%} WP-F2-B: RECENTLY ADDED strip at the top of /projects/ (site/_data/recent.yml, newest first). Hidden when empty. Native scroll-snap; the scroller is keyboard focusable. {%- endcomment -%}
+{%- assign recents = site.data.recent -%}
+{%- if recents and recents.size > 0 -%}
+  <section class="pr" aria-labelledby="pr-h">
+    <div class="pr-head">
+      <h2 id="pr-h" class="pr-title">Recently added</h2>
+      <p class="pr-hint mono">newest first · scroll sideways</p>
+    </div>
+    <ul class="pr-row" tabindex="0" role="list" aria-label="Recently added figures, scroll sideways">
+      {%- for r in recents limit: 16 -%}
+        {%- assign rp = site.projects | where: 'slug', r.project | first -%}
+        {%- assign rc = rp.category | first | default: 'sciml' -%}
+        <li class="pr-item">
+          <a class="pr-card" href="{{ '/projects/' | append: r.project | append: '/' | relative_url }}" style="--c: var(--cat-{{ rc }}, var(--teal));">
+            <span class="pr-media">
+              {%- if r.src_800 -%}<img src="{{ r.src_800 | relative_url }}" alt="" width="320" height="200" loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}" decoding="async">{%- endif -%}
+              {%- if r.video -%}<span class="pr-play" aria-hidden="true">&#9654;</span>{%- endif -%}
+            </span>
+            <span class="pr-date mono">{{ r.date | date: '%Y-%m-%d' }}</span>
+            <span class="pr-proj">{{ r.title | default: rp.title | escape }}</span>
+            {%- if r.caption and r.caption != '' -%}<span class="pr-cap">{{ r.caption | escape }}</span>{%- endif -%}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </section>
+{%- endif -%}

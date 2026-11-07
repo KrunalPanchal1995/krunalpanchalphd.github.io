@@ -1,0 +1,113 @@
+{%- comment -%}
+  fx-intro.liquid: FX state resolver (every page) + 3 s title sequence markup (home page only).
+  Owned by the FX work package. Styles live in assets/css/site/fx.css, behaviour in assets/js/site/fx.js.
+
+  1. The inline script below sets html[data-fx="on|lite|off"] before first paint. Source of truth:
+     ?fx= (session override) > localStorage 'fx' ('on'|'off') > auto (off: reduced motion; lite: saveData,
+     <= 4 cores, <= 4 GB, coarse pointer; else on).
+  2. On the home page only it also decides whether the title sequence runs (html.fx-intro-pending / .fx-intro-on).
+     Text is built only from real data: site name, the /about/ page `profile`, intake_pages.home.subtitle.
+     Lines whose data is empty are omitted.
+{%- endcomment -%}
+<script>
+    (function () {
+      var d = document.documentElement,
+        q = new URLSearchParams(location.search),
+        n = navigator,
+        c = n.connection;
+      function g(s, k) {
+        try {
+          return window[s].getItem(k);
+        } catch (e) {
+          return null;
+        }
+      }
+      function p(s, k, v) {
+        try {
+          window[s].setItem(k, v);
+        } catch (e) {}
+      }
+      var o = q.get("fx");
+      if (o === "on" || o === "off" || o === "lite") p("sessionStorage", "fx-override", o);
+      else o = g("sessionStorage", "fx-override");
+      if (o !== "on" && o !== "off" && o !== "lite") o = null;
+      var u = g("localStorage", "fx"),
+        rm = matchMedia("(prefers-reduced-motion: reduce)").matches,
+        auto = rm
+          ? "off"
+          : (c && c.saveData) ||
+              (n.hardwareConcurrency && n.hardwareConcurrency <= 4) ||
+              (n.deviceMemory && n.deviceMemory <= 4) ||
+              matchMedia("(pointer: coarse)").matches
+            ? "lite"
+            : "on",
+        s = o || (u === "on" || u === "off" ? u : auto);
+      d.setAttribute("data-fx", s);
+      d.setAttribute("data-fx-auto", auto);
+  {%- if page.url == '/' %}
+      var I = q.get("intro");
+      if (s === "on" && !rm && I !== "0" && (I === "1" || !g("sessionStorage", "fx-intro"))) {
+        p("sessionStorage", "fx-intro", "1");
+        d.classList.add("fx-intro-pending", "fx-intro-on");
+        window.__fxIt0 = Date.now();
+        window.__fxIt = [
+          setTimeout(function () { d.classList.remove("fx-intro-pending"); }, 2450),
+          setTimeout(function () { d.classList.remove("fx-intro-on"); }, 3050),
+          setTimeout(function () { d.classList.remove("fx-intro-pending", "fx-intro-on"); }, 3500),
+        ];
+      }
+  {%- endif %}
+    })();
+</script>
+{%- if page.url == '/' -%}
+  {%- assign fx_about = site.pages | where: 'url', '/about/' | first -%}
+  {%- assign fx_prof = fx_about.profile -%}
+  {%- assign fx_title = fx_prof.title | strip -%}
+  {%- if fx_title == '' and site.title contains 'Dr.' -%}{%- assign fx_title = 'Dr.' -%}{%- endif -%}
+  {%- capture fx_name -%}{{ site.first_name }} {{ site.middle_name }} {{ site.last_name }}{%- endcapture -%}
+  {%- assign fx_name = fx_name | strip -%}
+  {%- if fx_name == '' -%}{%- assign fx_name = site.title -%}{%- endif -%}
+  {%- assign fx_creds = '' | split: '' -%}
+  {%- if fx_prof.degree and fx_prof.degree != '' -%}{%- assign fx_creds = fx_creds | push: fx_prof.degree -%}{%- endif -%}
+  {%- if fx_prof.institute and fx_prof.institute != '' -%}{%- assign fx_creds = fx_creds | push: fx_prof.institute -%}{%- endif -%}
+  {%- if fx_prof.degree_year and fx_prof.degree_year != '' -%}{%- assign fx_creds = fx_creds | push: fx_prof.degree_year -%}{%- endif -%}
+  {%- assign fx_sub = site.data.intake_pages.home.subtitle | strip -%}
+  <div class="fx-intro" aria-hidden="true" data-fx-intro>
+    <div class="fx-intro__grid"></div>
+    <div class="fx-intro__grid fx-intro__grid--hot"></div>
+    <div class="fx-intro__scan"></div>
+    <i class="fx-intro__mark fx-intro__mark--tl"></i><i class="fx-intro__mark fx-intro__mark--tr"></i>
+    <i class="fx-intro__mark fx-intro__mark--bl"></i><i class="fx-intro__mark fx-intro__mark--br"></i>
+    <div class="fx-intro__stage">
+      <svg class="fx-intro__k" viewBox="0 0 64 64" width="112" height="112" focusable="false">
+        <path class="fx-intro__k-path" pathLength="1" d="M18 14h7v15.5L38.5 14h9.2L33.3 30.5 48.5 50h-9L28.2 35 25 38.6V50h-7z" />
+        <circle class="fx-intro__k-dot" cx="47" cy="47" r="5" />
+      </svg>
+      <p class="fx-intro__name">
+        {%- if fx_title != '' -%}
+          <span class="fx-intro__title">{{ fx_title | escape }}</span>
+        {% endif -%}
+        <span class="fx-intro__nm">{{ fx_name | escape }}</span>
+      </p>
+      {%- if fx_creds.size > 0 %}
+        <p class="fx-intro__creds">{{ fx_creds | join: ' · ' | escape }}</p>
+      {%- endif %}
+      {%- if fx_sub != '' %}
+        <p class="fx-intro__sub">{{ fx_sub | escape }}</p>
+      {%- endif %}
+    </div>
+    <button type="button" class="fx-intro__skip" tabindex="-1" data-fx-skip>Skip</button>
+  </div>
+  <div class="fx-intro__edge" aria-hidden="true"></div>
+  <noscript>
+    <style>
+      .fx-intro,
+      .fx-intro__edge {
+        display: none !important;
+      }
+      html.fx-intro-pending body > * {
+        opacity: 1 !important;
+      }
+    </style>
+  </noscript>
+{%- endif -%}

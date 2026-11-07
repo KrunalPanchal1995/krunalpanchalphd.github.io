@@ -1,0 +1,8 @@
+{% comment %}
+  openfirststep visit counter (https://github.com/KrunalPanchal1995/openfirststep).
+  Sends one beacon per page view: page path, referrer hostname, optional ?via= tag.
+  Emits NOTHING until site.openfirststep_endpoint is set in _config.yml.
+{% endcomment %}
+{% if site.openfirststep_endpoint %}
+  <script src="{{ '/assets/js/ofs.js' | relative_url | bust_file_cache }}" data-endpoint="{{ site.openfirststep_endpoint }}" defer></script>
+{% endif %}

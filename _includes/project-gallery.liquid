@@ -1,0 +1,131 @@
+{%- comment -%}
+  Tabbed gallery. Usage: {% include project-gallery.liquid slug="mosiac" %}
+  Every item is rendered once; project.js filters by topic (tabs), builds the lightbox, and handles video playback.
+{%- endcomment -%}
+{%- assign g_items = site.data.project_images[include.slug] -%}
+{%- if g_items and g_items.size > 0 -%}
+  {%- assign topics = '' | split: '' -%}
+  {%- for it in g_items -%}
+    {%- assign t = it.topic | default: 'other' -%}
+    {%- unless topics contains t -%}{%- assign topics = topics | push: t -%}{%- endunless -%}
+  {%- endfor -%}
+  {%- assign vids = g_items | where_exp: 'i', 'i.video' -%}
+  <div class="pg" data-gallery>
+    <div class="pg-tabs" role="tablist" aria-label="Gallery topics" hidden>
+      <button type="button" role="tab" class="pg-tab" id="pgtab-all" data-tab="all" aria-selected="true" aria-controls="pg-panel" tabindex="0">
+        All <span class="pg-count">{{ g_items.size }}</span>
+      </button>
+      {%- for t in topics -%}
+        {%- assign tc = g_items | where: 'topic', t | size -%}
+        <button
+          type="button"
+          role="tab"
+          class="pg-tab"
+          id="pgtab-{{ t | slugify }}"
+          data-tab="{{ t | slugify }}"
+          aria-selected="false"
+          aria-controls="pg-panel"
+          tabindex="-1"
+        >
+          {{ t | replace: '-', ' ' }}
+          <span class="pg-count">{{ tc }}</span>
+        </button>
+      {%- endfor -%}
+      {%- if vids.size > 0 -%}
+        <button
+          type="button"
+          role="tab"
+          class="pg-tab pg-tab--video"
+          id="pgtab-videos"
+          data-tab="videos"
+          aria-selected="false"
+          aria-controls="pg-panel"
+          tabindex="-1"
+        >
+          <i class="fa-solid fa-film" aria-hidden="true"></i> Videos <span class="pg-count">{{ vids.size }}</span>
+        </button>
+      {%- endif -%}
+    </div>
+    <div class="pg-panel" id="pg-panel" role="tabpanel" aria-labelledby="pgtab-all" tabindex="-1">
+      <div class="pg-grid">
+        {%- for it in g_items -%}
+          {%- assign cap = it.caption | strip -%}
+          {%- assign full = it.src_1600 | default: it.src_800 -%}
+          {%- assign desc = it.description | strip -%}
+          {%- assign take = forloop.index | prepend: '00' | slice: -2, 2 -%}
+          {%- comment -%} Studio explainer (figure_explainers.yml, key project/file stem) and the figure's subject (subjects.yml topic_map) {%- endcomment -%}
+          {%- assign pstem = it.src_800 | split: '/' | last | split: '.' | first | remove: '-800' -%}
+          {%- assign ekey = include.slug | append: '/' | append: pstem -%}
+          {%- assign eid = site.data.figure_explainers[ekey] -%}
+          {%- assign tmap = site.data.subjects.topic_map[include.slug] -%}
+          {%- assign sid = tmap[it.topic] | default: tmap.default -%}
+          {%- if sid -%}{%- assign subj = site.data.subjects.subjects | where: 'id', sid | first -%}{%- else -%}{%- assign subj = nil -%}{%- endif -%}
+          {%- if it.video -%}
+            {%- assign fname = it.video | split: '/' | last -%}
+          {%- else -%}
+            {%- assign fname = it.src_800 | split: '/' | last -%}
+          {%- endif -%}
+          <figure
+            class="pg-card raised"
+            data-topic="{{ it.topic | default: 'other' | slugify }}"
+            {% if it.video %}
+              data-video="{{ it.video | relative_url }}"
+            {% endif %}
+            data-full="{{ full | relative_url }}"
+            data-index="{{ forloop.index }}"
+          >
+            <div class="pg-plate fx-plate" data-slate-project="{{ include.slug }}" data-slate-take="{{ take }}" data-slate-file="{{ fname }}">
+              <button
+                type="button"
+                class="pg-open"
+                aria-label="Open {% if it.video %}video{% else %}image{% endif %} {{ forloop.index }}{% if cap != '' %}: {{ cap | escape }}{% endif %}"
+              >
+                {%- if it.video -%}
+                  <video
+                    class="pg-media"
+                    poster="{{ it.src_800 | relative_url }}"
+                    src="{{ it.video | relative_url }}"
+                    preload="none"
+                    muted
+                    loop
+                    playsinline
+                    tabindex="-1"
+                    aria-hidden="true"
+                  ></video>
+                  <span class="pg-badge"><i class="fa-solid fa-play" aria-hidden="true"></i> video</span>
+                {%- else -%}
+                  <img class="pg-media" src="{{ it.src_800 | relative_url }}" alt="{{ cap | escape }}" loading="lazy" decoding="async">
+                {%- endif -%}
+              </button>
+            </div>
+            {%- if cap != '' or desc != '' or it.original_pdf or eid or subj -%}
+              <figcaption class="pg-cap">
+                {%- if cap != '' -%}
+                  <span class="pg-cap__t">{{ cap }}</span>
+                {%- endif -%}
+                {%- if desc != '' -%}
+                  <span class="pg-desc" data-desc>{{ desc }}</span>
+                {%- endif -%}
+                {%- if eid -%}
+                  <a class="pg-pdf pg-explain" href="{{ '/studio/' | relative_url }}#explain?id={{ eid }}" aria-label="Explain this figure in the Studio{% if cap != '' %}: {{ cap | escape }}{% endif %}"
+                    ><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Explain</a
+                  >
+                {%- endif -%}
+                {%- if subj -%}
+                  <a class="pg-pdf pg-subject" href="{{ '/studio/' | relative_url }}#subjects?s={{ subj.id }}" aria-label="Subject: {{ subj.title | escape }}, open in the Studio"
+                    ><i class="fa-solid fa-shapes" aria-hidden="true"></i> {{ subj.title }}</a
+                  >
+                {%- endif -%}
+                {%- if it.original_pdf -%}
+                  <a class="pg-pdf" href="{{ it.original_pdf | relative_url }}" target="_blank" rel="noopener"
+                    ><i class="fa-regular fa-file-pdf" aria-hidden="true"></i> original PDF</a
+                  >
+                {%- endif -%}
+              </figcaption>
+            {%- endif -%}
+          </figure>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}

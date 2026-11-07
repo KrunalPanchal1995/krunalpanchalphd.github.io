@@ -1,0 +1,110 @@
+{% comment %}
+  "Try the research live" strip: the original embedded demos as raised plates.
+    flow_field_demo.html, value_flow_demo.html  (self-contained, theme-synced iframes, scaled to fit)
+    assets/playground/index.html?nostory=1       (resizes itself via postMessage
+                                                  {source:'vzero-playground', type:'resize', height}, clamped 400-6000)
+  Iframes are lazy-loaded (src set when the plate scrolls into view). Styles: assets/css/hero.css (.home-live*).
+  Usage: {% include home-live.liquid %}
+{% endcomment %}
+<link rel="stylesheet" href="{{ '/assets/css/hero.css' | relative_url }}">
+<section class="home-live" data-home-live aria-labelledby="home-live-title">
+  <h2 class="home-live__title" id="home-live-title">Try the research live</h2>
+  <div class="home-live__grid">
+    <figure class="home-live__plate" data-live-plate>
+      <div class="home-live__stage home-live__stage--scaled" data-w="644" data-h="284">
+        <iframe
+          title="Live demo: flow field of the Van der Pol system"
+          data-src="{{ '/assets/html/flow_field_demo.html' | relative_url }}"
+          width="644"
+          height="284"
+          loading="lazy"
+          scrolling="no"
+          tabindex="-1"
+        ></iframe>
+      </div>
+      <figcaption class="home-live__cap">flow_field_demo.html</figcaption>
+    </figure>
+    <figure class="home-live__plate" data-live-plate>
+      <div class="home-live__stage home-live__stage--scaled" data-w="644" data-h="284">
+        <iframe
+          title="Live demo: value flow of the ablation study"
+          data-src="{{ '/assets/html/value_flow_demo.html' | relative_url }}"
+          width="644"
+          height="284"
+          loading="lazy"
+          scrolling="no"
+          tabindex="-1"
+        ></iframe>
+      </div>
+      <figcaption class="home-live__cap">value_flow_demo.html</figcaption>
+    </figure>
+    <figure class="home-live__plate home-live__plate--wide" data-live-plate>
+      <div class="home-live__stage home-live__stage--auto">
+        <iframe
+          id="home-live-playground"
+          title="Live demo: the playground, running entirely in the browser"
+          data-src="{{ '/assets/playground/index.html' | relative_url }}?nostory=1"
+          width="100%"
+          height="520"
+          loading="lazy"
+        ></iframe>
+      </div>
+      <figcaption class="home-live__cap">
+        <span>playground/index.html?nostory=1</span>
+        <a href="{{ '/playground/' | relative_url }}">/playground/</a>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+<script>
+  (function () {
+    var root = document.querySelector('[data-home-live]');
+    if (!root || root.__live) return;
+    root.__live = true;
+    var plates = root.querySelectorAll('[data-live-plate]');
+    function load(p) {
+      var f = p.querySelector('iframe');
+      if (f && !f.getAttribute('src')) f.setAttribute('src', f.getAttribute('data-src'));
+    }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(
+        function (es) {
+          es.forEach(function (e) {
+            if (e.isIntersecting) {
+              load(e.target);
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { rootMargin: '200px 0px' }
+      );
+      plates.forEach(function (p) {
+        io.observe(p);
+      });
+    } else plates.forEach(load);
+    // fixed-aspect plates: scale the fixed-size demo page to the plate width
+    var scaled = root.querySelectorAll('.home-live__stage--scaled');
+    function fit() {
+      scaled.forEach(function (s) {
+        var w = +s.dataset.w,
+          h = +s.dataset.h;
+        var k = Math.min(1, s.clientWidth / w);
+        s.style.setProperty('--live-k', k);
+        s.style.height = Math.round(h * k) + 'px';
+      });
+    }
+    fit();
+    if ('ResizeObserver' in window) new ResizeObserver(fit).observe(root);
+    else window.addEventListener('resize', fit);
+    // playground auto-height contract
+    var pf = document.getElementById('home-live-playground');
+    window.addEventListener('message', function (event) {
+      if (!pf || event.source !== pf.contentWindow) return;
+      var d = event.data;
+      if (!d || d.source !== 'vzero-playground' || d.type !== 'resize') return;
+      var h = Number(d.height);
+      if (!isFinite(h) || h <= 0) return;
+      pf.style.height = Math.max(400, Math.min(h, 6000)) + 'px';
+    });
+  })();
+</script>

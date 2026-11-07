@@ -1,0 +1,13 @@
+# this file contains the social media links and usernames of the author
+# the socials will be displayed in the order they are defined here
+# for more information, please refer to the documentation of jekyll-socials plugin: https://github.com/george-gca/jekyll-socials
+email: krunalpanchal1995@gmail.com
+rss_icon: true # comment this line to hide the RSS icon
+# No Google Scholar profile -- ORCID (below) is the canonical publication-record link, by design.
+orcid_id: 0000-0003-2595-8824
+github_username: KrunalPanchal1995
+linkedin_username: Krunal-panchal-phd
+custom_social: # ResearchGate has no first-class jekyll-socials key; expose it as a custom link
+  logo: https://upload.wikimedia.org/wikipedia/commons/5/5e/ResearchGate_icon_SVG.svg
+  title: ResearchGate
+  url: https://www.researchgate.net/profile/Krunal-Panchal

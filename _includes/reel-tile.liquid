@@ -1,0 +1,64 @@
+{%- comment -%} one clip; owned by the reel work package. {%- endcomment -%}
+{%- assign label = include.cat -%}
+{%- case include.cat -%}
+  {%- when 'combustion' -%}
+    {%- assign label = 'Combustion' -%}
+  {%- when 'optimization' -%}
+    {%- assign label = 'Optimization' -%}
+  {%- when 'uq' -%}
+    {%- assign label = 'Uncertainty' -%}
+  {%- when 'sciml' -%}
+    {%- assign label = 'Scientific ML' -%}
+  {%- when 'cfd' -%}
+    {%- assign label = 'CFD' -%}
+  {%- when 'experimental' -%}
+    {%- assign label = 'Experimental' -%}
+  {%- when 'visualization' -%}
+    {%- assign label = 'Visualization' -%}
+  {%- when 'quantum-chemistry' -%}
+    {%- assign label = 'Quantum chemistry' -%}
+  {%- when 'software' -%}
+    {%- assign label = 'Software' -%}
+  {%- when 'photonics' -%}
+    {%- assign label = 'Photonics' -%}
+  {%- when 'electronics' -%}
+    {%- assign label = 'Electronics' -%}
+  {%- when 'apps' -%}
+    {%- assign label = 'Apps' -%}
+{%- endcase -%}
+<li
+  class="reel-tile"
+  data-clip
+  data-video="{{ include.video | relative_url }}"
+  data-poster="{{ include.poster | relative_url }}"
+  data-title="{{ include.title | default: include.caption | escape }}"
+  data-cat="{{ label | escape }}"
+  data-caption="{{ include.caption | escape }}"
+  data-url="{{ include.url | relative_url }}"
+  {% if include.route %}
+    data-studio="{{ '/studio/' | relative_url }}#{{ include.route | escape }}"
+  {% endif %}
+>
+  <button
+    type="button"
+    class="reel-tile__media"
+    data-tile-play
+    aria-label="Play clip {{ include.n }}: {{ include.title | default: include.caption | escape }}"
+  >
+    <img src="{{ include.poster | relative_url }}" alt="" loading="lazy" decoding="async" width="800" height="500">
+    <span class="reel-tile__play" aria-hidden="true"></span>
+  </button>
+  <div class="reel-tile__body">
+    <p class="reel-tile__meta">
+      <span class="reel-chip">{{ label }}</span><span class="reel-tile__n">{{ include.n | prepend: '00' | slice: -2, 2 }}</span>
+    </p>
+    <h3 class="reel-tile__title">{{ include.title | default: include.caption | escape }}</h3>
+    <p class="reel-tile__cap">{{ include.caption | escape }}</p>
+    <p class="reel-tile__links">
+      <a href="{{ include.url | relative_url }}">Open project</a>
+      {%- if include.route -%}
+        <a href="{{ '/studio/' | relative_url }}#{{ include.route | escape }}">Explore in Studio</a>
+      {%- endif %}
+    </p>
+  </div>
+</li>

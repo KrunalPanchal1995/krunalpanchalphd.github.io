@@ -1,0 +1,142 @@
+{% comment %}
+  Renders every promoted image/video for one project, GROUPED BY TOPIC with
+  a visible group label (h4) and a full descriptive caption under each item
+  -- not just a filename-derived one-liner.
+  Usage: {% include project_gallery.liquid project="mosiac" %}
+  Optional: pass topic="some-topic" to render only that one topic (no h4
+  label in that case, since the caller already knows which topic it asked
+  for) -- lets a page place one topic's images at a specific point in its
+  own narrative instead of dumping every topic in one block at the top.
+  Data comes from _data/project_images.yml, written by scripts/promote_selected.py
+  from scripts/candidates.py -- nothing appears here that wasn't explicitly
+  approved by the owner.
+{% endcomment %}
+{% assign items = site.data.project_images[include.project] %}
+{% if include.topic %}
+  {% assign items = items | where: 'topic', include.topic %}
+{% endif %}
+{% if items %}
+  <div class="project-gallery">
+    {% assign topics = '' | split: '' %}
+    {% for item in items %}
+      {% unless topics contains item.topic %}
+        {% assign topics = topics | push: item.topic %}
+      {% endunless %}
+    {% endfor %}
+    {% for topic in topics %}
+      {% assign topic_items = items | where: 'topic', topic %}
+      {% unless include.topic %}
+        <h4>{{ topic | replace: '-', ' ' }}</h4>
+      {% endunless %}
+      <div class="row row-cols-1 row-cols-md-2 g-3 mb-4">
+        {% for item in topic_items %}
+          <div class="col">
+            <figure
+              class="gallery-figure"
+              {% if item.video %}
+                data-kind="video"
+              {% endif %}
+            >
+              {% if item.video %}
+                <video
+                  src="{{ item.video | relative_url }}"
+                  poster="{{ item.src_800 | relative_url }}"
+                  preload="metadata"
+                  aria-label="{{ item.caption }}"
+                  autoplay
+                  loop
+                  muted
+                  playsinline
+                  class="img-fluid rounded z-depth-1"
+                  style="width: 100%;"
+                ></video>
+              {% else %}
+                {% if item.src_1600 %}
+                  <a href="{{ item.src_1600 | relative_url }}" target="_blank" rel="noopener">
+                    <img
+                      src="{{ item.src_800 | relative_url }}"
+                      alt="{{ item.caption }}"
+                      loading="lazy"
+                      class="img-fluid rounded z-depth-1"
+                      style="width: 100%;"
+                    >
+                  </a>
+                {% else %}
+                  <img
+                    src="{{ item.src_800 | relative_url }}"
+                    alt="{{ item.caption }}"
+                    loading="lazy"
+                    class="img-fluid rounded z-depth-1"
+                    style="width: 100%;"
+                  >
+                {% endif %}
+              {% endif %}
+              <figcaption>
+                {% if item.description and item.description != '' %}
+                  {{ item.description }}
+                {% else %}
+                  {{ item.caption }}
+                {% endif %}
+                {% if item.original_pdf %}
+                  <a href="{{ item.original_pdf | relative_url }}" target="_blank" rel="noopener" class="original-link">(original PDF)</a>
+                {%- endif %}
+              </figcaption>
+            </figure>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+  <style>
+    .project-gallery figcaption {
+      font-family: 'Roboto Mono', 'SF Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--global-text-color-light);
+      margin-top: 0.5rem;
+    }
+    .project-gallery .original-link {
+      white-space: nowrap;
+    }
+    .project-gallery video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+      background: #000;
+    }
+    .project-gallery figure.gallery-figure[data-kind='video'] {
+      position: relative;
+    }
+    .project-gallery figure.gallery-figure[data-kind='video']::after {
+      content: 'video';
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      padding: 0.15rem 0.5rem;
+      font-family: 'Roboto Mono', 'SF Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 4px;
+    }
+  </style>
+  <script>
+    // Muted-loop gallery videos should never depend on the autoplay
+    // attribute alone -- some browsers/environments withhold it even for
+    // muted media. Kick each one explicitly once the DOM is ready; the
+    // poster remains if playback is blocked, and prefers-reduced-motion is
+    // honoured by not starting them at all.
+    document.addEventListener('DOMContentLoaded', function () {
+      var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return;
+      var videos = document.querySelectorAll('.project-gallery video');
+      for (var i = 0; i < videos.length; i++) {
+        var play = videos[i].play();
+        if (play && play.catch) play.catch(function () {});
+      }
+    });
+  </script>
+{% endif %}

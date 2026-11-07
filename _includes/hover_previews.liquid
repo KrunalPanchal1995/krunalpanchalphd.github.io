@@ -1,0 +1,38 @@
+{% comment %}
+  B1 (GOAL_SCORECARD.md, session 4): gwern-style hover link previews --
+  re-implemented from scratch (interaction pattern only; the standing project
+  convention -- see DECISIONS.md's olah_blog entry -- is re-implement rather
+  than copy, applied here too even though gwern.net itself states most of its
+  own content is public-domain/CC0). No live fetch, no third-party service:
+  builds a {url: {title, description}} map at Jekyll BUILD time from every
+  real page/post/project/news item's own front matter, and hands it to
+  assets/js/hover-previews.js, which shows a small popup card when the mouse
+  hovers a link matching a known internal URL. External links are left alone
+  -- this site has no metadata to preview them with, and fetching a live
+  oEmbed/screenshot for arbitrary external URLs is a materially bigger,
+  separate piece of work, not silently folded in here.
+{% endcomment %}
+{% assign preview_items = '' | split: '' %}
+{% for item in site.pages %}
+  {% if item.title and item.url != '/' %}{% assign preview_items = preview_items | push: item %}{% endif %}
+{% endfor %}
+{% for item in site.posts -%}
+  {%- if item.title %}{% assign preview_items = preview_items | push: item %}{% endif -%}
+{%- endfor %}
+{% for item in site.projects -%}
+  {%- if item.title %}{% assign preview_items = preview_items | push: item %}{% endif -%}
+{%- endfor %}
+{% for item in site.news -%}
+  {%- if item.title %}{% assign preview_items = preview_items | push: item %}{% endif -%}
+{%- endfor %}
+<script>
+  window.__hoverPreviews = {
+    {% for item in preview_items %}
+      {{ item.url | relative_url | jsonify }}: {
+        title: {{ item.title | strip_html | jsonify }},
+        description: {{ item.description | default: "" | strip_html | jsonify }}
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  };
+</script>
+<script defer src="{{ '/assets/js/hover-previews.js' | relative_url }}"></script>

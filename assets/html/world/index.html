@@ -1,0 +1,81 @@
+---
+---
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Research world</title>
+    <meta name="description" content="Drive a little vehicle around a stylised research landscape and visit project signposts." />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="stylesheet" href="world.css" />
+    <script type="importmap">
+      { "imports": { "three": "../../vendor/three/three.module.min.js" } }
+    </script>
+  </head>
+  <body>
+    <canvas id="gl" aria-hidden="true"></canvas>
+
+    <header class="hud">
+      <div class="card">
+        <h1>Research world</h1>
+        <p class="sub" id="sub">Drive up to a signpost to open a project.</p>
+        <div class="row">
+          <div class="speed" aria-label="Speed"><span id="spd">0</span><small>km/h</small></div>
+          <div class="actions">
+            <button type="button" id="tour" class="btn btn-tour" aria-pressed="false" title="Guided drive past every project (T)">Tour</button>
+            <button type="button" id="reset" class="btn">Reset</button>
+            <a href="#list" id="skip" class="btn">Skip to list</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div id="msg" class="msg" role="status" hidden></div>
+    <div id="help" class="help" aria-hidden="true">
+      <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows to drive &middot; <kbd>Enter</kbd> to open &middot; <kbd>T</kbd> tour
+    </div>
+    <div id="tourbar" class="tourbar" role="status" aria-live="polite" hidden>
+      <span class="tourbar__n" id="tourn"></span>
+      <span class="tourbar__t">Autopilot. Press any key or tap to take over.</span>
+      <button type="button" id="tourstop" class="btn">Stop tour</button>
+    </div>
+
+    <div id="prompt" class="prompt" hidden>
+      <div class="lt">
+        <div class="lt__meta"><span class="chip" id="pchip"></span><span class="lt__cat" id="pcat"></span><span class="lt__n" id="pnum"></span></div>
+        <p class="lt__title"><b id="ptitle"></b></p>
+        <div class="lt__acts">
+          <button type="button" id="open" class="btn btn-open">Open project <kbd>Enter</kbd></button>
+          <button type="button" id="app" class="btn btn-studio" hidden>Launch app</button>
+          <button type="button" id="studio" class="btn btn-studio">Explore in Studio <kbd>S</kbd></button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mapwrap" class="mapwrap" hidden>
+      <button type="button" id="maptoggle" class="btn maptoggle" aria-expanded="true" aria-controls="mini">Map</button>
+      <canvas id="mini" class="mini" width="140" height="140" role="img" aria-label="Minimap of the research world: districts, stations and the vehicle"></canvas>
+    </div>
+
+    <div id="touch" class="touch" hidden aria-hidden="true">
+      <div id="stick"><i id="knob"></i></div>
+    </div>
+
+    <nav id="list" aria-label="All projects" tabindex="-1">
+      <div class="list-head">
+        <h2>Projects</h2>
+        <button type="button" id="back" class="btn">Back to world</button>
+      </div>
+      <ul id="items">
+{%- assign plist = site.projects | sort: 'importance' -%}
+{%- for p in plist %}
+        <li><a href="{{ p.url | relative_url }}" target="_top">{{ p.title | escape }}</a></li>
+{%- endfor %}
+      </ul>
+    </nav>
+
+    <noscript><p class="msg" style="display: block">This page needs JavaScript for the 3D world. The project list is below.</p></noscript>
+    <script type="module" src="world.js"></script>
+  </body>
+</html>

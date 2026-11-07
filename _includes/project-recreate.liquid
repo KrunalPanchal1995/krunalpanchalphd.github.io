@@ -1,0 +1,56 @@
+{%- comment -%}
+  "How to recreate this plot" (WP-N). Usage: {% include project-recreate.liquid slug=slug %}
+  Reads page.recreate (set by scripts/build_from_intake.py from the project's intake folder recreate/): video, poster, steps,
+  explainer (figure explainer id) and route (the Studio scene that is the twin of the plot). Renders nothing without a video.
+  The clip is a captioned screen capture of the Math Visualization Studio (never its code); the request control comes from
+  request-access.liquid for the catalogue item project-<slug> and carries the free / on-approval copy from _data/open_access.yml.
+{%- endcomment -%}
+{%- assign rc = page.recreate -%}
+{%- if rc and rc.video -%}
+  {%- assign rc_route = rc.route | default: include.route -%}
+  {%- assign rc_studio = '/studio/' | relative_url -%}
+  {%- if rc_route and rc_route != '' -%}{%- assign rc_studio = rc_studio | append: '#' | append: rc_route -%}{%- endif -%}
+  <section class="pj-section rc" aria-labelledby="pj-recreate-h" data-toc-extra="Recreate this plot">
+    <h2 id="pj-recreate-h" class="pj-h2">How to recreate this plot</h2>
+    <div class="rc__grid">
+      <figure class="rc__watch raised">
+        <p class="eyebrow rc__eyebrow">Watch</p>
+        <video
+          class="rc__video"
+          controls
+          muted
+          playsinline
+          preload="none"
+          {% if rc.poster %}
+            poster="{{ rc.poster | relative_url }}"
+          {% endif %}
+          aria-label="Screen capture: building the plot in the Math Visualization Studio, step by step"
+        >
+          <source src="{{ rc.video | relative_url }}" type="video/webm">
+          <a href="{{ rc.video | relative_url }}">Download the clip (WebM)</a>
+        </video>
+        <figcaption class="rc__cap">A short screen capture of the Math Visualization Studio. Each step is captioned in the clip.</figcaption>
+      </figure>
+      <div class="rc__side">
+        <p class="eyebrow rc__eyebrow">Steps</p>
+        <ol class="rc__steps">
+          {%- for st in rc.steps -%}
+            <li>{{ st | escape }}</li>
+          {%- endfor -%}
+        </ol>
+        <div class="rc__links">
+          <a class="pj-act pj-act--studio rc__open" href="{{ rc_studio | escape }}"
+            ><i class="fa-solid fa-cube" aria-hidden="true"></i><span>Open the scene in the Studio</span></a
+          >
+          {%- if rc.explainer -%}
+            <a class="rc__explain" href="{{ '/studio/' | relative_url }}#explain?id={{ rc.explainer | escape }}">Read the explanation</a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+    <div class="rc__req">
+      <p class="eyebrow rc__eyebrow">Code and PDF notes</p>
+      {% include request-access.liquid id=include.item %}
+    </div>
+  </section>
+{%- endif -%}

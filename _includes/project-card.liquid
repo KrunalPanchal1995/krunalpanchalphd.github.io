@@ -1,0 +1,144 @@
+{%- comment -%}
+  Reusable project card. Usage:
+    {% include project-card.liquid project=p variant="lab" show_actions=true %}
+  variant: lab | cinema | row | compact | view (view = follows the layout chosen on /projects/ through .pi[data-view]).
+  The whole card opens the project page (stretched title link); the two actions sit above that link:
+    - "Explore in Studio": /studio/#<route>. Route = project.studio front matter, else site.data.studio_map[slug].route.
+      A route of "gallery" (or no route) opens the Studio itself, labelled "Open Studio".
+    - "Read project": the project page.
+  Optional: reveal=true adds data-fx="reveal" (put data-fx-stagger="60" on the grid parent).
+{%- endcomment -%}
+{%- assign pc_p = include.project -%}
+{%- assign pc_slug = pc_p.slug -%}
+{%- assign pc_variant = include.variant | default: 'lab' -%}
+{%- assign pc_items = site.data.project_images[pc_slug] -%}
+{%- assign pc_vids = pc_items | where_exp: 'i', 'i.video' -%}
+{%- assign pc_fv = pc_vids | first -%}
+{%- assign pc_ni = pc_items.size | minus: pc_vids.size -%}
+{%- comment -%} Studio-made icon (icon/icon.webp, icon_video webm|mp4 loop) leads; the hero image is the fallback. {%- endcomment -%}
+{%- assign pc_icon_img = pc_p.icon | default: '' -%}
+{%- assign pc_icon_vid = pc_p.icon_video | default: pc_p.icon_video_mp4 | default: '' -%}
+{%- assign pc_hero = pc_icon_img -%}
+{%- if pc_hero == '' -%}{%- assign pc_hero = pc_p.img -%}{%- endif -%}
+{%- if pc_hero == null or pc_hero == '' -%}
+  {%- assign pc_first = pc_items | first -%}
+  {%- if pc_first -%}{%- assign pc_hero = pc_first.src_800 -%}{%- endif -%}
+{%- endif -%}
+{%- assign pc_desc = pc_p.description | strip -%}
+{%- assign pc_route = pc_p.studio -%}
+{%- if pc_route == null or pc_route == '' -%}
+  {%- assign pc_route = site.data.studio_map[pc_slug].route -%}
+{%- endif -%}
+{%- assign pc_studio = '/studio/' | relative_url -%}
+{%- assign pc_label = 'Explore in Studio' -%}
+{%- if pc_route == null or pc_route == '' or pc_route == 'gallery' -%}
+  {%- assign pc_label = 'Open Studio' -%}
+{%- else -%}
+  {%- assign pc_studio = pc_studio | append: '#' | append: pc_route -%}
+{%- endif -%}
+{%- assign pc_cat0 = pc_p.category | first -%}
+{%- case pc_cat0 -%}
+  {%- when 'combustion' -%}
+    {%- assign pc_icon = 'fa-fire' -%}
+  {%- when 'optimization' -%}
+    {%- assign pc_icon = 'fa-sliders' -%}
+  {%- when 'uq' -%}
+    {%- assign pc_icon = 'fa-chart-area' -%}
+  {%- when 'sciml' -%}
+    {%- assign pc_icon = 'fa-brain' -%}
+  {%- when 'cfd' -%}
+    {%- assign pc_icon = 'fa-wind' -%}
+  {%- when 'experimental' -%}
+    {%- assign pc_icon = 'fa-flask' -%}
+  {%- when 'software' -%}
+    {%- assign pc_icon = 'fa-code' -%}
+  {%- when 'quantum-chemistry' -%}
+    {%- assign pc_icon = 'fa-atom' -%}
+  {%- when 'visualization' -%}
+    {%- assign pc_icon = 'fa-eye' -%}
+  {%- when 'education' -%}
+    {%- assign pc_icon = 'fa-graduation-cap' -%}
+  {%- when 'photonics' -%}
+    {%- assign pc_icon = 'fa-lightbulb' -%}
+  {%- when 'electronics' -%}
+    {%- assign pc_icon = 'fa-microchip' -%}
+  {%- when 'apps' -%}
+    {%- assign pc_icon = 'fa-laptop-code' -%}
+  {%- else -%}
+    {%- assign pc_icon = 'fa-cube' -%}
+{%- endcase -%}
+{%- assign pc_words = pc_p.title | split: ' ' -%}
+{%- assign pc_cats = pc_p.category | join: ' ' -%}
+{%- capture pc_text -%}{{ pc_p.title }} {{ pc_desc }} {{ pc_cats }}{%- endcapture -%}
+<article
+  class="pc pc--{{ pc_variant }} fx-spot"
+  style="--c: var(--cat-{{ pc_cat0 }}, var(--teal));"
+  data-item
+  data-card
+  {% if include.reveal %}
+    data-fx="reveal"
+  {% endif %}
+  data-title="{{ pc_p.title | escape }}"
+  data-cats="{{ pc_cats }}"
+  data-text="{{ pc_text | downcase | escape }}"
+  {% if pc_icon_vid != '' %}
+    data-video="{{ pc_icon_vid | relative_url }}" data-poster="{{ pc_hero | relative_url }}"
+  {% elsif pc_fv %}
+    data-video="{{ pc_fv.video | relative_url }}" data-poster="{{ pc_hero | relative_url }}"
+  {% endif %}
+>
+  <div class="pc__media{% unless pc_hero %} pc__media--plate{% endunless %}{% if pc_icon_img != '' %} pc__media--icon{% endif %}">
+    {%- if pc_hero -%}
+      <img src="{{ pc_hero | relative_url }}" alt="" loading="lazy" decoding="async">
+    {%- else -%}
+      <span class="pc__plate blueprint" aria-hidden="true">
+        <i class="fa-solid {{ pc_icon }} pc__plate-i"></i>
+        <b class="pc__plate-t mono">
+          {%- for w in pc_words limit: 3 -%}
+            {{ w | slice: 0, 1 | upcase }}
+          {%- endfor -%}
+        </b>
+      </span>
+    {%- endif -%}
+    {%- if pc_fv and pc_icon_img == '' -%}
+      <span class="pc__badge mono"><i class="fa-solid fa-play" aria-hidden="true"></i> video</span>
+    {%- endif -%}
+  </div>
+  <div class="pc__body">
+    <ul class="pc__chips" aria-label="Categories">
+      {%- for cat in pc_p.category -%}
+        <li class="pc__chip" style="--c: var(--cat-{{ cat }}, var(--teal));">{{ cat | replace: '-', ' ' }}</li>
+      {%- endfor -%}
+    </ul>
+    <h3 class="pc__title">
+      <a class="pc__link" href="{{ pc_p.url | relative_url }}">{{ pc_p.title }}</a>
+    </h3>
+    <p class="pc__meta mono">
+      {%- if pc_items.size > 0 -%}
+        <span
+          ><i class="fa-regular fa-image" aria-hidden="true"></i> {{ pc_ni }} image{% if pc_ni != 1 %}s{% endif -%}
+        </span>
+        {%- if pc_vids.size > 0 -%}
+          <span
+            ><i class="fa-solid fa-film" aria-hidden="true"></i> {{ pc_vids.size }} video{% if pc_vids.size != 1 %}s{% endif -%}
+          </span>
+        {%- endif -%}
+      {%- else -%}
+        <span><i class="fa-regular fa-file-lines" aria-hidden="true"></i> text only</span>
+      {%- endif -%}
+    </p>
+    {%- if pc_desc != '' -%}
+      <p class="pc__desc">{{ pc_desc }}</p>
+    {%- endif -%}
+    {%- if include.show_actions != false -%}
+      <div class="pc__actions">
+        <a class="pc__act pc__act--studio" href="{{ pc_studio | escape }}" aria-label="{{ pc_label }}: {{ pc_p.title | escape }}"
+          ><i class="fa-solid fa-cube" aria-hidden="true"></i><span>{{ pc_label }}</span></a
+        >
+        <a class="pc__act pc__act--read" href="{{ pc_p.url | relative_url }}" aria-label="Read project: {{ pc_p.title | escape }}"
+          ><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>Read project</span></a
+        >
+      </div>
+    {%- endif -%}
+  </div>
+</article>

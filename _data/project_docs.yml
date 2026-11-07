@@ -1,0 +1,8 @@
+microfluidics:
+  docs:
+  - assets/pdf/projects/microfluidics/mf_solver.pdf
+  - assets/pdf/projects/microfluidics/mf_validation_dossier.pdf
+vzero-explainer:
+  docs:
+  - assets/pdf/projects/vzero-explainer/vzero_guide_excerpt.pdf
+  - assets/pdf/projects/vzero-explainer/vzero_neural_ode_slides.pdf

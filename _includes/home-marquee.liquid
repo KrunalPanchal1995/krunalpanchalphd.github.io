@@ -1,0 +1,64 @@
+{%- comment -%}
+  MARQUEE of research categories (counts derived from site.projects) and a mono datasheet strip of data-derived counts. No prose.
+{%- endcomment -%}
+{%- assign mq_cats = 'combustion,optimization,uq,sciml,cfd,experimental,visualization,software,education,photonics,electronics,apps' | split: ',' -%}
+{%- assign n_img = 0 -%}
+{%- assign n_vid = 0 -%}
+{%- for pair in site.data.project_images -%}
+  {%- assign its = pair[1] -%}
+  {%- assign vv = its | where_exp: 'i', 'i.video' -%}
+  {%- assign n_vid = n_vid | plus: vv.size -%}
+  {%- assign n_img = n_img | plus: its.size | minus: vv.size -%}
+{%- endfor -%}
+{%- assign n_routes = 0 -%}
+{%- assign n_cats = 0 -%}
+{%- for p in site.projects -%}
+  {%- assign sm = site.data.studio_map[p.slug] -%}
+  {%- if p.studio or sm.route -%}{%- assign n_routes = n_routes | plus: 1 -%}{%- endif -%}
+{%- endfor -%}
+<section class="home-mq" aria-label="Research categories and counts">
+  <div class="fx-marquee hm" data-speed="38">
+    {%- for c in mq_cats -%}
+      {%- assign hits = site.projects | where_exp: 'p', 'p.category contains c' -%}
+      {%- if hits.size > 0 -%}
+        {%- assign n_cats = n_cats | plus: 1 -%}
+        <span class="hm__item mono" style="--c: var(--cat-{{ c }}, var(--teal));">
+          <i aria-hidden="true"></i>
+          {%- case c -%}
+            {%- when 'uq' -%}
+              UQ
+            {%- when 'sciml' -%}
+              SciML
+            {%- when 'cfd' -%}
+              CFD
+            {%- else -%}
+              {{ c | capitalize }}
+          {%- endcase -%}
+          <b>{{ hits.size }}</b>
+        </span>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  <dl class="hdata mono">
+    <div>
+      <dt>projects</dt>
+      <dd>{{ site.projects.size }}</dd>
+    </div>
+    <div>
+      <dt>images</dt>
+      <dd>{{ n_img }}</dd>
+    </div>
+    <div>
+      <dt>videos</dt>
+      <dd>{{ n_vid }}</dd>
+    </div>
+    <div>
+      <dt>studio routes</dt>
+      <dd>{{ n_routes }}</dd>
+    </div>
+    <div>
+      <dt>categories</dt>
+      <dd>{{ n_cats }}</dd>
+    </div>
+  </dl>
+</section>

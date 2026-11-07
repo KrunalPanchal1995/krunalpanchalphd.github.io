@@ -1,0 +1,56 @@
+{% comment %}
+  Home-page hero 3/3: full-bleed photographic backdrop, dim overlay, centred letter-spaced
+  title and a boxed section menu.
+  Params (defaults from _data/design.yml hero_params.photo):
+    title, subtitle, image (site-root path), menu (list of {label, url}), managed.
+  Usage: {% include hero-photo.liquid %}
+         {% include hero-photo.liquid menu=site.data.design.hero_params.photo.menu %}
+{% endcomment %}
+{% assign cfg = site.data.design.hero_params.photo %}
+{% assign h_title = include.title | default: cfg.title | default: site.title %}
+{% assign h_subtitle = include.subtitle | default: cfg.subtitle %}
+{% assign h_image = include.image | default: cfg.image | default: '/assets/img/hero/placeholder_flow.jpg' %}
+{% assign h_menu = include.menu | default: cfg.menu %}
+{% unless include.managed %}
+  <link rel="stylesheet" href="{{ '/assets/css/hero.css' | relative_url }}">
+{% endunless %}
+<div
+  class="hero hero--photo"
+  data-hero="photo"
+  {% if include.hidden %}
+    hidden
+  {% endif %}
+  data-fallback-src="{{ '/assets/img/hero/placeholder_flow.jpg' | relative_url }}"
+>
+  <img class="hero__img" src="{{ h_image | relative_url }}" alt="" width="1920" height="1080" decoding="async">
+  <div class="hero__overlay"></div>
+  <div class="hero__inner">
+    <h1 class="hero__title">{{ h_title }}</h1>
+    {% if h_subtitle != blank %}
+      <p class="hero__subtitle">{{ h_subtitle }}</p>
+    {% endif %}
+    {% if h_menu.size > 0 %}
+      <nav aria-label="Sections">
+        <ul class="hero__menu">
+          {% for item in h_menu %}
+            {% if item.label %}
+              <li>
+                <a href="{{ item.url | default: item.href | relative_url }}">{{ item.label }}</a>
+              </li>
+            {% else %}
+              <li>
+                <a href="{{ '/' | relative_url }}#{{ item | slugify }}">{{ item }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </nav>
+    {% endif %}
+  </div>
+</div>
+{% unless include.managed %}
+  <script type="module">
+    import { mount } from "{{ '/assets/js/hero/photo.js' | relative_url }}";
+    document.querySelectorAll('[data-hero="photo"]').forEach((el) => mount(el));
+  </script>
+{% endunless %}

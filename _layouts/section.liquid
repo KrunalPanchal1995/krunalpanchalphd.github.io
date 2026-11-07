@@ -1,0 +1,220 @@
+---
+layout: default
+---
+{%- comment -%}
+  section: a section hub with four numbered parts (WP-H, used by /playground/).
+    Live         the embedded app (id vzero-full-playground-frame; auto-height via postMessage {source:'vzero-playground', type:'resize', height}
+                 handled by pages.js) and the owner's intake text, rendered verbatim
+    Learn        the numbered mini-course: figure explainers of a project, in order (site.data.playground_section.learn), links into the Studio
+    Experiments  the project's figures (site.data.project_images[page.section_project]) grouped by topic, each with its Explain link
+    Code         labels and links only
+  No prose is generated here: headings are UI labels; every sentence on the page is the owner's (site.data.intake_pages[page.intake].body_md).
+  Front matter: intake, section_project (project slug), section_docs (project slug in project_docs), section_subject (Studio subject id), accent_word, eyebrow
+{%- endcomment -%}
+{%- assign it = site.data.intake_pages[page.intake] -%}
+{%- assign proj = page.section_project -%}
+{%- assign sec = site.data.playground_section -%}
+{%- assign body = it.body_md | strip -%}
+{%- assign studio = '/studio/' | relative_url -%}
+{%- assign docs_entry = site.data.project_docs[page.section_docs] -%}
+{%- assign docs = docs_entry.docs | default: docs_entry -%}
+{%- assign h1_text = it.title | default: page.title -%}
+{%- assign accent = page.accent_word | escape -%}
+{%- capture accent_html -%}<span class="accent-serif">{{ accent }}</span>{%- endcapture -%}
+
+<div class="sp sp--playground pgs">
+  <div class="sp__grid blueprint blueprint--fade" aria-hidden="true"></div>
+
+  <header class="sp-head">
+    <p class="eyebrow">{{ page.eyebrow | default: page.title }}</p>
+    <h1 class="sp-head__title" data-fx="split">
+      {%- if accent != '' -%}{{ h1_text | escape | replace: accent, accent_html }}{%- else -%}{{ h1_text | escape }}{%- endif -%}
+    </h1>
+    {%- if it.subtitle and it.subtitle != '' -%}
+      <p class="sp-head__sub">{{ it.subtitle | escape }}</p>
+    {%- endif -%}
+    <nav class="pgs-jump" aria-label="Parts of this section">
+      <a class="chip" href="#live"><span class="mono">01</span> Live</a>
+      <a class="chip" href="#learn"><span class="mono">02</span> Learn</a>
+      <a class="chip" href="#experiments"><span class="mono">03</span> Experiments</a>
+      <a class="chip" href="#code"><span class="mono">04</span> Code</a>
+      <a class="chip pgs-jump__studio" href="{{ studio }}#subjects?s={{ page.section_subject }}"
+        >Playground in the Studio <span aria-hidden="true">&rarr;</span></a
+      >
+    </nav>
+  </header>
+
+  <div class="sp-body" data-sp-sections>
+    {%- comment -%} 01 Live {%- endcomment -%}
+    <section class="sp-sec pgs-sec" id="live" aria-labelledby="live-h">
+      <header class="sp-sec__head" data-fx="reveal">
+        <span class="sp-sec__num mono" aria-hidden="true">01</span>
+        <h2 id="live-h" data-fx="split">Live</h2>
+      </header>
+      <div class="pg-plate raised">
+        <iframe
+          id="vzero-full-playground-frame"
+          class="pg-frame"
+          src="{{ '/assets/playground/index.html' | relative_url }}"
+          title="vZero Playground -- full public demo"
+          width="100%"
+          height="1400"
+          loading="lazy"
+        >
+        </iframe>
+      </div>
+      {%- if body != '' -%}
+        <div class="sp-prose sp-prose--long pgs-owner" data-fx="reveal">{{ body | markdownify }}</div>
+      {%- endif -%}
+    </section>
+
+    {%- comment -%} 02 Learn {%- endcomment -%}
+    <section class="sp-sec pgs-sec" id="learn" aria-labelledby="learn-h">
+      <header class="sp-sec__head" data-fx="reveal">
+        <span class="sp-sec__num mono" aria-hidden="true">02</span>
+        <h2 id="learn-h" data-fx="split">Learn</h2>
+      </header>
+      {%- if sec.learn and sec.learn.size > 0 -%}
+        <ol class="pgs-course" data-fx-stagger="70">
+          {%- for l in sec.learn -%}
+            <li class="pgs-lesson raised fx-spot" data-fx="reveal">
+              <a class="pgs-lesson__link" href="{{ studio }}#explain?id={{ l.id }}">
+                <span class="pgs-lesson__n mono" aria-hidden="true">{{ l.n | prepend: '0' }}</span>
+                {%- if l.thumb != '' -%}
+                  <span class="pgs-lesson__fig"><img src="{{ l.thumb | relative_url }}" alt="" loading="lazy" decoding="async"></span>
+                {%- endif -%}
+                <span class="pgs-lesson__t">{{ l.title | escape }}</span>
+                <span class="pgs-lesson__go">Open in the Studio <span aria-hidden="true">&rarr;</span></span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ol>
+      {%- endif -%}
+
+      {%- if sec.concepts and sec.concepts.size > 0 -%}
+        <h3 class="pgs-h3">Concept explainers</h3>
+        <ul class="pgs-links" data-fx-stagger="50">
+          {%- for c in sec.concepts -%}
+            <li>
+              <a class="pgs-link raised fx-spot" href="{{ studio }}#explain?id={{ c.id }}">
+                <span class="pgs-link__t">{{ c.title | escape }}</span>
+                <span class="pgs-link__go" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- assign nb = '/assets/jupyter/vzero_optimizer_race.ipynb' -%}
+      {%- if docs and docs.size > 0 or page.section_notebook -%}
+        <h3 class="pgs-h3">Documents</h3>
+        <ul class="pgs-links">
+          {%- for d in docs -%}
+            {%- assign fname = d | split: '/' | last -%}
+            {%- assign label = fname -%}
+            {%- if fname contains 'slides' -%}
+              {%- assign label = 'Deck' -%}
+            {%- elsif fname contains 'guide' -%}
+              {%- assign label = 'Guide' -%}
+            {%- endif -%}
+            <li>
+              <a class="pgs-link raised fx-spot" href="{{ d | relative_url }}" target="_blank" rel="noopener">
+                <span class="pgs-link__t">
+                  {{- label }}
+                  <span class="mono pgs-link__fmt">PDF</span></span
+                >
+                <span class="pgs-link__go" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+          {%- endfor -%}
+          {%- if page.section_notebook -%}
+            <li>
+              <a class="pgs-link raised fx-spot" href="{{ page.section_notebook | relative_url }}" download>
+                <span class="pgs-link__t">Notebook <span class="mono pgs-link__fmt">ipynb</span></span>
+                <span class="pgs-link__go" aria-hidden="true">&darr;</span>
+              </a>
+            </li>
+          {%- endif -%}
+        </ul>
+      {%- endif -%}
+    </section>
+
+    {%- comment -%} 03 Experiments {%- endcomment -%}
+    {%- assign figs = site.data.project_images[proj] -%}
+    <section class="sp-sec pgs-sec" id="experiments" aria-labelledby="experiments-h">
+      <header class="sp-sec__head" data-fx="reveal">
+        <span class="sp-sec__num mono" aria-hidden="true">03</span>
+        <h2 id="experiments-h" data-fx="split">Experiments</h2>
+      </header>
+      {%- if figs and figs.size > 0 -%}
+        {%- assign groups = figs | group_by: 'topic' -%}
+        {%- for g in groups -%}
+          {%- assign gname = g.name | replace: '-', ' ' | replace: '_', ' ' -%}
+          <h3 class="pgs-h3">{{ gname | escape }}</h3>
+          <div class="pgs-figs" data-fx-stagger="70">
+            {%- for m in g.items -%}
+              {%- assign s8 = m.src_800 | default: m.src_1600 -%}
+              {%- assign s16 = m.src_1600 | default: m.src_800 -%}
+              {%- assign cap = m.caption | strip -%}
+              {%- assign pstem = m.src_800 | split: '/' | last | split: '.' | first | remove: '-800' -%}
+              {%- assign ekey = proj | append: '/' | append: pstem -%}
+              {%- assign eid = site.data.figure_explainers[ekey] -%}
+              <figure class="pgs-fig raised fx-spot" data-fx="reveal">
+                <div class="fx-plate">
+                  <a href="{{ s16 | relative_url }}" data-lightbox="pgs-{{ g.name | slugify }}" data-caption="{{ cap | escape }}"
+                    ><img src="{{ s8 | relative_url }}" alt="{{ cap | escape }}" loading="lazy" decoding="async"
+                  ></a>
+                </div>
+                <figcaption>
+                  <span class="pgs-fig__t">{{ cap | escape }}</span>
+                  {%- if eid -%}
+                    <a class="pgs-fig__go" href="{{ studio }}#explain?id={{ eid }}" aria-label="Explain this figure in the Studio: {{ cap | escape }}"
+                      >Explain <span aria-hidden="true">&rarr;</span></a
+                    >
+                  {%- endif -%}
+                </figcaption>
+              </figure>
+            {%- endfor -%}
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </section>
+
+    {%- comment -%} 04 Code {%- endcomment -%}
+    <section class="sp-sec pgs-sec" id="code" aria-labelledby="code-h">
+      <header class="sp-sec__head" data-fx="reveal">
+        <span class="sp-sec__num mono" aria-hidden="true">04</span>
+        <h2 id="code-h" data-fx="split">Code</h2>
+      </header>
+      <ul class="pgs-links" data-fx-stagger="50">
+        <li>
+          <a class="pgs-link raised fx-spot" href="{{ '/projects/' | append: proj | append: '/' | relative_url }}">
+            <span class="pgs-link__t">Project page</span><span class="pgs-link__go" aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+        <li>
+          <a class="pgs-link raised fx-spot" href="https://github.com/{{ site.data.socials.github_username | default: 'KrunalPanchal1995' }}" target="_blank" rel="noopener">
+            <span class="pgs-link__t">GitHub profile</span><span class="pgs-link__go" aria-hidden="true">&nearr;</span>
+          </a>
+        </li>
+        <li>
+          <a class="pgs-link raised fx-spot" href="{{ '/assets/playground/index.html' | relative_url }}" target="_blank" rel="noopener">
+            <span class="pgs-link__t">Open the app in its own tab</span><span class="pgs-link__go" aria-hidden="true">&nearr;</span>
+          </a>
+        </li>
+        <li>
+          <a class="pgs-link raised fx-spot" href="{{ studio }}#subjects?s={{ page.section_subject }}">
+            <span class="pgs-link__t">Playground in the Studio</span><span class="pgs-link__go" aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+        {%- if it.status and it.status != '' -%}
+          <li class="pgs-status">
+            <span class="chip chip--teal">{{ it.status | escape }}</span>
+          </li>
+        {%- endif -%}
+      </ul>
+    </section>
+  </div>
+</div>
+
+<script defer src="{{ '/assets/js/site/pages.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>

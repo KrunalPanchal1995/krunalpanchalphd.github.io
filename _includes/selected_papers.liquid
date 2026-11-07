@@ -1,0 +1,7 @@
+{%- comment -%}
+  LOCAL SHADOW of al_folio_core's selected_papers.liquid. Same card markup (via _layouts/bib.liquid), compact variant:
+  .publications--compact hides thumbnails/author lines (see assets/css/site/components.css).
+{%- endcomment -%}
+<div class="publications publications--compact">
+  {% bibliography --group_by none --query @*[selected=true]* %}
+</div>
