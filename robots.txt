@@ -1,4 +1,0 @@
-User-agent: *
-Disallow:
-
-Sitemap: https://krunalpanchal1995.github.io/krunalpanchalphd.github.io/sitemap.xml
