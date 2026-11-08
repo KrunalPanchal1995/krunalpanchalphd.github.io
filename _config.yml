@@ -19,8 +19,8 @@ lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: favicon.svg # served from /assets/img/
 apple_touch_icon: favicon-180.png # 180x180 PNG in /assets/img/
 
-url: https://krunalpanchal1995.github.io # the base hostname & protocol for your site
-baseurl: /krunalpanchalphd.github.io # project site under the KrunalPanchal1995 account; a build hook (_plugins/baseurl_links.rb) prefixes root-relative links with this
+url: https://krunalpanchalphd.github.io # user site (the account krunalpanchalphd). While the site is still served from the old path, build with --config _config.yml,_config.path.yml
+baseurl: "" # user site at the root; _plugins/baseurl_links.rb does nothing when this is empty
 last_updated: false # set to true if you want to display last updated in the footer
 impressum_path: # set to path to include impressum link in the footer, use the same path as permalink in a page, helps to conform with EU GDPR
 back_to_top: true # set to false to disable the back to top button

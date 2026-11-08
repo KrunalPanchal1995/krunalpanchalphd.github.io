@@ -340,7 +340,6 @@ writing:
     *Questions, reflections and things that stayed with me.*
 
 
-    - **[News](/news/)** — short items on what''s happening in the research: the PhD conferred, and three abstracts accepted at the 64th Japanese Symposium on Combustion, Fukuoka.
 
 
     ## Journal
@@ -396,7 +395,7 @@ beyond-research:
     ## 📚 Books & Ideas
 
 
-    Books and questions that shaped how I think — see the [bookshelf](/books/).
+    Books and questions that shaped how I think.
 
     '
   media:
@@ -460,6 +459,12 @@ about:
 
 
     I try to understand the structure of a problem before optimizing it. A rate constant is a range, not a value — uncertainty is a first-class citizen in everything I build, not an afterthought bolted on at the end. I value methods that are accurate _and_ interpretable, reproducible, and computationally honest about their own cost. When something doesn''t work, I''d rather document why than quietly move on — the clearest example is a 115-run statistical audit of my own scientific-ML results that found a supposed "10× improvement" was mostly seed noise. That finding is now part of the record, not something I buried.
+
+
+    ## One loop, from the chemistry to the process
+
+
+    Developing a reacting process, whether a flame or a plasma-etch recipe, is one loop: know the chemistry, simulate it, find out what controls the result and how sure you are, tune it against measurements, then build something faster and better from what you learned. MOSIAC is that loop for combustion chemistry. It builds the reaction mechanism, shows which reactions matter, calibrates against experiments, states the uncertainty, and reduces the model to what is essential. My current research takes the last step: running that reduced model inside a CFD solver, and letting a Neural-ODE surrogate stand in for the chemistry so the simulation is faster. A first demonstration works in a one-dimensional reacting-flow solver I wrote, and its accuracy is still being improved. It is not a validated model yet. Plasma chemistry is the same kind of problem with a different reactor, and I am studying it now through plasma-assisted pyrolysis.
 
 
     ## Background

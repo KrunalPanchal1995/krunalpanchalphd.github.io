@@ -1,0 +1,5 @@
+# Overlay for the CURRENT path-hosted copy (https://krunalpanchal1995.github.io/krunalpanchalphd.github.io/).
+# Use until the krunalpanchalphd GitHub account serves the site from its own root:
+#   JEKYLL_ENV=production bundle exec jekyll build --config _config.yml,_config.path.yml
+url: https://krunalpanchal1995.github.io
+baseurl: /krunalpanchalphd.github.io
